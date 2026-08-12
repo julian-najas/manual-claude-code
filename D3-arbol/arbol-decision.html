@@ -301,7 +301,7 @@
     </div>
     <div class="cierre">
       <span class="t">Cuándo MCP sí se vuelve caro</span>
-      <p>Cuando lo fuerzas. <code>ENABLE_TOOL_SEARCH=auto</code> carga los esquemas por adelantado si caben en el 10 % de la ventana, y <code>ENABLE_TOOL_SEARCH=false</code> los carga todos siempre. Con esa última, el peaje permanente vuelve y es proporcional al número de herramientas que tengas conectadas.</p>
+      <p>En cinco casos el peaje permanente vuelve, proporcional a cuántas herramientas tengas conectadas: si fuerzas <code>ENABLE_TOOL_SEARCH=false</code>; si <code>ENABLE_TOOL_SEARCH=auto</code> decide que los esquemas caben en el 10 % de la ventana; <strong>si trabajas contra un gateway propio</strong>, porque con <code>ANTHROPIC_BASE_URL</code> apuntando fuera se desactiva solo; si tienes las betas experimentales apagadas; o si tu modelo no admite bloques <code>tool_reference</code>. Compruébalo con <code>/mcp</code> antes de dar nada por hecho.</p>
     </div>
   </section>
 
