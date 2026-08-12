@@ -3,7 +3,7 @@
 **Versión del libro:** v2026.08  
 **Verificado contra:** `2.1.228 (Claude Code)`  
 **Sistema:** Linux 6.17.0-41-generic  
-**Fecha:** 2026-08-12 12:53:04 UTC
+**Fecha:** 2026-08-12 17:06:49 UTC
 
 🟢 19 pasan · 🔴 0 fallan · 🟡 3 a revisar · ⚪ 3 omitidas
 
