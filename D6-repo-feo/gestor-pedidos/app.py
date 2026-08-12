@@ -11,7 +11,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-API_KEY_PASARELA = "sk_live_51Hx7bQKm3nR8vTpLwZ9cD2fA"
+API_KEY_PASARELA = "PSP-LIVE-9f2b41c7a8e3d6104b5f7e29"  # clave de produccion
 DB = "datos/pedidos.db"
 DEBUG = True
 
