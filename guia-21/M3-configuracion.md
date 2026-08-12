@@ -34,6 +34,8 @@ repositorio y por tanto de todo el equipo. No hay término medio.
 
 ## 3.2 · Los cuatro ámbitos y quién gana
 
+### Tabla 3 · Precedencia de settings
+
 | Ámbito | Dónde | A quién afecta | ¿Va a git? |
 |---|---|---|---|
 | **Managed** | Servidor, plist/registro, o `managed-settings.json` del sistema | Toda la organización, o todos los usuarios de la máquina | Lo despliega sistemas |
