@@ -90,12 +90,12 @@ despliegue (M14).
 
 ### M4 · Memoria y contexto · 1.800
 *Para quién:* todos, desde el día dos. *Resuelve:* instrucciones que se pierden. *No cubre:* skills (M7).
-4.1 CLAUDE.md por niveles e imports · 4.2 `AGENTS.md` · 4.3 `.claude/rules/`, reglas por ruta y symlinks `⚠️ VERIFICAR` ·
+4.1 CLAUDE.md por niveles e imports · 4.2 `AGENTS.md` · 4.3 `.claude/rules/`, reglas por ruta y symlinks (documentado dentro de `memory`) ·
 4.4 Auto memory y `/memory` · 4.5 Despliegue de CLAUDE.md a nivel de organización ·
 4.6 Qué sobrevive a la compactación · 4.7 Cómo se pierde una instrucción y cómo se diagnostica ·
 4.8 Cuándo mover instrucciones de CLAUDE.md a una skill
 **Tabla 5.** **Reutiliza:** árbol de decisión y tabla de impuesto de contexto del bloque D.
-**Fuentes:** `memory` (+ la fuente de `rules`, pendiente de localizar)
+**Fuentes:** `memory` (contiene `rules`), `claude-directory`, `context-window`, `settings`
 
 ### M5 · Permisos, modos y seguridad operativa · 2.600
 *Para quién:* quien responde de la máquina. *Resuelve:* el falso dilema entre preguntar por todo o permitirlo todo. *No cubre:* cumplimiento (M16).
