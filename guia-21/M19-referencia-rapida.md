@@ -236,6 +236,19 @@ No todos los eventos admiten los cinco: el reparto exacto está en el M10.
 - [ ] Tengo `--bare` y `--debug` en la cabeza para diagnosticar.
 - [ ] Conozco los números de la tabla del 19.8 sin buscarlos.
 
+## Errores típicos
+
+| Síntoma | Qué está pasando |
+|---|---|
+| "`WebFetch` dice que la página no menciona eso" | Puede ser que **tu prompt no preguntara**. Es lossy. Usa `curl` para la página cruda |
+| "Mi patrón de Grep no encuentra nada" | Sintaxis de ripgrep, no de grep POSIX. Escapa los metacaracteres |
+| "El `cd` no se mantiene entre comandos" | Salió del proyecto y se reseteó. Mira si el resultado dice `Shell cwd was reset to` |
+| "Un subagente no hereda mi directorio de trabajo" | Nunca lo hace. Por diseño |
+| "Busqué la bandera en la referencia y no está" | Puede estar en el binario y no en `cli-reference.md`. `claude --help` manda |
+| "Cambié el ajuste en los cuatro ámbitos y sigue igual" | Una variable de entorno es **otra capa** por encima |
+| "Puse `allowed_domains` y `blocked_domains` a la vez" | No se pueden combinar en la misma llamada |
+| "Mi `MEMORY.md` largo no se carga entero" | 200 líneas o 25 KB, lo que llegue antes |
+
 ---
 
 ## Fuentes usadas en este módulo
