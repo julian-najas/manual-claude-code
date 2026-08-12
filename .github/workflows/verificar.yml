@@ -36,6 +36,12 @@ jobs:
         working-directory: D2-verificador
         run: python3 verificar.py
 
+      - name: Verificar los bloques de código de la guía
+        id: ejemplos
+        continue-on-error: true
+        working-directory: D2-verificador
+        run: python3 verificar-ejemplos.py '../guia-21/M*.md'
+
       - name: Generar la página pública de estado
         if: always()
         working-directory: D2-verificador
@@ -97,5 +103,5 @@ jobs:
             });
 
       - name: Fallar el trabajo si hubo roturas
-        if: steps.verificador.outcome == 'failure'
+        if: steps.verificador.outcome == 'failure' || steps.ejemplos.outcome == 'failure'
         run: exit 1
