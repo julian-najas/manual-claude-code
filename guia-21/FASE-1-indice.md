@@ -136,11 +136,11 @@ despliegue (M14).
 
 ### M9 · Paralelismo y agentes · 2.800
 *Para quién:* [C]. *Resuelve:* la decisión que más dinero mueve. *No cubre:* hooks de ciclo de vida (M10).
-9.1 Matriz de decisión entre las siete formas de paralelizar · 9.2 Subagentes: frontmatter, memoria persistente, hooks propios ·
+9.1 Las cuatro formas de correr agentes y las tres herramientas de apoyo · 9.2 Subagentes: frontmatter, memoria persistente, hooks propios ·
 9.3 Delegación automática frente a invocación explícita · 9.4 Agent teams ·
 9.5 Forks · 9.6 Workflows · 9.7 Agent view y dispatch en segundo plano ·
 9.8 **Cross-session messaging** (v2.1.224+, macOS y Linux) · 9.9 Worktrees y su aislamiento ·
-9.10 Qué aísla, qué comparte, qué cuesta y cómo se mata cada uno ·
+9.10 Qué aísla, qué comparte, qué cuesta y cómo se para cada uno ·
 9.11 Ejemplos: revisión adversarial, hipótesis en competencia, fan-out sobre N ficheros
 **Tabla 8 · Diagrama 3.** **Fuentes:** `agents`, `sub-agents`, `agent-view`, `agent-teams`, `cross-session-messaging`, `workflows`, `worktrees`
 
