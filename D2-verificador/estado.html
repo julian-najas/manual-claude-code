@@ -1,0 +1,146 @@
+<title>Estado de verificación · Claude Code en producción</title>
+<style>
+  :root{
+    --bg:#ECEEEE; --surface:#FBFCFC; --surface-2:#F3F5F5;
+    --ink:#15191B; --ink-2:#4E585C; --muted:#78838A; --rule:#D2D8D9;
+    --brass:#9A6F14; --ok:#2F6B4F; --mal:#A33A2E; --rev:#8A6A12;
+    --serif:"Charter","Bitstream Charter","Iowan Old Style",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#121516; --surface:#191D1F; --surface-2:#1E2325;
+      --ink:#E8EAEA; --ink-2:#A9B3B7; --muted:#7E888D; --rule:#2A3033;
+      --brass:#D5A442; --ok:#6FBF95; --mal:#D98873; --rev:#D5A442;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121516; --surface:#191D1F; --surface-2:#1E2325;
+    --ink:#E8EAEA; --ink-2:#A9B3B7; --muted:#7E888D; --rule:#2A3033;
+    --brass:#D5A442; --ok:#6FBF95; --mal:#D98873; --rev:#D5A442;
+  }
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:52px 20px 80px;display:flex;flex-direction:column;gap:34px}
+  @media(max-width:640px){.wrap{padding:30px 14px 56px;gap:26px}}
+  h1,h2{font-family:var(--serif);font-weight:600;margin:0;line-height:1.15;text-wrap:balance}
+  h1{font-size:clamp(1.8rem,5.4vw,2.5rem);letter-spacing:-.015em}
+  h2{font-size:1.25rem}
+  p{margin:0}
+  .eyebrow{font-family:var(--mono);font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--ok);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
+  .titular{font-family:var(--serif);font-size:clamp(1.4rem,4.4vw,1.9rem);line-height:1.2}
+  .titular .n{color:var(--ok)}
+  .meta{font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.8}
+  .cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+  .cifra{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+  .cifra .v{font-family:var(--serif);font-size:1.8rem;font-variant-numeric:tabular-nums;line-height:1}
+  .cifra .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .cifra.ok .v{color:var(--ok)} .cifra.mal .v{color:var(--mal)} .cifra.rev .v{color:var(--rev)}
+  .scroller{overflow-x:auto;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:.88rem}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+  thead th{font-family:var(--mono);font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface-2)}
+  tr.cap td{background:var(--surface-2);font-family:var(--mono);font-size:.71rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+  tr.cap.mal td{color:var(--mal)}
+  td.ic{width:1.6rem;text-align:center}
+  td.id{font-family:var(--mono);font-size:.76rem;color:var(--muted);white-space:nowrap}
+  td.cmd{font-family:var(--mono);font-size:.74rem;color:var(--ink-2)}
+  tbody tr:last-child td{border-bottom:none}
+  .nota{background:var(--surface);border-left:2px solid var(--brass);padding:15px 18px;display:flex;flex-direction:column;gap:6px}
+  .nota .t{font-weight:650}
+  .nota p{color:var(--ink-2);font-size:.93rem}
+  footer{border-top:1px solid var(--rule);padding-top:16px;font-family:var(--mono);font-size:.74rem;color:var(--muted);line-height:1.8}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Estado de verificación</p>
+    <h1>Claude Code en producción</h1>
+  </header>
+
+  <div class="veredicto">
+    <p class="titular">De las 19 afirmaciones comprobables de este libro,
+      <span class="n">19 siguen siendo ciertas</span> hoy.</p>
+    <p class="meta">
+      Verificado contra <strong>2.1.228 (Claude Code)</strong><br>
+      2026-08-12 17:39:01 UTC · Linux 6.17.0-41-generic · versión del libro v2026.08
+    </p>
+  </div>
+
+  <div class="cifras">
+    <div class="cifra ok"><span class="v">19</span><span class="k">Pasan</span></div>
+    <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
+    <div class="cifra rev"><span class="v">3</span><span class="k">A revisar</span></div>
+    <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
+    <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
+  </div>
+
+  <section>
+    <h2>Afirmación por afirmación</h2>
+    <div class="scroller">
+      <table>
+        <thead><tr><th></th><th>ID</th><th>Lo que dice el libro</th><th>Cómo se comprueba</th></tr></thead>
+        <tbody>
+          <tr class="cap ok"><td colspan="4">02 · Instalación y autenticación</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-001</td><td>El binario responde a --version y devuelve una versión semántica.</td><td class="cmd">claude --version</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-002</td><td>claude doctor comprueba la salud de la instalación sin abrir sesión.</td><td class="cmd">claude doctor</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-003</td><td>claude setup-token crea un token de larga duración para suscriptores.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap ok"><td colspan="4">03 · Memoria y contexto</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CTX-001</td><td>--add-dir da acceso a directorios fuera del proyecto actual.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CTX-002</td><td>--autocompact controla el tamaño de la ventana antes de compactar.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CTX-003</td><td>--bare arranca sin CLAUDE.md, sin hooks y sin plugins, para depurar contexto.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap ok"><td colspan="4">04 · Permisos y sandbox</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-001</td><td>--allowedTools acepta una lista de herramientas permitidas.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-002</td><td>Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/nombre/.claude</td></tr>
+<tr class="cap ok"><td colspan="4">05 · Hooks</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">HOK-001</td><td>Los hooks se configuran en settings.json, no en un archivo aparte.</td><td class="cmd">Comprobar contra la documentación oficial en cada revisión trimestral.</td></tr>
+<tr class="cap ok"><td colspan="4">06 · MCP</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">MCP-001</td><td>claude mcp gestiona los servidores MCP desde la línea de comandos.</td><td class="cmd">claude mcp --help</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">MCP-002</td><td>Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search.</td><td class="cmd">Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral.</td></tr>
+<tr class="cap ok"><td colspan="4">07 · Skills y plugins</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SKL-001</td><td>claude plugin gestiona los plugins instalados.</td><td class="cmd">claude plugin --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SKL-002</td><td>Las skills se resuelven por /nombre-de-skill incluso en modo mínimo.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap ok"><td colspan="4">08 · Subagentes</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-001</td><td>--agents permite definir agentes personalizados en JSON desde la propia llamada.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-002</td><td>claude agents gestiona los agentes que corren en segundo plano.</td><td class="cmd">claude agents --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-003</td><td>--background arranca la sesión como agente en segundo plano y devuelve el control.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap ok"><td colspan="4">09 · Git, CI e IDE</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-001</td><td>-p ejecuta Claude Code sin sesión interactiva, que es la base de cualquier uso en CI.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-002</td><td>claude ultrareview lanza una revisión multiagente de la rama actual.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-003</td><td>claude import trae la configuración de otro agente de codificación.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap ok"><td colspan="4">10 · Seguridad y costes</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">SEG-002</td><td>Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">CST-001</td><td>Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">SEG-001</td><td>rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo.</td><td class="cmd">prueba destructiva, documentada pero nunca ejecutada</td></tr>
+<tr class="cap ok"><td colspan="4">11 · Troubleshooting</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">TRB-001</td><td>claude update comprueba e instala actualizaciones.</td><td class="cmd">claude --help</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">TRB-002</td><td>Borrar la caché de proyecto no borra la configuración de usuario.</td><td class="cmd">Requiere una máquina limpia. Se comprueba en la revisión trimestral.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="nota">
+    <span class="t">Qué significa cada estado</span>
+    <p><strong>🟢 Pasa:</strong> se ha ejecutado contra el CLI instalado y es cierto.
+       <strong>🔴 Falla:</strong> ha dejado de ser cierto y el capítulo necesita corrección.
+       <strong>🟡 A revisar:</strong> solo lo puede comprobar una persona, por ejemplo en una máquina limpia.
+       <strong>⚪ Omitida:</strong> es destructiva y no se ejecuta nunca, o gasta dinero y se lanza a mano
+       en la revisión trimestral.</p>
+  </div>
+
+  <div class="nota">
+    <span class="t">Por qué existe esta página</span>
+    <p>Claude Code publica versiones casi a diario. Un PDF estático envejece en silencio.
+       Esta página la genera un script que ejecuta las afirmaciones del libro contra el CLI
+       real, todos los días, y publica el resultado se vea bien o se vea mal.</p>
+  </div>
+
+  <footer>
+    Generada automáticamente por <code>generar-estado-web.py</code> a partir de
+    <code>estado.json</code>. No se edita a mano.<br>
+    Cosas Agénticas · sin afiliación con Anthropic. Claude y Claude Code son marcas de Anthropic PBC.
+  </footer>
+</div>
