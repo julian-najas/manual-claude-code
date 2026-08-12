@@ -190,10 +190,22 @@ def ejecutar_prueba(p: dict, con_coste: bool, cwd: str) -> dict:
         res["motivo"] = "la prueba no define comando"
         return res
 
+    # Por defecto todo corre en un directorio temporal, para que una prueba no
+    # dependa de dónde la lances. Una prueba puede pedir otro sitio con
+    # `directorio:`, relativo a la raíz del proyecto, y entonces se comprueba
+    # que exista: una prueba que corre en el sitio equivocado no prueba nada.
+    donde = cwd
+    if p.get("directorio"):
+        donde = str((RAIZ.parent / str(p["directorio"])).resolve())
+        if not Path(donde).is_dir():
+            res["resultado"] = FALLA
+            res["motivo"] = f"la prueba pide correr en {p['directorio']} y no existe"
+            return res
+
     res["comando"] = " ".join(comando)
     try:
         r = subprocess.run(
-            comando, capture_output=True, text=True, timeout=TIEMPO_LIMITE, cwd=cwd
+            comando, capture_output=True, text=True, timeout=TIEMPO_LIMITE, cwd=donde
         )
     except FileNotFoundError:
         res["resultado"] = FALLA
