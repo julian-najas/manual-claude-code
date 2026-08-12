@@ -47,12 +47,14 @@ mal formulada.
 | Skill | solo su descripción | descripción siempre, cuerpo al activarse | el agente, si encaja |
 | Subagente | su propia ventana | en su cuenta aparte | el agente principal o tú |
 | CLAUDE.md | el archivo entero | **siempre, cada turno** | se carga al abrir |
-| MCP | todas sus definiciones de herramientas | **siempre, cada turno** | se conecta al arrancar |
+| MCP | solo los nombres; los esquemas van diferidos | nombres siempre, esquemas al usarlos | se conecta al arrancar |
 | Plugin | lo que lleve dentro | hereda | depende |
 
-Las dos filas en negrita son las que la gente usa por defecto. Un CLAUDE.md de
-mil líneas y cuatro MCP conectados por si acaso son un impuesto en cada turno,
-se usen o no.
+La fila en negrita es la que se paga entera cada turno. Un CLAUDE.md de mil
+líneas es un impuesto permanente. MCP no lo es por defecto: solo pesan los
+nombres, y los esquemas se traen bajo demanda. Solo vuelve a ser caro si fuerzas
+`ENABLE_TOOL_SEARCH=false`. Mide con `/mcp` y `/context` antes de desconectar
+nada.
 
 ## Señales de que elegiste mal
 
@@ -61,6 +63,6 @@ se usen o no.
 | "A veces lo hace y a veces no" | pusiste como instrucción algo no negociable | 01, hook |
 | El CLAUDE.md no para de crecer | metes procedimientos ocasionales donde se paga siempre | 04, skill |
 | La skill nunca se activa sola | la descripción no dispara, reescríbela con tus palabras | 04, skill |
-| La sesión se queda sin contexto | mira tamaño de CLAUDE.md y número de MCP conectados | tabla del impuesto |
+| La sesión se queda sin contexto | empieza por el tamaño de CLAUDE.md, y confirma con `/context` | tabla del impuesto |
 | El subagente devuelve algo inservible | no comparte contexto: lo que no le pasaste, no lo tiene | 06, subagente |
 | A tu compañero no le funciona | lo tienes suelto en vez de empaquetado | 07, plugin |

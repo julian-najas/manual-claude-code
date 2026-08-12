@@ -282,8 +282,8 @@
           </tr>
           <tr>
             <td class="pieza">MCP</td>
-            <td>Las definiciones de todas sus herramientas, siempre.</td>
-            <td class="coste siempre">Siempre</td>
+            <td>Solo los <em>nombres</em> de sus herramientas. Los esquemas van diferidos y se traen bajo demanda.</td>
+            <td class="coste">Nombres: siempre<br>Esquemas: al usarlos</td>
             <td>Se conecta al arrancar</td>
           </tr>
           <tr>
@@ -297,7 +297,11 @@
     </div>
     <div class="cierre">
       <span class="t">La consecuencia práctica</span>
-      <p>Las dos últimas filas con "siempre" son las dos que la gente usa por defecto. Un CLAUDE.md de mil líneas y cuatro servidores MCP conectados por si acaso son un impuesto que pagas en cada turno de cada sesión, hayas usado o no lo que contienen. En una operación real medimos 24 tokens de entrada por cada token de salida: ahí es donde se va el dinero.</p>
+      <p>La fila que se paga entera en cada turno es <strong>CLAUDE.md</strong>. Un archivo de mil líneas es un peaje que pagas siempre, uses o no lo que contiene. Con MCP el reflejo de desconectar servidores "para ahorrar contexto" suele estar mal calibrado: por defecto solo pesan los nombres. Mide con <code>/mcp</code> antes de amputar, y con <code>/context</code> el reparto real. En una operación propia medimos 24 tokens de entrada por cada token de salida: ahí es donde se va el dinero.</p>
+    </div>
+    <div class="cierre">
+      <span class="t">Cuándo MCP sí se vuelve caro</span>
+      <p>Cuando lo fuerzas. <code>ENABLE_TOOL_SEARCH=auto</code> carga los esquemas por adelantado si caben en el 10 % de la ventana, y <code>ENABLE_TOOL_SEARCH=false</code> los carga todos siempre. Con esa última, el peaje permanente vuelve y es proporcional al número de herramientas que tengas conectadas.</p>
     </div>
   </section>
 
@@ -325,7 +329,7 @@
       </div>
       <div class="senal">
         <span class="s">La sesión se queda sin contexto enseguida</span>
-        <span class="d">Mira cuántos MCP tienes conectados y cuánto ocupa tu CLAUDE.md. Son los dos únicos que cobran en cada turno.</span>
+        <span class="d">Empieza por el tamaño de tu CLAUDE.md, que es lo único que se paga entero cada turno. Confirma el reparto con /context antes de tocar nada.</span>
         <span class="f">→ tabla del impuesto</span>
       </div>
       <div class="senal">

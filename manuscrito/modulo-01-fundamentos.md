@@ -116,13 +116,16 @@ Aquí está la parte que casi nadie cuenta, y es la que se paga todos los días.
 | Skill | Solo su descripción | Descripción siempre, cuerpo al activarse |
 | Subagente | Su propia ventana, aparte | En su cuenta |
 | **CLAUDE.md** | **El archivo entero** | **Cada turno de cada sesión** |
-| **MCP** | **Todas sus definiciones de herramientas** | **Cada turno de cada sesión** |
+| MCP | Solo los nombres. Los esquemas van diferidos | Nombres siempre, esquemas al usarlos |
 | Plugin | Lo que lleve dentro | Hereda |
 
-Las dos filas en negrita son, casualmente, las dos que la gente usa por defecto.
+La fila en negrita es, casualmente, la que la gente usa por defecto para todo.
 
-Un `CLAUDE.md` de mil líneas y cuatro servidores MCP conectados "por si acaso"
-son un peaje que pagas en cada turno, hayas usado o no lo que contienen. En una
+Un `CLAUDE.md` de mil líneas es un peaje que pagas en cada turno, hayas usado o
+no lo que contiene. Con MCP el reflejo habitual está mal calibrado: por defecto
+solo pesan los nombres de las herramientas y los esquemas se traen bajo demanda,
+así que desconectar servidores para ahorrar contexto suele ahorrar menos de lo
+que crees. Solo se vuelve caro si fuerzas `ENABLE_TOOL_SEARCH=false`. En una
 operación real que medimos durante cuatro meses, **por cada token que salía del
 modelo entraban veinticuatro**. El módulo 10 tiene los números completos.
 

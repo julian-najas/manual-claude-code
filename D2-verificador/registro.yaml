@@ -92,6 +92,21 @@ pruebas:
     comando: ["claude", "mcp", "--help"]
     espera_salida: 0
 
+  - id: MCP-002
+    capitulo: "06 · MCP"
+    afirmacion: "Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search."
+    tipo: manual
+    nota: "Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral."
+
+  - id: SEG-002
+    capitulo: "10 · Seguridad y costes"
+    afirmacion: "Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad."
+    tipo: cli
+    coste: true
+    comando: ["claude", "-p", "Explícame qué hace esta aplicación y cuáles son sus endpoints. Sé breve.", "--allowedTools", "Read,Glob,Grep"]
+    espera_salida: 0
+    nota: "Ver evidencias/EXP-001. Depende del modelo y de la versión, así que caduca. Ejecutar en D6-repo-feo/gestor-pedidos."
+
   - id: SKL-001
     capitulo: "07 · Skills y plugins"
     afirmacion: "claude plugin gestiona los plugins instalados."

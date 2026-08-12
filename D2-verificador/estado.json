@@ -4,12 +4,12 @@
   "cli_verificado": "2.1.228 (Claude Code)",
   "sistema": "Linux 6.17.0-41-generic",
   "python": "3.13.7",
-  "fecha_utc": "2026-08-12 11:22:46 UTC",
+  "fecha_utc": "2026-08-12 11:45:31 UTC",
   "resumen": {
     "PASA": 19,
     "FALLA": 0,
-    "REVISAR": 2,
-    "OMITIDO": 2
+    "REVISAR": 3,
+    "OMITIDO": 3
   },
   "pruebas": [
     {
@@ -121,6 +121,26 @@
       "motivo": "comprobado",
       "comando": "claude mcp --help",
       "salida": "Usage: claude mcp [options] [command]\n\nConfigure and manage MCP servers\n\nOptions:\n  -h, --help                            Display help for command\n\nCommands:\n  add [options] <name> <commandOrUrl> [args...]  Add an MCP server to Claude Code.\n  \n  Examples:\n    # Add HTTP server:\n    claude mcp add --transport http sentry https://mcp.sentry.dev/mcp\n  \n    # Add HTTP server with headers:\n    claude m"
+    },
+    {
+      "id": "MCP-002",
+      "capitulo": "06 · MCP",
+      "afirmacion": "Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SEG-002",
+      "capitulo": "10 · Seguridad y costes",
+      "afirmacion": "Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad.",
+      "tipo": "cli",
+      "resultado": "OMITIDO",
+      "motivo": "gasta tokens, se ejecuta solo con --con-coste",
+      "comando": "",
+      "salida": ""
     },
     {
       "id": "SKL-001",

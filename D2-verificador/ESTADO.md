@@ -3,9 +3,9 @@
 **Versión del libro:** v2026.08  
 **Verificado contra:** `2.1.228 (Claude Code)`  
 **Sistema:** Linux 6.17.0-41-generic  
-**Fecha:** 2026-08-12 11:22:46 UTC
+**Fecha:** 2026-08-12 11:45:31 UTC
 
-🟢 19 pasan · 🔴 0 fallan · 🟡 2 a revisar · ⚪ 2 omitidas
+🟢 19 pasan · 🔴 0 fallan · 🟡 3 a revisar · ⚪ 3 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -20,6 +20,8 @@
 | 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /home/nombre/.claude` |
 | 🟡 | HOK-001 | 05 · Hooks | Los hooks se configuran en settings.json, no en un archivo aparte. | Comprobar contra la documentación oficial en cada revisión trimestral. |
 | 🟢 | MCP-001 | 06 · MCP | claude mcp gestiona los servidores MCP desde la línea de comandos. | `claude mcp --help` |
+| 🟡 | MCP-002 | 06 · MCP | Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search. | Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral. |
+| ⚪ | SEG-002 | 10 · Seguridad y costes | Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad. | gasta tokens, se ejecuta solo con --con-coste |
 | 🟢 | SKL-001 | 07 · Skills y plugins | claude plugin gestiona los plugins instalados. | `claude plugin --help` |
 | 🟢 | SKL-002 | 07 · Skills y plugins | Las skills se resuelven por /nombre-de-skill incluso en modo mínimo. | `claude --help` |
 | 🟢 | SUB-001 | 08 · Subagentes | --agents permite definir agentes personalizados en JSON desde la propia llamada. | `claude --help` |
