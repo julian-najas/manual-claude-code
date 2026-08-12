@@ -99,7 +99,7 @@ despliegue (M14).
 
 ### M5 · Permisos, modos y seguridad operativa · 2.600
 *Para quién:* quien responde de la máquina. *Resuelve:* el falso dilema entre preguntar por todo o permitirlo todo. *No cubre:* cumplimiento (M16).
-5.1 Los cinco modos, uno a uno · 5.2 **Auto mode pasa a ser el default el 14 de agosto**: qué implica y cómo fijar el tuyo ·
+5.1 Los seis modos, uno a uno (el Anexo A listaba cinco) · 5.2 **Auto mode pasa a ser el default el 14 de agosto**: qué implica y cómo fijar el tuyo ·
 5.3 Sintaxis de reglas por herramienta · 5.4 Comandos compuestos y wrappers ·
 5.5 Rutas protegidas y workspace trust · 5.6 Configurar el clasificador de auto mode ·
 5.7 Sandboxing: aislamiento de FS y red, enmascarado de credenciales · 5.8 Dev containers, VM y cloud ·
