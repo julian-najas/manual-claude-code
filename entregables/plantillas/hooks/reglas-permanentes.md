@@ -1,0 +1,3 @@
+- Nunca hagas force push.
+- Todo cambio de comportamiento necesita su test.
+- No toques `config.py`: la configuracion efectiva es `settings.py`.

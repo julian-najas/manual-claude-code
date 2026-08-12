@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "defaultMode": "auto",
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(git *)",
+      "Bash(pytest *)"
+    ],
+    "ask": [
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ]
+  },
+  "worktree": {
+    "baseRef": "fresh",
+    "symlinkDirectories": ["node_modules", ".cache"]
+  },
+  "autoUpdatesChannel": "stable",
+  "minimumVersion": "2.1.228"
+}

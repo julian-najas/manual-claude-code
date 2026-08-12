@@ -1,0 +1,23 @@
+{
+  "name": "catalogo-interno",
+  "owner": { "name": "<TU ORGANIZACION>" },
+  "plugins": [
+    {
+      "name": "kit-equipo",
+      "source": {
+        "github": { "repo": "<org>/kit-equipo", "sha": "<commit-exacto-para-reproducibilidad>" }
+      },
+      "description": "Kit interno del equipo: auditoria, revisor y hooks obligatorios."
+    },
+    {
+      "name": "kit-equipo-sin-git",
+      "source": {
+        "archive": {
+          "url": "https://interno.example.com/plugins/kit-equipo-1.0.0.zip",
+          "sha256": "<digest-del-zip>"
+        }
+      },
+      "description": "Mismo kit por zip, para maquinas sin git ni npm. Requiere Claude Code 2.1.224+."
+    }
+  ]
+}

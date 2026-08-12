@@ -1,0 +1,6 @@
+{
+  "name": "kit-equipo",
+  "version": "1.0.0",
+  "description": "Kit interno: skill de auditoria, subagente revisor y hooks obligatorios del equipo.",
+  "author": { "name": "<TU EQUIPO>" }
+}
