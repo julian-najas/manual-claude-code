@@ -1,0 +1,350 @@
+<title>El Árbol de Decisión de Claude Code</title>
+<style>
+  :root{
+    --bg:#ECEEEE; --surface:#FBFCFC; --surface-2:#F3F5F5;
+    --ink:#15191B; --ink-2:#4E585C; --muted:#78838A; --rule:#D2D8D9;
+    --brass:#9A6F14; --brass-soft:rgba(154,111,20,.09); --brass-line:rgba(154,111,20,.32);
+    --serif:"Charter","Bitstream Charter","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#121516; --surface:#191D1F; --surface-2:#1E2325;
+      --ink:#E8EAEA; --ink-2:#A9B3B7; --muted:#7E888D; --rule:#2A3033;
+      --brass:#D5A442; --brass-soft:rgba(213,164,66,.10); --brass-line:rgba(213,164,66,.32);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121516; --surface:#191D1F; --surface-2:#1E2325;
+    --ink:#E8EAEA; --ink-2:#A9B3B7; --muted:#7E888D; --rule:#2A3033;
+    --brass:#D5A442; --brass-soft:rgba(213,164,66,.10); --brass-line:rgba(213,164,66,.32);
+  }
+
+  body{background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .hoja{max-width:900px; margin:0 auto; padding:48px 22px 80px; display:flex; flex-direction:column; gap:44px;}
+  @media (max-width:640px){ .hoja{padding:28px 14px 56px; gap:36px;} }
+
+  h1,h2{font-family:var(--serif); font-weight:600; margin:0; line-height:1.13; text-wrap:balance;}
+  h1{font-size:clamp(1.9rem,5.6vw,2.7rem); letter-spacing:-.015em;}
+  h2{font-size:1.35rem;}
+  p{margin:0;}
+  .eyebrow{font-family:var(--mono); font-size:.7rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted);}
+
+  header .tesis{font-family:var(--serif); font-size:1.15rem; color:var(--ink-2); margin-top:14px; max-width:60ch;}
+  header .sello{
+    font-family:var(--mono); font-size:.73rem; color:var(--muted); margin-top:18px;
+    border-top:1px solid var(--rule); padding-top:12px; line-height:1.7;
+  }
+
+  /* El recorrido */
+  .paso{
+    display:grid; grid-template-columns:36px 1fr; gap:16px;
+    border-left:1px solid var(--rule); padding:0 0 26px 0; position:relative;
+  }
+  .pasos{display:flex; flex-direction:column;}
+  .paso:last-child{padding-bottom:0;}
+  .paso .num{
+    font-family:var(--mono); font-size:.75rem; color:var(--brass);
+    background:var(--bg); margin-left:-18px; width:36px; text-align:center; padding:2px 0;
+  }
+  .paso .cuerpo{display:flex; flex-direction:column; gap:9px; padding-bottom:4px;}
+  .paso .preg{font-family:var(--serif); font-size:1.18rem; line-height:1.3;}
+  .paso .resp{
+    display:inline-flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+    background:var(--brass-soft); border-left:2px solid var(--brass);
+    padding:9px 13px; align-self:flex-start;
+  }
+  .paso .resp .si{font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; color:var(--brass); text-transform:uppercase;}
+  .paso .resp .dest{font-weight:660; font-size:1.02rem;}
+  .paso .por{color:var(--ink-2); font-size:.94rem; max-width:64ch;}
+  .paso .por code{font-family:var(--mono); font-size:.86em; background:var(--surface-2); padding:1px 5px;}
+
+  .cierre{background:var(--surface); border:1px solid var(--rule); border-left:2px solid var(--brass); padding:18px 20px; display:flex; flex-direction:column; gap:7px;}
+  .cierre .t{font-weight:650;}
+  .cierre p{color:var(--ink-2); font-size:.95rem;}
+
+  /* Tabla del impuesto */
+  .scroller{overflow-x:auto; border:1px solid var(--rule); background:var(--surface);}
+  table{border-collapse:collapse; width:100%; min-width:620px; font-size:.88rem;}
+  th,td{text-align:left; padding:10px 13px; border-bottom:1px solid var(--rule); vertical-align:top;}
+  thead th{font-family:var(--mono); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:500; background:var(--surface-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.pieza{font-weight:640; white-space:nowrap;}
+  td.coste{font-family:var(--mono); font-size:.8rem; white-space:nowrap;}
+  .siempre{color:var(--brass);}
+
+  /* Señales de error */
+  .senales{display:grid; grid-template-columns:repeat(auto-fill,minmax(258px,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule);}
+  .senal{background:var(--surface); padding:14px 15px; display:flex; flex-direction:column; gap:5px;}
+  .senal .s{font-size:.94rem; font-weight:620;}
+  .senal .d{font-size:.87rem; color:var(--ink-2); line-height:1.45;}
+  .senal .f{font-family:var(--mono); font-size:.7rem; color:var(--brass); letter-spacing:.04em;}
+
+  section{display:flex; flex-direction:column; gap:18px;}
+  .sec-head{border-top:1px solid var(--rule); padding-top:16px; display:flex; flex-direction:column; gap:5px;}
+  .sec-head .note{color:var(--muted); font-size:.9rem; max-width:62ch;}
+
+  footer{border-top:1px solid var(--rule); padding-top:16px; font-family:var(--mono); font-size:.73rem; color:var(--muted); line-height:1.8;}
+
+  @media print{
+    /* WeasyPrint no implementa flexbox ni grid por completo: en impresión se
+       baja todo a bloques y tablas, que sí son deterministas. */
+    @page{size:A4 portrait; margin:15mm 14mm;}
+    body{background:#fff; color:#000; font-size:10pt; line-height:1.45;}
+
+    .hoja,section,.pasos,.paso,.paso .cuerpo,.cierre,header{display:block;}
+    .hoja{max-width:none; padding:0;}
+    section{margin-top:16pt;}
+
+    h1{font-size:19pt; line-height:1.1; margin:2pt 0 0;}
+    h2{font-size:13.5pt; margin:0;}
+    .eyebrow{font-size:7pt;}
+    header .tesis{font-size:10.5pt; line-height:1.4; margin-top:7pt;}
+    header .sello{margin-top:11pt; padding-top:8pt; font-size:7.5pt;}
+    .sec-head{padding-top:9pt; margin-bottom:9pt;}
+    .sec-head .note{margin-top:3pt;}
+
+    .paso{
+      break-inside:avoid; margin:0 0 11pt 0; padding:0 0 0 30pt;
+      border-left:0.5pt solid #C9CFD1; position:relative;
+    }
+    .paso .num{
+      position:absolute; left:-6pt; top:1pt; width:22pt; margin:0;
+      background:#fff; font-size:7.5pt; text-align:center;
+    }
+    .paso .preg{font-size:11.5pt; margin:0 0 5pt;}
+    .paso .resp{
+      display:block; padding:5pt 9pt; margin:0 0 5pt; break-inside:avoid;
+      background:rgba(154,111,20,.08); border-left:1.5pt solid #9A6F14;
+    }
+    .paso .resp .si{margin-right:7pt;}
+    .paso .resp .dest{font-size:11pt;}
+    .paso .por{font-size:9.5pt; margin:0; max-width:none;}
+
+    .cierre{break-inside:avoid; padding:9pt 11pt; margin-top:10pt;}
+    .cierre .t{display:block; margin-bottom:3pt;}
+    .cierre p{font-size:9.5pt;}
+
+    .scroller{overflow:visible; break-inside:avoid;}
+    table{min-width:0; font-size:8.5pt;}
+    th,td{padding:4pt 6pt;}
+
+    /* La rejilla de señales pasa a dos columnas tipográficas reales */
+    .senales{display:block; columns:2; column-gap:10pt; border:0; background:none;}
+    .senal{
+      break-inside:avoid; display:block; margin:0 0 7pt;
+      border:0.5pt solid #C9CFD1; padding:7pt 8pt;
+    }
+    .senal .s{display:block; font-size:9.5pt; margin-bottom:2pt;}
+    .senal .d{display:block; font-size:8.5pt; line-height:1.35;}
+    .senal .f{display:block; font-size:7.5pt; margin-top:3pt;}
+
+    .salto{break-before:page;}
+    footer{margin-top:14pt; padding-top:8pt; font-size:7.5pt;}
+    a{text-decoration:none; color:#000;}
+  }
+</style>
+
+<div class="hoja">
+
+  <header>
+    <p class="eyebrow">Lámina 1 · Claude Code en producción</p>
+    <h1>¿Esto va en CLAUDE.md, en una skill, en un hook, en un subagente, en un comando, en un MCP o en un plugin?</h1>
+    <p class="tesis">Baja por las preguntas en orden y para en el primer sí. Es la única pregunta que hay que acertar antes de configurar nada, y la que más tiempo hace perder cuando se falla.</p>
+    <p class="sello">
+      Verificado contra Claude Code 2.1.228 · 12 de agosto de 2026<br>
+      Cosas Agénticas · sin afiliación con Anthropic
+    </p>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">El recorrido</p>
+      <h2>Siete preguntas, en este orden</h2>
+      <p class="note">El orden importa. Está puesto de más restrictivo a más flexible, para que lo que no se puede negociar se resuelva antes de que aparezca la tentación de resolverlo con un prompt.</p>
+    </div>
+
+    <div class="pasos">
+
+      <div class="paso">
+        <span class="num">01</span>
+        <div class="cuerpo">
+          <p class="preg">¿Tiene que ocurrir <em>siempre</em>, sin que el modelo pueda decidir saltárselo?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">Hook</span></span>
+          <p class="por">Un hook es código determinista que dispara el propio programa ante un evento, no una instrucción que el modelo interpreta. Formatear después de editar, vetar un borrado masivo, impedir que se lea un <code>.env</code>, dejar rastro de lo que se tocó. Si te lo puedes permitir "casi siempre", no es un hook. Si no, lo es.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="num">02</span>
+        <div class="cuerpo">
+          <p class="preg">¿Necesita datos o acciones que viven <em>fuera</em> de esta máquina?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">MCP</span></span>
+          <p class="por">Una base de datos, una API, un sistema de tickets, un servicio de la empresa. MCP es el enchufe hacia fuera. Nada más. Si lo que quieres es que el agente haga algo mejor con lo que ya tiene delante, no es un MCP: te has equivocado de pregunta y lo vas a pagar en contexto.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="num">03</span>
+        <div class="cuerpo">
+          <p class="preg">¿Es contexto que hace falta en <em>todas</em> las tareas de este repositorio?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">CLAUDE.md</span></span>
+          <p class="por">Cómo se compila, cómo se pasan los tests, qué convenciones tiene el código, qué está prohibido tocar. La prueba: si en la mitad de las tareas ese texto sobra, no va aquí. CLAUDE.md se paga en cada turno de cada sesión, para siempre.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="num">04</span>
+        <div class="cuerpo">
+          <p class="preg">¿Es un procedimiento que solo hace falta <em>a veces</em>, y el propio agente puede reconocer cuándo?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">Skill</span></span>
+          <p class="por">Migrar una tabla, preparar una release, auditar accesibilidad. La skill vive apagada y se enciende sola cuando la tarea encaja con su descripción. Por eso la descripción no es documentación: es el disparador, y es la parte que hay que escribir con más cuidado de todo el archivo.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="num">05</span>
+        <div class="cuerpo">
+          <p class="preg">¿Lo lanza <em>siempre una persona</em>, a propósito, con las mismas instrucciones?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">Comando</span></span>
+          <p class="por">Un comando es un prompt guardado que se invoca a mano: <code>/pr</code>, <code>/postmortem</code>, <code>/auditar</code>. La diferencia con la skill es quién decide. La skill la decide el agente cuando la tarea encaja; el comando lo decides tú. Cuando dudes entre los dos, pregúntate si te fías de que se active solo.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="num">06</span>
+        <div class="cuerpo">
+          <p class="preg">¿Necesita un contexto limpio, otro criterio, o va a generar mucho ruido?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">Subagente</span></span>
+          <p class="por">Rastrear cuarenta archivos para responder una sola cosa, revisar con ojos de auditor en vez de con ojos de autor. El subagente trabaja en su propia ventana y devuelve solo la conclusión, así que el ruido no te ensucia la sesión. El precio es que no comparte tu contexto: todo lo que necesite hay que dárselo.</p>
+        </div>
+      </div>
+
+      <div class="paso">
+        <span class="num">07</span>
+        <div class="cuerpo">
+          <p class="preg">¿Ya funciona en tu máquina y quieres que funcione igual en las de tu equipo?</p>
+          <span class="resp"><span class="si">Sí</span> <span class="dest">Plugin</span></span>
+          <p class="por">El plugin no es una séptima categoría: es el envoltorio de las seis anteriores para poder repartirlas. Nunca es la respuesta a "cómo hago esto", siempre es la respuesta a "cómo hago que los demás también lo tengan". Empaquetar antes de que funcione es repartir un problema en vez de una solución.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cierre">
+      <span class="t">¿Ningún sí?</span>
+      <p>Entonces no necesitas configurar nada: necesitas escribir mejor la instrucción. La mitad de las configuraciones que se añaden a un proyecto existen para compensar una petición mal formulada, y salen mucho más caras que reescribirla.</p>
+    </div>
+  </section>
+
+  <section class="salto">
+    <div class="sec-head">
+      <p class="eyebrow">Lo que nadie te dice</p>
+      <h2>El impuesto de contexto de cada pieza</h2>
+      <p class="note">Cada opción se paga de una forma distinta. Esta tabla es la razón real por la que elegir bien importa: no es elegancia, es tu factura de cada turno.</p>
+    </div>
+    <div class="scroller">
+      <table>
+        <thead>
+          <tr><th>Pieza</th><th>Qué ocupa en contexto</th><th>Cuándo se paga</th><th>Quién la activa</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pieza">Hook</td>
+            <td>Nada. Es código que corre fuera del modelo.</td>
+            <td class="coste">Nunca</td>
+            <td>El programa, ante un evento</td>
+          </tr>
+          <tr>
+            <td class="pieza">Comando</td>
+            <td>Nada hasta que lo invocas. Entonces, su texto.</td>
+            <td class="coste">Al invocarlo</td>
+            <td>Tú, a mano</td>
+          </tr>
+          <tr>
+            <td class="pieza">Skill</td>
+            <td>Solo su descripción. El cuerpo se carga si se activa.</td>
+            <td class="coste">Descripción: siempre<br>Cuerpo: al activarse</td>
+            <td>El agente, si la tarea encaja</td>
+          </tr>
+          <tr>
+            <td class="pieza">Subagente</td>
+            <td>Su propia ventana aparte. A ti te vuelve solo el informe.</td>
+            <td class="coste">En su propia cuenta</td>
+            <td>El agente principal o tú</td>
+          </tr>
+          <tr>
+            <td class="pieza">CLAUDE.md</td>
+            <td>El archivo entero, en cada turno de cada sesión.</td>
+            <td class="coste siempre">Siempre</td>
+            <td>Se carga solo al abrir</td>
+          </tr>
+          <tr>
+            <td class="pieza">MCP</td>
+            <td>Las definiciones de todas sus herramientas, siempre.</td>
+            <td class="coste siempre">Siempre</td>
+            <td>Se conecta al arrancar</td>
+          </tr>
+          <tr>
+            <td class="pieza">Plugin</td>
+            <td>Lo que cueste lo que lleve dentro.</td>
+            <td class="coste">Hereda</td>
+            <td>Depende de lo empaquetado</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cierre">
+      <span class="t">La consecuencia práctica</span>
+      <p>Las dos últimas filas con "siempre" son las dos que la gente usa por defecto. Un CLAUDE.md de mil líneas y cuatro servidores MCP conectados por si acaso son un impuesto que pagas en cada turno de cada sesión, hayas usado o no lo que contienen. En una operación real medimos 24 tokens de entrada por cada token de salida: ahí es donde se va el dinero.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <p class="eyebrow">Diagnóstico</p>
+      <h2>Señales de que elegiste mal</h2>
+      <p class="note">Cada síntoma apunta a una pieza concreta. Si reconoces alguno, vuelve a la pregunta que lo resuelve.</p>
+    </div>
+    <div class="senales">
+      <div class="senal">
+        <span class="s">"A veces lo hace y a veces no"</span>
+        <span class="d">Pusiste como instrucción algo que no era negociable. Las instrucciones se interpretan; el código, no.</span>
+        <span class="f">→ pregunta 01, hook</span>
+      </div>
+      <div class="senal">
+        <span class="s">El CLAUDE.md no para de crecer</span>
+        <span class="d">Estás metiendo procedimientos ocasionales en el sitio que se paga siempre. Sácalos y conviértelos en skills.</span>
+        <span class="f">→ pregunta 04, skill</span>
+      </div>
+      <div class="senal">
+        <span class="s">La skill nunca se activa sola</span>
+        <span class="d">El problema casi nunca está en el cuerpo, está en la descripción. Reescríbela con las palabras que usarías al pedirlo.</span>
+        <span class="f">→ pregunta 04, skill</span>
+      </div>
+      <div class="senal">
+        <span class="s">La sesión se queda sin contexto enseguida</span>
+        <span class="d">Mira cuántos MCP tienes conectados y cuánto ocupa tu CLAUDE.md. Son los dos únicos que cobran en cada turno.</span>
+        <span class="f">→ tabla del impuesto</span>
+      </div>
+      <div class="senal">
+        <span class="s">El subagente devuelve algo inservible</span>
+        <span class="d">No comparte tu contexto. Lo que no le pasaste explícitamente, no lo tiene. No es que no se entere: es que no estaba.</span>
+        <span class="f">→ pregunta 06, subagente</span>
+      </div>
+      <div class="senal">
+        <span class="s">A tu compañero no le funciona</span>
+        <span class="d">Lo tienes suelto en tu máquina en vez de empaquetado. Y empaquetar algo que aún falla solo reparte el fallo.</span>
+        <span class="f">→ pregunta 07, plugin</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Lámina 1 de "Claude Code en producción" · Cosas Agénticas · v2026.08<br>
+    Verificado contra Claude Code 2.1.228 el 12 de agosto de 2026. Las afirmaciones de esta lámina se comprueban a diario contra el CLI y su estado es público.<br>
+    Este documento no está afiliado, patrocinado ni respaldado por Anthropic.
+  </footer>
+
+</div>

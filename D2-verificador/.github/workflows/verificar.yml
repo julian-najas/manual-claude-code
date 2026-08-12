@@ -1,0 +1,95 @@
+name: Verificar el manual
+
+# Claude Code publica versiones casi a diario. Este flujo comprueba cada
+# madrugada que las afirmaciones del libro siguen siendo ciertas contra la
+# última versión del CLI, y abre una incidencia cuando alguna deja de serlo.
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # 05:00 UTC, todos los días
+  workflow_dispatch:       # y a mano cuando haga falta
+  push:
+    paths:
+      - "D2-verificador/**"
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Claude Code
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Anotar la versión verificada
+        run: |
+          echo "VERSION_CLI=$(claude --version)" >> "$GITHUB_ENV"
+          echo "Verificando contra $(claude --version)"
+
+      - name: Pasar el verificador
+        id: verificador
+        continue-on-error: true
+        working-directory: D2-verificador
+        run: python3 verificar.py
+
+      - name: Publicar el estado como resumen del trabajo
+        if: always()
+        run: cat D2-verificador/ESTADO.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar el estado como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: estado-verificacion
+          path: |
+            D2-verificador/ESTADO.md
+            D2-verificador/estado.json
+
+      - name: Commit del estado si ha cambiado
+        if: always()
+        run: |
+          git config user.name  "verificador"
+          git config user.email "verificador@cosasagenticas.com"
+          git add D2-verificador/ESTADO.md D2-verificador/estado.json
+          if git diff --cached --quiet; then
+            echo "Sin cambios en el estado."
+          else
+            git commit -m "estado: verificado contra ${VERSION_CLI}"
+            git push
+          fi
+
+      - name: Abrir incidencia si algo se ha roto
+        if: steps.verificador.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const informe = JSON.parse(
+              fs.readFileSync('D2-verificador/estado.json', 'utf8')
+            );
+            const rotas = informe.pruebas.filter(p => p.resultado === 'FALLA');
+            const cuerpo = [
+              `El CLI \`${informe.cli_verificado}\` ha roto ${rotas.length} afirmación(es) del libro.`,
+              '',
+              ...rotas.map(p =>
+                `- **${p.id}** (${p.capitulo}): ${p.afirmacion}\n  - Motivo: ${p.motivo}\n  - Comando: \`${p.comando}\``
+              ),
+              '',
+              'Antes de cerrar esta incidencia hay que: corregir el capítulo, subir la',
+              'versión del libro, anotarlo en el changelog y mandarlo al boletín semanal.',
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Rotura con ${informe.cli_verificado}: ${rotas.length} afirmación(es)`,
+              body: cuerpo,
+              labels: ['rotura', 'manual'],
+            });
+
+      - name: Fallar el trabajo si hubo roturas
+        if: steps.verificador.outcome == 'failure'
+        run: exit 1

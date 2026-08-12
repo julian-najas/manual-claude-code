@@ -1,0 +1,179 @@
+# Registro de afirmaciones verificables del manual
+#
+# Cada entrada es una AFIRMACIÓN que el libro hace, y la prueba que la sostiene.
+# Si una afirmación no está aquí, no puede entrar en el libro.
+#
+# tipo:
+#   cli      -> ejecuta un comando y comprueba código de salida y/o patrón en la salida
+#   fichero  -> comprueba que una ruta existe (directorio o archivo)
+#   manual   -> solo un humano puede comprobarlo, se reporta como REVISAR
+#
+# coste: true  -> la prueba gasta tokens de verdad. No se ejecuta salvo con --con-coste
+# destructivo: true -> nunca se ejecuta, se documenta y se reporta como OMITIDO
+
+meta:
+  libro: "Claude Code en producción"
+  version_libro: "v2026.08"
+
+pruebas:
+
+  - id: CLI-001
+    capitulo: "02 · Instalación y autenticación"
+    afirmacion: "El binario responde a --version y devuelve una versión semántica."
+    tipo: cli
+    comando: ["claude", "--version"]
+    espera_patron: '\d+\.\d+\.\d+'
+
+  - id: CLI-002
+    capitulo: "02 · Instalación y autenticación"
+    afirmacion: "claude doctor comprueba la salud de la instalación sin abrir sesión."
+    tipo: cli
+    comando: ["claude", "doctor"]
+    espera_salida: 0
+
+  - id: CLI-003
+    capitulo: "02 · Instalación y autenticación"
+    afirmacion: "claude setup-token crea un token de larga duración para suscriptores."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: 'setup-token'
+
+  - id: CTX-001
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "--add-dir da acceso a directorios fuera del proyecto actual."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--add-dir'
+
+  - id: CTX-002
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "--autocompact controla el tamaño de la ventana antes de compactar."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--autocompact'
+
+  - id: CTX-003
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "--bare arranca sin CLAUDE.md, sin hooks y sin plugins, para depurar contexto."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--bare'
+
+  - id: PRM-001
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "--allowedTools acepta una lista de herramientas permitidas."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--allowedTools|--allowed-tools'
+
+  - id: PRM-002
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--dangerously-skip-permissions'
+
+  - id: PRM-003
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "El archivo de ajustes de usuario vive en ~/.claude/settings.json."
+    tipo: fichero
+    ruta: "~/.claude"
+
+  - id: HOK-001
+    capitulo: "05 · Hooks"
+    afirmacion: "Los hooks se configuran en settings.json, no en un archivo aparte."
+    tipo: manual
+    nota: "Comprobar contra la documentación oficial en cada revisión trimestral."
+
+  - id: MCP-001
+    capitulo: "06 · MCP"
+    afirmacion: "claude mcp gestiona los servidores MCP desde la línea de comandos."
+    tipo: cli
+    comando: ["claude", "mcp", "--help"]
+    espera_salida: 0
+
+  - id: SKL-001
+    capitulo: "07 · Skills y plugins"
+    afirmacion: "claude plugin gestiona los plugins instalados."
+    tipo: cli
+    comando: ["claude", "plugin", "--help"]
+    espera_salida: 0
+
+  - id: SKL-002
+    capitulo: "07 · Skills y plugins"
+    afirmacion: "Las skills se resuelven por /nombre-de-skill incluso en modo mínimo."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: 'Skills still resolve|/skill-name'
+
+  - id: SUB-001
+    capitulo: "08 · Subagentes"
+    afirmacion: "--agents permite definir agentes personalizados en JSON desde la propia llamada."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--agents <json>'
+
+  - id: SUB-002
+    capitulo: "08 · Subagentes"
+    afirmacion: "claude agents gestiona los agentes que corren en segundo plano."
+    tipo: cli
+    comando: ["claude", "agents", "--help"]
+    espera_salida: 0
+
+  - id: SUB-003
+    capitulo: "08 · Subagentes"
+    afirmacion: "--background arranca la sesión como agente en segundo plano y devuelve el control."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--bg, --background'
+
+  - id: CID-001
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "-p ejecuta Claude Code sin sesión interactiva, que es la base de cualquier uso en CI."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '-p, --print|--print'
+
+  - id: CID-002
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "claude ultrareview lanza una revisión multiagente de la rama actual."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: 'ultrareview'
+
+  - id: CID-003
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "claude import trae la configuración de otro agente de codificación."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: 'import'
+
+  - id: CST-001
+    capitulo: "10 · Seguridad y costes"
+    afirmacion: "Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada."
+    tipo: cli
+    coste: true
+    comando: ["claude", "-p", "Responde solo con la palabra: listo"]
+    espera_salida: 0
+    nota: "Gasta dinero de verdad. Solo se ejecuta con --con-coste."
+
+  - id: TRB-001
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "claude update comprueba e instala actualizaciones."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: 'update\|upgrade'
+
+  - id: TRB-002
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "Borrar la caché de proyecto no borra la configuración de usuario."
+    tipo: manual
+    nota: "Requiere una máquina limpia. Se comprueba en la revisión trimestral."
+
+  - id: SEG-001
+    capitulo: "10 · Seguridad y costes"
+    afirmacion: "rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo."
+    tipo: cli
+    destructivo: true
+    comando: ["rm", "-rf", "."]
+    nota: "Documentado en el libro como ejemplo de por qué existe el hook de veto. Nunca se ejecuta."

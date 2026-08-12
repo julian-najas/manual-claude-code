@@ -1,0 +1,246 @@
+{
+  "libro": "Claude Code en producción",
+  "version_libro": "v2026.08",
+  "cli_verificado": "2.1.228 (Claude Code)",
+  "sistema": "Linux 6.17.0-41-generic",
+  "python": "3.13.7",
+  "fecha_utc": "2026-08-12 11:22:46 UTC",
+  "resumen": {
+    "PASA": 19,
+    "FALLA": 0,
+    "REVISAR": 2,
+    "OMITIDO": 2
+  },
+  "pruebas": [
+    {
+      "id": "CLI-001",
+      "capitulo": "02 · Instalación y autenticación",
+      "afirmacion": "El binario responde a --version y devuelve una versión semántica.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --version",
+      "salida": "2.1.228 (Claude Code)\n"
+    },
+    {
+      "id": "CLI-002",
+      "capitulo": "02 · Instalación y autenticación",
+      "afirmacion": "claude doctor comprueba la salud de la instalación sin abrir sesión.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude doctor",
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.228)\nCommit: 4a2077e9c396\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.228\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.228 (2026-08-12)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
+    },
+    {
+      "id": "CLI-003",
+      "capitulo": "02 · Instalación y autenticación",
+      "afirmacion": "claude setup-token crea un token de larga duración para suscriptores.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CTX-001",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "--add-dir da acceso a directorios fuera del proyecto actual.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CTX-002",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "--autocompact controla el tamaño de la ventana antes de compactar.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CTX-003",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "--bare arranca sin CLAUDE.md, sin hooks y sin plugins, para depurar contexto.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "PRM-001",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "--allowedTools acepta una lista de herramientas permitidas.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "PRM-002",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "PRM-003",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "El archivo de ajustes de usuario vive en ~/.claude/settings.json.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/nombre/.claude",
+      "salida": ""
+    },
+    {
+      "id": "HOK-001",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Los hooks se configuran en settings.json, no en un archivo aparte.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Comprobar contra la documentación oficial en cada revisión trimestral.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "MCP-001",
+      "capitulo": "06 · MCP",
+      "afirmacion": "claude mcp gestiona los servidores MCP desde la línea de comandos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude mcp --help",
+      "salida": "Usage: claude mcp [options] [command]\n\nConfigure and manage MCP servers\n\nOptions:\n  -h, --help                            Display help for command\n\nCommands:\n  add [options] <name> <commandOrUrl> [args...]  Add an MCP server to Claude Code.\n  \n  Examples:\n    # Add HTTP server:\n    claude mcp add --transport http sentry https://mcp.sentry.dev/mcp\n  \n    # Add HTTP server with headers:\n    claude m"
+    },
+    {
+      "id": "SKL-001",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "claude plugin gestiona los plugins instalados.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude plugin --help",
+      "salida": "Usage: claude plugin|plugins [options] [command]\n\nManage Claude Code plugins\n\nOptions:\n  -h, --help                           Display help for command\n\nCommands:\n  details [options] <name>             Show a plugin's component inventory and\n                                       projected token cost\n  disable [options] [plugin]           Disable an enabled plugin\n  enable [options] <plugin>       "
+    },
+    {
+      "id": "SKL-002",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "Las skills se resuelven por /nombre-de-skill incluso en modo mínimo.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "SUB-001",
+      "capitulo": "08 · Subagentes",
+      "afirmacion": "--agents permite definir agentes personalizados en JSON desde la propia llamada.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "SUB-002",
+      "capitulo": "08 · Subagentes",
+      "afirmacion": "claude agents gestiona los agentes que corren en segundo plano.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude agents --help",
+      "salida": "Usage: claude agents [options]\n\nManage background agents\n\nOptions:\n  --add-dir <directory>                 Additional directory to allow tool\n                                        access to in dispatched sessions\n                                        (repeatable)\n  --agent <agent>                       Default agent for sessions dispatched\n                                        from agent vie"
+    },
+    {
+      "id": "SUB-003",
+      "capitulo": "08 · Subagentes",
+      "afirmacion": "--background arranca la sesión como agente en segundo plano y devuelve el control.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-001",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "-p ejecuta Claude Code sin sesión interactiva, que es la base de cualquier uso en CI.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-002",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "claude ultrareview lanza una revisión multiagente de la rama actual.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-003",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "claude import trae la configuración de otro agente de codificación.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CST-001",
+      "capitulo": "10 · Seguridad y costes",
+      "afirmacion": "Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada.",
+      "tipo": "cli",
+      "resultado": "OMITIDO",
+      "motivo": "gasta tokens, se ejecuta solo con --con-coste",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-001",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "claude update comprueba e instala actualizaciones.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "TRB-002",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "Borrar la caché de proyecto no borra la configuración de usuario.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Requiere una máquina limpia. Se comprueba en la revisión trimestral.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SEG-001",
+      "capitulo": "10 · Seguridad y costes",
+      "afirmacion": "rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo.",
+      "tipo": "cli",
+      "resultado": "OMITIDO",
+      "motivo": "prueba destructiva, documentada pero nunca ejecutada",
+      "comando": "",
+      "salida": ""
+    }
+  ]
+}
