@@ -1,0 +1,750 @@
+[
+ [
+  "overview.md",
+  "Overview"
+ ],
+ [
+  "quickstart.md",
+  "Quickstart"
+ ],
+ [
+  "changelog.md",
+  "Claude Code changelog"
+ ],
+ [
+  "how-claude-code-works.md",
+  "How Claude Code works"
+ ],
+ [
+  "features-overview.md",
+  "Extend Claude Code"
+ ],
+ [
+  "claude-directory.md",
+  "Explore the .claude directory"
+ ],
+ [
+  "context-window.md",
+  "Explore the context window"
+ ],
+ [
+  "prompt-caching.md",
+  "How Claude Code uses prompt caching"
+ ],
+ [
+  "memory.md",
+  "How Claude remembers your project"
+ ],
+ [
+  "permission-modes.md",
+  "Choose a permission mode"
+ ],
+ [
+  "sessions.md",
+  "Manage sessions"
+ ],
+ [
+  "common-workflows.md",
+  "Common workflows"
+ ],
+ [
+  "prompt-library.md",
+  "Prompt library"
+ ],
+ [
+  "best-practices.md",
+  "Best practices for Claude Code"
+ ],
+ [
+  "platforms.md",
+  "Platforms and integrations"
+ ],
+ [
+  "remote-control.md",
+  "Continue local sessions from any device with Remote Control"
+ ],
+ [
+  "web-quickstart.md",
+  "Get started with Claude Code on the web"
+ ],
+ [
+  "claude-code-on-the-web.md",
+  "Use Claude Code on the web"
+ ],
+ [
+  "routines.md",
+  "Automate work with routines"
+ ],
+ [
+  "ultrareview.md",
+  "Find bugs with ultrareview"
+ ],
+ [
+  "desktop-quickstart.md",
+  "Get started with the desktop app"
+ ],
+ [
+  "desktop.md",
+  "Desktop application"
+ ],
+ [
+  "desktop-linux.md",
+  "Claude Desktop on Linux (beta)"
+ ],
+ [
+  "desktop-wsl.md",
+  "Claude Code Desktop in WSL"
+ ],
+ [
+  "desktop-scheduled-tasks.md",
+  "Schedule recurring tasks in Claude Code Desktop"
+ ],
+ [
+  "desktop-ios-simulator.md",
+  "Test iOS apps in the simulator"
+ ],
+ [
+  "mobile.md",
+  "Claude Code on mobile"
+ ],
+ [
+  "chrome.md",
+  "Use Claude Code with Chrome"
+ ],
+ [
+  "computer-use.md",
+  "Let Claude use your computer from the CLI"
+ ],
+ [
+  "vs-code.md",
+  "Use Claude Code in VS Code"
+ ],
+ [
+  "jetbrains.md",
+  "JetBrains IDEs"
+ ],
+ [
+  "security-guidance.md",
+  "Catch security issues as Claude writes code"
+ ],
+ [
+  "claude-security.md",
+  "Scan your codebase for vulnerabilities"
+ ],
+ [
+  "code-review.md",
+  "Code Review"
+ ],
+ [
+  "github-actions.md",
+  "Claude Code GitHub Actions"
+ ],
+ [
+  "github-actions-cloud-providers.md",
+  "Use Claude Code GitHub Actions with cloud providers"
+ ],
+ [
+  "github-enterprise-server.md",
+  "Claude Code with GitHub Enterprise Server"
+ ],
+ [
+  "gitlab-ci-cd.md",
+  "Claude Code GitLab CI/CD"
+ ],
+ [
+  "slack.md",
+  "Claude Code in Slack"
+ ],
+ [
+  "claude-tag.md",
+  "Claude Tag"
+ ],
+ [
+  "agents.md",
+  "Run agents in parallel"
+ ],
+ [
+  "sub-agents.md",
+  "Create custom subagents"
+ ],
+ [
+  "agent-view.md",
+  "Manage multiple agents with agent view"
+ ],
+ [
+  "agent-teams.md",
+  "Orchestrate teams of Claude Code sessions"
+ ],
+ [
+  "cross-session-messaging.md",
+  "Message your other Claude Code sessions"
+ ],
+ [
+  "workflows.md",
+  "Orchestrate subagents at scale with dynamic workflows"
+ ],
+ [
+  "worktrees.md",
+  "Run parallel sessions with worktrees"
+ ],
+ [
+  "mcp-quickstart.md",
+  "Connect to MCP servers"
+ ],
+ [
+  "mcp.md",
+  "Connect Claude Code to tools via MCP"
+ ],
+ [
+  "skills.md",
+  "Extend Claude with skills"
+ ],
+ [
+  "discover-plugins.md",
+  "Discover and install prebuilt plugins through marketplaces"
+ ],
+ [
+  "plugins.md",
+  "Create plugins"
+ ],
+ [
+  "artifacts.md",
+  "Share session output as artifacts"
+ ],
+ [
+  "hooks-guide.md",
+  "Automate actions with hooks"
+ ],
+ [
+  "channels.md",
+  "Push events into a running session with channels"
+ ],
+ [
+  "scheduled-tasks.md",
+  "Run prompts on a schedule"
+ ],
+ [
+  "goal.md",
+  "Keep Claude working toward a goal"
+ ],
+ [
+  "headless.md",
+  "Run Claude Code programmatically"
+ ],
+ [
+  "deep-links.md",
+  "Launch sessions from links"
+ ],
+ [
+  "large-codebases.md",
+  "Set up Claude Code in a monorepo or large codebase"
+ ],
+ [
+  "troubleshoot-install.md",
+  "Troubleshoot installation and login"
+ ],
+ [
+  "troubleshooting.md",
+  "Troubleshooting"
+ ],
+ [
+  "debug-your-config.md",
+  "Debug your configuration"
+ ],
+ [
+  "errors.md",
+  "Error reference"
+ ],
+ [
+  "admin-setup.md",
+  "Set up Claude Code for your organization"
+ ],
+ [
+  "setup.md",
+  "Advanced setup"
+ ],
+ [
+  "authentication.md",
+  "Authentication"
+ ],
+ [
+  "server-managed-settings.md",
+  "Configure server-managed settings"
+ ],
+ [
+  "managed-mcp.md",
+  "Control MCP server access for your organization"
+ ],
+ [
+  "auto-mode-config.md",
+  "Configure auto mode"
+ ],
+ [
+  "third-party-integrations.md",
+  "Enterprise deployment overview"
+ ],
+ [
+  "feature-availability.md",
+  "Feature availability"
+ ],
+ [
+  "amazon-bedrock.md",
+  "Claude Code on Amazon Bedrock"
+ ],
+ [
+  "claude-platform-on-aws.md",
+  "Claude Code on Claude Platform on AWS"
+ ],
+ [
+  "google-vertex-ai.md",
+  "Claude Code on Google Cloud's Agent Platform"
+ ],
+ [
+  "microsoft-foundry.md",
+  "Claude Code on Microsoft Foundry"
+ ],
+ [
+  "network-config.md",
+  "Enterprise network configuration"
+ ],
+ [
+  "corporate-launcher.md",
+  "Run Claude Code behind a corporate launcher"
+ ],
+ [
+  "devcontainer.md",
+  "Development containers"
+ ],
+ [
+  "gateways.md",
+  "Run Claude Code through a gateway"
+ ],
+ [
+  "claude-apps-gateway.md",
+  "Claude apps gateway for Amazon Bedrock, Claude Platform on AWS, Google Cloud, and Microsoft Foundry"
+ ],
+ [
+  "claude-apps-gateway-config.md",
+  "Claude apps gateway configuration"
+ ],
+ [
+  "claude-apps-gateway-spend-limits.md",
+  "Claude apps gateway spend limits"
+ ],
+ [
+  "claude-apps-gateway-deploy.md",
+  "Claude apps gateway deployment and operations"
+ ],
+ [
+  "claude-apps-gateway-on-aws.md",
+  "Deploy Claude apps gateway on AWS"
+ ],
+ [
+  "claude-apps-gateway-on-gcp.md",
+  "Deploy Claude apps gateway on Google Cloud"
+ ],
+ [
+  "llm-gateway.md",
+  "Other LLM gateways"
+ ],
+ [
+  "llm-gateway-connect.md",
+  "Connect Claude Code to an LLM gateway"
+ ],
+ [
+  "llm-gateway-rollout.md",
+  "Roll out an LLM gateway for your organization"
+ ],
+ [
+  "llm-gateway-protocol.md",
+  "Gateway protocol reference"
+ ],
+ [
+  "monitoring-usage.md",
+  "Monitoring"
+ ],
+ [
+  "costs.md",
+  "Manage costs effectively"
+ ],
+ [
+  "analytics.md",
+  "Track team usage with analytics"
+ ],
+ [
+  "plugin-marketplaces.md",
+  "Create and distribute a plugin marketplace"
+ ],
+ [
+  "plugin-dependencies.md",
+  "Constrain plugin dependency versions"
+ ],
+ [
+  "plugin-hints.md",
+  "Recommend your plugin from your CLI"
+ ],
+ [
+  "plugin-relevance.md",
+  "Recommend plugins for your org"
+ ],
+ [
+  "security.md",
+  "Security"
+ ],
+ [
+  "data-usage.md",
+  "Data usage"
+ ],
+ [
+  "zero-data-retention.md",
+  "Zero data retention"
+ ],
+ [
+  "communications-kit.md",
+  "Communications kit"
+ ],
+ [
+  "champion-kit.md",
+  "Champion kit"
+ ],
+ [
+  "settings.md",
+  "Claude Code settings"
+ ],
+ [
+  "permissions.md",
+  "Configure permissions"
+ ],
+ [
+  "sandbox-environments.md",
+  "Choose a sandbox environment"
+ ],
+ [
+  "sandboxing.md",
+  "Configure the sandboxed Bash tool"
+ ],
+ [
+  "cloud-environments.md",
+  "Configure cloud environments"
+ ],
+ [
+  "self-hosted-environments.md",
+  "Self-hosted environments"
+ ],
+ [
+  "self-hosted-environments-quickstart.md",
+  "Self-hosted environments quickstart"
+ ],
+ [
+  "self-hosted-environments-deploy.md",
+  "Deploy self-hosted environments to production"
+ ],
+ [
+  "self-hosted-environments-configuration.md",
+  "Customize sessions in self-hosted environments"
+ ],
+ [
+  "self-hosted-environments-testing.md",
+  "Test self-hosted environments end to end"
+ ],
+ [
+  "self-hosted-environments-reference.md",
+  "Self-hosted environments reference"
+ ],
+ [
+  "self-hosted-environments-identity.md",
+  "Verify session identity in self-hosted environments"
+ ],
+ [
+  "model-config.md",
+  "Model configuration"
+ ],
+ [
+  "fast-mode.md",
+  "Speed up responses with fast mode"
+ ],
+ [
+  "advisor.md",
+  "Escalate hard decisions with the advisor tool"
+ ],
+ [
+  "output-styles.md",
+  "Output styles"
+ ],
+ [
+  "terminal-config.md",
+  "Configure your terminal for Claude Code"
+ ],
+ [
+  "fullscreen.md",
+  "Fullscreen rendering"
+ ],
+ [
+  "accessibility.md",
+  "Use Claude Code with a screen reader"
+ ],
+ [
+  "voice-dictation.md",
+  "Voice dictation"
+ ],
+ [
+  "statusline.md",
+  "Customize your status line"
+ ],
+ [
+  "keybindings.md",
+  "Customize keyboard shortcuts"
+ ],
+ [
+  "cli-reference.md",
+  "CLI reference"
+ ],
+ [
+  "commands.md",
+  "Commands"
+ ],
+ [
+  "env-vars.md",
+  "Environment variables"
+ ],
+ [
+  "tools-reference.md",
+  "Tools reference"
+ ],
+ [
+  "interactive-mode.md",
+  "Interactive mode"
+ ],
+ [
+  "checkpointing.md",
+  "Checkpointing"
+ ],
+ [
+  "hooks.md",
+  "Hooks reference"
+ ],
+ [
+  "plugins-reference.md",
+  "Plugins reference"
+ ],
+ [
+  "channels-reference.md",
+  "Channels reference"
+ ],
+ [
+  "glossary.md",
+  "Glossary"
+ ],
+ [
+  "agent-sdk/overview.md",
+  "Agent SDK overview"
+ ],
+ [
+  "agent-sdk/quickstart.md",
+  "Quickstart"
+ ],
+ [
+  "agent-sdk/examples.md",
+  "Examples"
+ ],
+ [
+  "agent-sdk/troubleshooting.md",
+  "Troubleshooting"
+ ],
+ [
+  "agent-sdk/agent-loop.md",
+  "How the agent loop works"
+ ],
+ [
+  "agent-sdk/claude-code-features.md",
+  "Use Claude Code features in the SDK"
+ ],
+ [
+  "agent-sdk/sessions.md",
+  "Work with sessions"
+ ],
+ [
+  "agent-sdk/session-storage.md",
+  "Persist sessions to external storage"
+ ],
+ [
+  "agent-sdk/streaming-vs-single-mode.md",
+  "Streaming Input"
+ ],
+ [
+  "agent-sdk/user-input.md",
+  "Handle approvals and user input"
+ ],
+ [
+  "agent-sdk/streaming-output.md",
+  "Stream responses in real-time"
+ ],
+ [
+  "agent-sdk/structured-outputs.md",
+  "Get structured output from agents"
+ ],
+ [
+  "agent-sdk/custom-tools.md",
+  "Give Claude custom tools"
+ ],
+ [
+  "agent-sdk/mcp.md",
+  "Connect to external tools with MCP"
+ ],
+ [
+  "agent-sdk/tool-search.md",
+  "Scale to many tools with tool search"
+ ],
+ [
+  "agent-sdk/subagents.md",
+  "Subagents in the SDK"
+ ],
+ [
+  "agent-sdk/modifying-system-prompts.md",
+  "Modifying system prompts"
+ ],
+ [
+  "agent-sdk/slash-commands.md",
+  "Slash Commands in the SDK"
+ ],
+ [
+  "agent-sdk/skills.md",
+  "Agent Skills in the SDK"
+ ],
+ [
+  "agent-sdk/plugins.md",
+  "Plugins in the SDK"
+ ],
+ [
+  "agent-sdk/permissions.md",
+  "Configure permissions"
+ ],
+ [
+  "agent-sdk/hooks.md",
+  "Intercept and control agent behavior with hooks"
+ ],
+ [
+  "agent-sdk/file-checkpointing.md",
+  "Rewind file changes with checkpointing"
+ ],
+ [
+  "agent-sdk/cost-tracking.md",
+  "Track cost and usage"
+ ],
+ [
+  "agent-sdk/observability.md",
+  "Observability with OpenTelemetry"
+ ],
+ [
+  "agent-sdk/todo-tracking.md",
+  "Todo Lists"
+ ],
+ [
+  "agent-sdk/hosting.md",
+  "Hosting the Agent SDK"
+ ],
+ [
+  "agent-sdk/secure-deployment.md",
+  "Securely deploying AI agents"
+ ],
+ [
+  "agent-sdk/typescript.md",
+  "Agent SDK reference - TypeScript"
+ ],
+ [
+  "agent-sdk/typescript-v2-preview.md",
+  "TypeScript SDK V2 session API (removed)"
+ ],
+ [
+  "agent-sdk/python.md",
+  "Agent SDK reference - Python"
+ ],
+ [
+  "agent-sdk/migration-guide.md",
+  "Migrate to Claude Agent SDK"
+ ],
+ [
+  "whats-new/index.md",
+  "What's new"
+ ],
+ [
+  "whats-new/2026-w32.md",
+  "Week 32 · August 3–7, 2026"
+ ],
+ [
+  "whats-new/2026-w30.md",
+  "Week 30 · July 20–24, 2026"
+ ],
+ [
+  "whats-new/2026-w29.md",
+  "Week 29 · July 13–17, 2026"
+ ],
+ [
+  "whats-new/2026-w28.md",
+  "Week 28 · July 6–10, 2026"
+ ],
+ [
+  "whats-new/2026-w27.md",
+  "Week 27 · June 29 – July 3, 2026"
+ ],
+ [
+  "whats-new/2026-w26.md",
+  "Week 26 · June 22–26, 2026"
+ ],
+ [
+  "whats-new/2026-w25.md",
+  "Week 25 · June 15–19, 2026"
+ ],
+ [
+  "whats-new/2026-w24.md",
+  "Week 24 · June 8–12, 2026"
+ ],
+ [
+  "whats-new/2026-w23.md",
+  "Week 23 · June 1–5, 2026"
+ ],
+ [
+  "whats-new/2026-w22.md",
+  "Week 22 · May 25–29, 2026"
+ ],
+ [
+  "whats-new/2026-w21.md",
+  "Week 21 · May 18–22, 2026"
+ ],
+ [
+  "whats-new/2026-w20.md",
+  "Week 20 · May 11–15, 2026"
+ ],
+ [
+  "whats-new/2026-w19.md",
+  "Week 19 · May 4–8, 2026"
+ ],
+ [
+  "whats-new/2026-w18.md",
+  "Week 18 · April 27 – May 1, 2026"
+ ],
+ [
+  "whats-new/2026-w17.md",
+  "Week 17 · April 20–24, 2026"
+ ],
+ [
+  "whats-new/2026-w16.md",
+  "Week 16 · April 13–17, 2026"
+ ],
+ [
+  "whats-new/2026-w15.md",
+  "Week 15 · April 6–10, 2026"
+ ],
+ [
+  "whats-new/2026-w14.md",
+  "Week 14 · March 30 – April 3, 2026"
+ ],
+ [
+  "whats-new/2026-w13.md",
+  "Week 13 · March 23–27, 2026"
+ ],
+ [
+  "legal-and-compliance.md",
+  "Legal and compliance"
+ ]
+]

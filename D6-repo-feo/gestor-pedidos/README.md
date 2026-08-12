@@ -12,7 +12,7 @@ App interna de pedidos. Hecha con Flask.
 - `GET /pedido/<id>` devuelve un pedido
 - `GET /buscar?q=` busca por cliente
 - `POST /procesar` crea un pedido
-- `POST /anular` anula un pedido    <!-- no existe: el README miente desde 2021 -->
+- `POST /anular` anula un pedido
 
 ## Notas
 

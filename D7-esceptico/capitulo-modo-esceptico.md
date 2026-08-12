@@ -1,4 +1,4 @@
-# Capítulo 12 · Modo escéptico
+# Cierre · Modo escéptico
 
 > Este capítulo argumenta en contra de la herramienta sobre la que trata el
 > resto del libro. No es un gesto de falsa modestia para parecer honestos: es
@@ -7,7 +7,7 @@
 
 ---
 
-## 12.1 · La pregunta que casi nadie hace
+## C.1 · La pregunta que casi nadie hace
 
 La pregunta de moda es "¿cómo saco más partido a Claude Code?". La pregunta cara
 es la otra: **"¿en qué parte de mi trabajo lo estoy metiendo donde no toca?"**
@@ -17,7 +17,7 @@ que reconocerlos sale más rentable que cualquier truco de configuración.
 
 ---
 
-## 12.2 · Las siete situaciones en las que sale peor
+## C.2 · Las siete situaciones en las que sale peor
 
 ### 1. El cambio de una línea que ya sabes hacer
 
@@ -88,7 +88,7 @@ queda fuera. Punto.
 
 ---
 
-## 12.3 · Las cuentas que casi nadie hace
+## C.3 · Las cuentas que casi nadie hace
 
 El argumento de venta es la productividad. Vale, hagamos la cuenta completa.
 
@@ -100,7 +100,7 @@ cambia, y las horas perdidas persiguiendo un fallo que introdujo el agente y que
 no habrías escrito tú.
 
 Nadie que venda formación mete la segunda columna. Este libro sí, y por eso el
-capítulo 10 se llama "La factura".
+módulo 10 tiene una parte B entera dedicada a la factura.
 
 **La conclusión medida en nuestra propia operación**: el balance sale claramente
 a favor en trabajo repetitivo, con criterio de éxito objetivo y bien acotado.
@@ -110,7 +110,7 @@ donde más se promete que va a arrasar.
 
 ---
 
-## 12.4 · Las señales de que te has pasado de rosca
+## C.4 · Las señales de que te has pasado de rosca
 
 - Tu configuración de agentes es más grande que la parte del proyecto que
   automatiza.
@@ -125,7 +125,7 @@ Si reconoces tres o más, el problema ya no es de configuración.
 
 ---
 
-## 12.5 · Entonces, ¿cuándo sí?
+## C.5 · Entonces, ¿cuándo sí?
 
 Para que quede en su sitio, la otra cara, con la misma honestidad. Sale bien y
 sale muy bien cuando se cumplen a la vez estas tres condiciones:
@@ -142,7 +142,7 @@ una, entra en zona de duda. Cuando faltan dos, vuelve a leer este capítulo.
 
 ---
 
-## 12.6 · Resumen en una tarjeta
+## C.6 · Resumen en una tarjeta
 
 - Solo puedes delegar lo que sabrías revisar.
 - Si escribirlo es más rápido que describirlo, escríbelo.

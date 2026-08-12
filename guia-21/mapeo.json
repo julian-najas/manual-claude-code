@@ -1,0 +1,1124 @@
+[
+ {
+  "modulo": "M1",
+  "nombre": "Qué es y cómo funciona",
+  "slug": "context-window",
+  "titulo": "Explore the context window"
+ },
+ {
+  "modulo": "M1",
+  "nombre": "Qué es y cómo funciona",
+  "slug": "features-overview",
+  "titulo": "Extend Claude Code"
+ },
+ {
+  "modulo": "M1",
+  "nombre": "Qué es y cómo funciona",
+  "slug": "how-claude-code-works",
+  "titulo": "How Claude Code works"
+ },
+ {
+  "modulo": "M1",
+  "nombre": "Qué es y cómo funciona",
+  "slug": "overview",
+  "titulo": "Overview"
+ },
+ {
+  "modulo": "M1",
+  "nombre": "Qué es y cómo funciona",
+  "slug": "quickstart",
+  "titulo": "Quickstart"
+ },
+ {
+  "modulo": "M1",
+  "nombre": "Qué es y cómo funciona",
+  "slug": "sessions",
+  "titulo": "Manage sessions"
+ },
+ {
+  "modulo": "M2",
+  "nombre": "Instalación y auth",
+  "slug": "authentication",
+  "titulo": "Authentication"
+ },
+ {
+  "modulo": "M2",
+  "nombre": "Instalación y auth",
+  "slug": "setup",
+  "titulo": "Advanced setup"
+ },
+ {
+  "modulo": "M2",
+  "nombre": "Instalación y auth",
+  "slug": "troubleshoot-install",
+  "titulo": "Troubleshoot installation and login"
+ },
+ {
+  "modulo": "M3",
+  "nombre": ".claude/ y configuración",
+  "slug": "claude-directory",
+  "titulo": "Explore the .claude directory"
+ },
+ {
+  "modulo": "M3",
+  "nombre": ".claude/ y configuración",
+  "slug": "debug-your-config",
+  "titulo": "Debug your configuration"
+ },
+ {
+  "modulo": "M3",
+  "nombre": ".claude/ y configuración",
+  "slug": "server-managed-settings",
+  "titulo": "Configure server-managed settings"
+ },
+ {
+  "modulo": "M3",
+  "nombre": ".claude/ y configuración",
+  "slug": "settings",
+  "titulo": "Claude Code settings"
+ },
+ {
+  "modulo": "M4",
+  "nombre": "Memoria y contexto",
+  "slug": "memory",
+  "titulo": "How Claude remembers your project"
+ },
+ {
+  "modulo": "M5",
+  "nombre": "Permisos y seguridad operativa",
+  "slug": "auto-mode-config",
+  "titulo": "Configure auto mode"
+ },
+ {
+  "modulo": "M5",
+  "nombre": "Permisos y seguridad operativa",
+  "slug": "permission-modes",
+  "titulo": "Choose a permission mode"
+ },
+ {
+  "modulo": "M5",
+  "nombre": "Permisos y seguridad operativa",
+  "slug": "permissions",
+  "titulo": "Configure permissions"
+ },
+ {
+  "modulo": "M5",
+  "nombre": "Permisos y seguridad operativa",
+  "slug": "sandbox-environments",
+  "titulo": "Choose a sandbox environment"
+ },
+ {
+  "modulo": "M5",
+  "nombre": "Permisos y seguridad operativa",
+  "slug": "sandboxing",
+  "titulo": "Configure the sandboxed Bash tool"
+ },
+ {
+  "modulo": "M6",
+  "nombre": "Flujo de trabajo",
+  "slug": "best-practices",
+  "titulo": "Best practices for Claude Code"
+ },
+ {
+  "modulo": "M6",
+  "nombre": "Flujo de trabajo",
+  "slug": "checkpointing",
+  "titulo": "Checkpointing"
+ },
+ {
+  "modulo": "M6",
+  "nombre": "Flujo de trabajo",
+  "slug": "common-workflows",
+  "titulo": "Common workflows"
+ },
+ {
+  "modulo": "M6",
+  "nombre": "Flujo de trabajo",
+  "slug": "large-codebases",
+  "titulo": "Set up Claude Code in a monorepo or large codebase"
+ },
+ {
+  "modulo": "M6",
+  "nombre": "Flujo de trabajo",
+  "slug": "prompt-library",
+  "titulo": "Prompt library"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "accessibility",
+  "titulo": "Use Claude Code with a screen reader"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "artifacts",
+  "titulo": "Share session output as artifacts"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "fullscreen",
+  "titulo": "Fullscreen rendering"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "interactive-mode",
+  "titulo": "Interactive mode"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "keybindings",
+  "titulo": "Customize keyboard shortcuts"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "output-styles",
+  "titulo": "Output styles"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "skills",
+  "titulo": "Extend Claude with skills"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "statusline",
+  "titulo": "Customize your status line"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "terminal-config",
+  "titulo": "Configure your terminal for Claude Code"
+ },
+ {
+  "modulo": "M7",
+  "nombre": "Extensión",
+  "slug": "voice-dictation",
+  "titulo": "Voice dictation"
+ },
+ {
+  "modulo": "M8",
+  "nombre": "MCP",
+  "slug": "channels",
+  "titulo": "Push events into a running session with channels"
+ },
+ {
+  "modulo": "M8",
+  "nombre": "MCP",
+  "slug": "channels-reference",
+  "titulo": "Channels reference"
+ },
+ {
+  "modulo": "M8",
+  "nombre": "MCP",
+  "slug": "managed-mcp",
+  "titulo": "Control MCP server access for your organization"
+ },
+ {
+  "modulo": "M8",
+  "nombre": "MCP",
+  "slug": "mcp",
+  "titulo": "Connect Claude Code to tools via MCP"
+ },
+ {
+  "modulo": "M8",
+  "nombre": "MCP",
+  "slug": "mcp-quickstart",
+  "titulo": "Connect to MCP servers"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "agent-teams",
+  "titulo": "Orchestrate teams of Claude Code sessions"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "agent-view",
+  "titulo": "Manage multiple agents with agent view"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "agents",
+  "titulo": "Run agents in parallel"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "cross-session-messaging",
+  "titulo": "Message your other Claude Code sessions"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "sub-agents",
+  "titulo": "Create custom subagents"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "workflows",
+  "titulo": "Orchestrate subagents at scale with dynamic workflows"
+ },
+ {
+  "modulo": "M9",
+  "nombre": "Paralelismo y agentes",
+  "slug": "worktrees",
+  "titulo": "Run parallel sessions with worktrees"
+ },
+ {
+  "modulo": "M10",
+  "nombre": "Automatización",
+  "slug": "deep-links",
+  "titulo": "Launch sessions from links"
+ },
+ {
+  "modulo": "M10",
+  "nombre": "Automatización",
+  "slug": "goal",
+  "titulo": "Keep Claude working toward a goal"
+ },
+ {
+  "modulo": "M10",
+  "nombre": "Automatización",
+  "slug": "headless",
+  "titulo": "Run Claude Code programmatically"
+ },
+ {
+  "modulo": "M10",
+  "nombre": "Automatización",
+  "slug": "hooks",
+  "titulo": "Hooks reference"
+ },
+ {
+  "modulo": "M10",
+  "nombre": "Automatización",
+  "slug": "hooks-guide",
+  "titulo": "Automate actions with hooks"
+ },
+ {
+  "modulo": "M10",
+  "nombre": "Automatización",
+  "slug": "scheduled-tasks",
+  "titulo": "Run prompts on a schedule"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "discover-plugins",
+  "titulo": "Discover and install prebuilt plugins through marketplaces"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "plugin-dependencies",
+  "titulo": "Constrain plugin dependency versions"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "plugin-hints",
+  "titulo": "Recommend your plugin from your CLI"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "plugin-marketplaces",
+  "titulo": "Create and distribute a plugin marketplace"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "plugin-relevance",
+  "titulo": "Recommend plugins for your org"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "plugins",
+  "titulo": "Create plugins"
+ },
+ {
+  "modulo": "M11",
+  "nombre": "Plugins y distribución",
+  "slug": "plugins-reference",
+  "titulo": "Plugins reference"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "chrome",
+  "titulo": "Use Claude Code with Chrome"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "claude-code-on-the-web",
+  "titulo": "Use Claude Code on the web"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "claude-tag",
+  "titulo": "Claude Tag"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "computer-use",
+  "titulo": "Let Claude use your computer from the CLI"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "desktop",
+  "titulo": "Desktop application"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "desktop-ios-simulator",
+  "titulo": "Test iOS apps in the simulator"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "desktop-linux",
+  "titulo": "Claude Desktop on Linux (beta)"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "desktop-quickstart",
+  "titulo": "Get started with the desktop app"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "desktop-scheduled-tasks",
+  "titulo": "Schedule recurring tasks in Claude Code Desktop"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "desktop-wsl",
+  "titulo": "Claude Code Desktop in WSL"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "jetbrains",
+  "titulo": "JetBrains IDEs"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "mobile",
+  "titulo": "Claude Code on mobile"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "platforms",
+  "titulo": "Platforms and integrations"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "remote-control",
+  "titulo": "Continue local sessions from any device with Remote Control"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "routines",
+  "titulo": "Automate work with routines"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "slack",
+  "titulo": "Claude Code in Slack"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "ultrareview",
+  "titulo": "Find bugs with ultrareview"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "vs-code",
+  "titulo": "Use Claude Code in VS Code"
+ },
+ {
+  "modulo": "M12",
+  "nombre": "Superficies",
+  "slug": "web-quickstart",
+  "titulo": "Get started with Claude Code on the web"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "claude-security",
+  "titulo": "Scan your codebase for vulnerabilities"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "code-review",
+  "titulo": "Code Review"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "github-actions",
+  "titulo": "Claude Code GitHub Actions"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "github-actions-cloud-providers",
+  "titulo": "Use Claude Code GitHub Actions with cloud providers"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "github-enterprise-server",
+  "titulo": "Claude Code with GitHub Enterprise Server"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "gitlab-ci-cd",
+  "titulo": "Claude Code GitLab CI/CD"
+ },
+ {
+  "modulo": "M13",
+  "nombre": "CI/CD y revisión",
+  "slug": "security-guidance",
+  "titulo": "Catch security issues as Claude writes code"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "admin-setup",
+  "titulo": "Set up Claude Code for your organization"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "amazon-bedrock",
+  "titulo": "Claude Code on Amazon Bedrock"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-apps-gateway",
+  "titulo": "Claude apps gateway for Amazon Bedrock, Claude Platform on AWS, Google Cloud, and Microsoft Foundry"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-apps-gateway-config",
+  "titulo": "Claude apps gateway configuration"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-apps-gateway-deploy",
+  "titulo": "Claude apps gateway deployment and operations"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-apps-gateway-on-aws",
+  "titulo": "Deploy Claude apps gateway on AWS"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-apps-gateway-on-gcp",
+  "titulo": "Deploy Claude apps gateway on Google Cloud"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-apps-gateway-spend-limits",
+  "titulo": "Claude apps gateway spend limits"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "claude-platform-on-aws",
+  "titulo": "Claude Code on Claude Platform on AWS"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "cloud-environments",
+  "titulo": "Configure cloud environments"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "corporate-launcher",
+  "titulo": "Run Claude Code behind a corporate launcher"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "devcontainer",
+  "titulo": "Development containers"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "feature-availability",
+  "titulo": "Feature availability"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "gateways",
+  "titulo": "Run Claude Code through a gateway"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "google-vertex-ai",
+  "titulo": "Claude Code on Google Cloud's Agent Platform"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "llm-gateway",
+  "titulo": "Other LLM gateways"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "llm-gateway-connect",
+  "titulo": "Connect Claude Code to an LLM gateway"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "llm-gateway-protocol",
+  "titulo": "Gateway protocol reference"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "llm-gateway-rollout",
+  "titulo": "Roll out an LLM gateway for your organization"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "microsoft-foundry",
+  "titulo": "Claude Code on Microsoft Foundry"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "network-config",
+  "titulo": "Enterprise network configuration"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments",
+  "titulo": "Self-hosted environments"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments-configuration",
+  "titulo": "Customize sessions in self-hosted environments"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments-deploy",
+  "titulo": "Deploy self-hosted environments to production"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments-identity",
+  "titulo": "Verify session identity in self-hosted environments"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments-quickstart",
+  "titulo": "Self-hosted environments quickstart"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments-reference",
+  "titulo": "Self-hosted environments reference"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "self-hosted-environments-testing",
+  "titulo": "Test self-hosted environments end to end"
+ },
+ {
+  "modulo": "M14",
+  "nombre": "Despliegue empresarial",
+  "slug": "third-party-integrations",
+  "titulo": "Enterprise deployment overview"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "advisor",
+  "titulo": "Escalate hard decisions with the advisor tool"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "analytics",
+  "titulo": "Track team usage with analytics"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "costs",
+  "titulo": "Manage costs effectively"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "fast-mode",
+  "titulo": "Speed up responses with fast mode"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "model-config",
+  "titulo": "Model configuration"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "monitoring-usage",
+  "titulo": "Monitoring"
+ },
+ {
+  "modulo": "M15",
+  "nombre": "Modelos, coste, observabilidad",
+  "slug": "prompt-caching",
+  "titulo": "How Claude Code uses prompt caching"
+ },
+ {
+  "modulo": "M16",
+  "nombre": "Datos y cumplimiento",
+  "slug": "data-usage",
+  "titulo": "Data usage"
+ },
+ {
+  "modulo": "M16",
+  "nombre": "Datos y cumplimiento",
+  "slug": "legal-and-compliance",
+  "titulo": "Legal and compliance"
+ },
+ {
+  "modulo": "M16",
+  "nombre": "Datos y cumplimiento",
+  "slug": "security",
+  "titulo": "Security"
+ },
+ {
+  "modulo": "M16",
+  "nombre": "Datos y cumplimiento",
+  "slug": "zero-data-retention",
+  "titulo": "Zero data retention"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/agent-loop",
+  "titulo": "How the agent loop works"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/claude-code-features",
+  "titulo": "Use Claude Code features in the SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/cost-tracking",
+  "titulo": "Track cost and usage"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/custom-tools",
+  "titulo": "Give Claude custom tools"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/examples",
+  "titulo": "Examples"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/file-checkpointing",
+  "titulo": "Rewind file changes with checkpointing"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/hooks",
+  "titulo": "Intercept and control agent behavior with hooks"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/hosting",
+  "titulo": "Hosting the Agent SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/mcp",
+  "titulo": "Connect to external tools with MCP"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/migration-guide",
+  "titulo": "Migrate to Claude Agent SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/modifying-system-prompts",
+  "titulo": "Modifying system prompts"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/observability",
+  "titulo": "Observability with OpenTelemetry"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/overview",
+  "titulo": "Agent SDK overview"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/permissions",
+  "titulo": "Configure permissions"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/plugins",
+  "titulo": "Plugins in the SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/python",
+  "titulo": "Agent SDK reference - Python"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/quickstart",
+  "titulo": "Quickstart"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/secure-deployment",
+  "titulo": "Securely deploying AI agents"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/session-storage",
+  "titulo": "Persist sessions to external storage"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/sessions",
+  "titulo": "Work with sessions"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/skills",
+  "titulo": "Agent Skills in the SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/slash-commands",
+  "titulo": "Slash Commands in the SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/streaming-output",
+  "titulo": "Stream responses in real-time"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/streaming-vs-single-mode",
+  "titulo": "Streaming Input"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/structured-outputs",
+  "titulo": "Get structured output from agents"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/subagents",
+  "titulo": "Subagents in the SDK"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/todo-tracking",
+  "titulo": "Todo Lists"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/tool-search",
+  "titulo": "Scale to many tools with tool search"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/troubleshooting",
+  "titulo": "Troubleshooting"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/typescript",
+  "titulo": "Agent SDK reference - TypeScript"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/typescript-v2-preview",
+  "titulo": "TypeScript SDK V2 session API (removed)"
+ },
+ {
+  "modulo": "M17",
+  "nombre": "Agent SDK",
+  "slug": "agent-sdk/user-input",
+  "titulo": "Handle approvals and user input"
+ },
+ {
+  "modulo": "M18",
+  "nombre": "Diagnóstico",
+  "slug": "errors",
+  "titulo": "Error reference"
+ },
+ {
+  "modulo": "M18",
+  "nombre": "Diagnóstico",
+  "slug": "troubleshooting",
+  "titulo": "Troubleshooting"
+ },
+ {
+  "modulo": "M19",
+  "nombre": "Referencia rápida",
+  "slug": "cli-reference",
+  "titulo": "CLI reference"
+ },
+ {
+  "modulo": "M19",
+  "nombre": "Referencia rápida",
+  "slug": "commands",
+  "titulo": "Commands"
+ },
+ {
+  "modulo": "M19",
+  "nombre": "Referencia rápida",
+  "slug": "env-vars",
+  "titulo": "Environment variables"
+ },
+ {
+  "modulo": "M19",
+  "nombre": "Referencia rápida",
+  "slug": "glossary",
+  "titulo": "Glossary"
+ },
+ {
+  "modulo": "M19",
+  "nombre": "Referencia rápida",
+  "slug": "tools-reference",
+  "titulo": "Tools reference"
+ },
+ {
+  "modulo": "M20",
+  "nombre": "Playbooks y adopción",
+  "slug": "champion-kit",
+  "titulo": "Champion kit"
+ },
+ {
+  "modulo": "M20",
+  "nombre": "Playbooks y adopción",
+  "slug": "communications-kit",
+  "titulo": "Communications kit"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "changelog",
+  "titulo": "Claude Code changelog"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w13",
+  "titulo": "Week 13 · March 23–27, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w14",
+  "titulo": "Week 14 · March 30 – April 3, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w15",
+  "titulo": "Week 15 · April 6–10, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w16",
+  "titulo": "Week 16 · April 13–17, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w17",
+  "titulo": "Week 17 · April 20–24, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w18",
+  "titulo": "Week 18 · April 27 – May 1, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w19",
+  "titulo": "Week 19 · May 4–8, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w20",
+  "titulo": "Week 20 · May 11–15, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w21",
+  "titulo": "Week 21 · May 18–22, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w22",
+  "titulo": "Week 22 · May 25–29, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w23",
+  "titulo": "Week 23 · June 1–5, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w24",
+  "titulo": "Week 24 · June 8–12, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w25",
+  "titulo": "Week 25 · June 15–19, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w26",
+  "titulo": "Week 26 · June 22–26, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w27",
+  "titulo": "Week 27 · June 29 – July 3, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w28",
+  "titulo": "Week 28 · July 6–10, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w29",
+  "titulo": "Week 29 · July 13–17, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w30",
+  "titulo": "Week 30 · July 20–24, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/2026-w32",
+  "titulo": "Week 32 · August 3–7, 2026"
+ },
+ {
+  "modulo": "M21",
+  "nombre": "Retiradas y cambios",
+  "slug": "whats-new/index",
+  "titulo": "What's new"
+ }
+]

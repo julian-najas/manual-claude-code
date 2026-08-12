@@ -1,4 +1,5 @@
-# Capítulo 10 · La factura
+# Módulo 10 · Seguridad y costes
+## Parte B · La factura
 
 > **Fecha de corte:** 12 de agosto de 2026.
 > **Datos:** 4.195 llamadas reales a la API entre el 10 de abril y el 12 de agosto de 2026,
@@ -16,7 +17,7 @@ publicar.
 
 ---
 
-## 10.1 · El número que lo explica casi todo
+### 10.7 · El número que lo explica casi todo
 
 Por cada token que **sale** del modelo, entran **24**.
 
@@ -43,7 +44,7 @@ De aquí salen las tres leyes de la factura:
 
 ---
 
-## 10.2 · El coste de la cortesía
+### 10.8 · El coste de la cortesía
 
 Aislemos las llamadas cuya respuesta cabe en un tuit: 50 tokens o menos. Un
 "vale". Un "hecho". Un "de acuerdo, sigo".
@@ -78,7 +79,7 @@ Cada uno arrastra el contexto completo.
 
 ---
 
-## 10.3 · Dónde se fue de verdad
+### 10.9 · Dónde se fue de verdad
 
 | Modelo | Llamadas | Entrada | Salida |
 |---|---:|---:|---:|
@@ -106,7 +107,7 @@ decidió quien preparó el contexto.
 
 ---
 
-## 10.4 · Lo que este capítulo no te puede decir
+### 10.10 · Lo que este capítulo no te puede decir
 
 Aquí es donde la mayoría de los libros seguirían inventando. Nosotros paramos.
 
@@ -121,7 +122,7 @@ importan para tu factura.
 corre sobre otros modelos. Lo que transfiere a Claude Code es la **estructura**
 del gasto, que es idéntica porque el mecanismo es el mismo: contexto que se
 relee, turnos que no producen, caché que decide la mitad del recibo. Las
-proporciones de tu instalación las tienes que medir tú, y el capítulo 10.5 dice
+proporciones de tu instalación las tienes que medir tú, y la sección 10.11 dice
 exactamente cómo.
 
 **Una base de datos vacía no es un dato.** Durante meses este proyecto tuvo un
@@ -131,7 +132,7 @@ cuenta las filas.
 
 ---
 
-## 10.5 · Mide el tuyo
+### 10.11 · Mide el tuyo
 
 Laboratorio del capítulo. Coste estimado: menos de 0,10 € y diez minutos.
 
@@ -147,7 +148,7 @@ añadido contexto o ceremonia sin añadir trabajo.
 
 ---
 
-## 10.6 · Resumen en una tarjeta
+### 10.12 · Resumen en una tarjeta
 
 - Pagas por lo que el modelo lee, no por lo que escribe. Relación medida: 24 a 1.
 - La caché leída fue casi 10 veces la entrada nueva. Ahí está media factura.
