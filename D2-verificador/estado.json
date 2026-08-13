@@ -2,12 +2,12 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.231 (Claude Code)",
-  "sistema": "Linux 6.17.0-1020-azure",
+  "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-08-13 11:11:16 UTC",
+  "fecha_utc": "2026-08-13 16:42:37 UTC",
   "resumen": {
-    "PASA": 20,
-    "FALLA": 2,
+    "PASA": 22,
+    "FALLA": 0,
     "REVISAR": 3,
     "OMITIDO": 3
   },
@@ -257,20 +257,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El repositorio del manual está público, como se decidió el 13 de agosto de 2026.",
       "tipo": "cli",
-      "resultado": "FALLA",
-      "motivo": "no aparece el patrón /\"private\":\\s*false/",
+      "resultado": "PASA",
+      "motivo": "comprobado",
       "comando": "curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code",
-      "salida": "{\"message\":\"API rate limit exceeded for 4.155.255.50. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\"https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting\"}\n"
+      "salida": "{\n  \"id\": 1332281208,\n  \"node_id\": \"R_kgDOT2j_eA\",\n  \"name\": \"manual-claude-code\",\n  \"full_name\": \"julian-najas/manual-claude-code\",\n  \"private\": false,\n  \"owner\": {\n    \"login\": \"julian-najas\",\n    \"id\": 222686980,\n    \"node_id\": \"U_kgDODUXvBA\",\n    \"avatar_url\": \"https://avatars.githubusercontent.com/u/222686980?v=4\",\n    \"gravatar_id\": \"\",\n    \"url\": \"https://api.github.com/users/julian-najas\","
     },
     {
       "id": "REPO-002",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "FALLA",
-      "motivo": "no aparece el patrón /\"private\":\\s*false/",
+      "resultado": "PASA",
+      "motivo": "comprobado",
       "comando": "curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion",
-      "salida": "{\"message\":\"API rate limit exceeded for 4.155.255.50. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\"https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting\"}\n"
+      "salida": "{\n  \"id\": 1332975328,\n  \"node_id\": \"R_kgDOT3OW4A\",\n  \"name\": \"claude-code-companion\",\n  \"full_name\": \"julian-najas/claude-code-companion\",\n  \"private\": false,\n  \"owner\": {\n    \"login\": \"julian-najas\",\n    \"id\": 222686980,\n    \"node_id\": \"U_kgDODUXvBA\",\n    \"avatar_url\": \"https://avatars.githubusercontent.com/u/222686980?v=4\",\n    \"gravatar_id\": \"\",\n    \"url\": \"https://api.github.com/users/julian-n"
     },
     {
       "id": "REPO-003",
