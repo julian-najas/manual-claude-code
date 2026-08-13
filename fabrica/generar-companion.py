@@ -332,6 +332,26 @@ dirección esté mal escrita.</p>
                      cuerpo, f"{BASE}/")
 
 
+def licencia() -> str:
+    return f"""# Licencia
+
+Este repositorio es una **salida generada**. Su licencia sigue la del repositorio
+de origen, [{REPO_MANUAL.split("/")[-2]}/{REPO_MANUAL.split("/")[-1]}]({REPO_MANUAL}/blob/main/LICENSE),
+que tiene dos licencias distintas:
+
+- **El generador y la fábrica** que producen este sitio: **MIT**. Están en el
+  repositorio de origen, no aquí.
+- **El texto de estas páginas**: **© 2026 Cosas Agénticas, todos los derechos
+  reservados**. Puedes leerlo, usarlo en tu trabajo y citarlo con enlace. No
+  puedes republicarlo, traducirlo ni venderlo.
+
+Está público para que se pueda **auditar**, no para que se pueda redistribuir.
+
+Sin afiliación, patrocinio ni respaldo de Anthropic. Claude y Claude Code son
+marcas de Anthropic PBC.
+"""
+
+
 def readme(ds: list[dict], pr: dict) -> str:
     """README del repositorio público. También generado: nadie edita esto a mano."""
     return f"""# Claude Code · índice por síntoma
@@ -398,6 +418,7 @@ def main() -> int:
     (SALIDA / "index.html").write_text(pagina_indice(ds, pr), encoding="utf-8")
     (SALIDA / "404.html").write_text(pagina_404(ds, pr), encoding="utf-8")
     (SALIDA / "README.md").write_text(readme(ds, pr), encoding="utf-8")
+    (SALIDA / "LICENSE").write_text(licencia(), encoding="utf-8")
     for d in ds:
         carpeta = SALIDA / d["ranura"]
         carpeta.mkdir()
