@@ -1,7 +1,8 @@
+<!-- GENERADO por fabrica/construir.py · no editar a mano -->
+
 # Índice por síntoma
 
 **156 síntomas** extraídos de las tablas de errores típicos de los 21 módulos.
-Generado, no escrito a mano: si un módulo cambia su tabla, este índice se regenera.
 
 Busca lo que te pasa, no lo que crees que es.
 
@@ -163,7 +164,3 @@ Busca lo que te pasa, no lo que crees que es.
 | Pulso `f` en `/doctor` y no pasa nada | Cambió en v2.1.205 | [M21](modulos/) |
 | Mi `pkill` ya no funciona | Se rechaza si casa con el proceso. Solo en Linux | [M21](modulos/) |
 | Comparo dos máquinas y dan resultados distintos | Versiones distintas. Media docena de comportamientos cambian | [M21](modulos/) |
-
----
-
-Regenerar: `python3 generar-indice.py`

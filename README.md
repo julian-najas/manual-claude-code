@@ -100,3 +100,32 @@ Cuatro revisiones al año, más parche cuando algo se rompa.
 Cuando el verificador detecta una rotura, abre una incidencia sola. Antes de
 cerrarla hay que: corregir el capítulo, subir la versión, anotar el changelog y
 mandarlo al boletín.
+
+---
+
+## La fábrica: una fuente, muchas salidas
+
+**`guia-21/M*.md` es la única fuente canónica de la guía.** Todo lo demás se
+genera. Nunca se editan las salidas a mano.
+
+```
+guia-21/M*.md  ──┬─→ entregables/guia-claude-code-2026-08.md   (guía ensamblada)
+                 ├─→ entregables/skill-guia/.../modulos/        (copias para la skill)
+                 └─→ entregables/skill-guia/.../INDICE-SINTOMAS.md
+
+fabrica/hechos.yaml ─→ comprobar-coherencia.py ─→ falla si algún .md se contradice
+D2-verificador/registro.yaml ─→ verificar.py ─→ falla si el libro deja de ser cierto
+```
+
+| Comando | Qué hace |
+|---|---|
+| `python3 fabrica/construir.py` | Regenera todas las salidas |
+| `python3 fabrica/construir.py --comprobar` | No escribe. Falla si alguna está desfasada |
+| `python3 fabrica/comprobar-coherencia.py` | Falla si un archivo contradice un hecho canónico |
+
+**Por qué existe esto.** Al corregir que MCP difiere sus esquemas de herramientas,
+la corrección llegó a la referencia de una skill pero **no a su `SKILL.md`**, y las
+dos frases opuestas convivieron sin que ninguna prueba fallara. El verificador de
+afirmaciones comprueba que el libro dice la verdad sobre la herramienta; la fábrica
+comprueba que el repositorio no se contradice a sí mismo. Son dos fallos distintos
+y hacían falta dos redes.

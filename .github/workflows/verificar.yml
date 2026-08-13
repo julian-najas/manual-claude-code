@@ -52,6 +52,16 @@ jobs:
         working-directory: D2-verificador
         run: python3 verificar.py
 
+      - name: Comprobar que las salidas derivadas están al día
+        id: fabrica
+        continue-on-error: true
+        run: python3 fabrica/construir.py --comprobar
+
+      - name: Cazar contradicciones entre archivos
+        id: coherencia
+        continue-on-error: true
+        run: python3 fabrica/comprobar-coherencia.py
+
       - name: Verificar los bloques de código de la guía
         id: ejemplos
         continue-on-error: true
@@ -122,5 +132,9 @@ jobs:
             });
 
       - name: Fallar el trabajo si hubo roturas
-        if: steps.verificador.outcome == 'failure' || steps.ejemplos.outcome == 'failure'
+        if: >-
+          steps.verificador.outcome == 'failure' ||
+          steps.ejemplos.outcome == 'failure' ||
+          steps.fabrica.outcome == 'failure' ||
+          steps.coherencia.outcome == 'failure'
         run: exit 1

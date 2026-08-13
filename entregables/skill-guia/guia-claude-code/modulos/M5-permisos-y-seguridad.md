@@ -51,14 +51,21 @@ Qué significa exactamente:
 
 Para fijar tu propio valor antes del cambio, y no descubrirlo por sorpresa:
 
+En `~/.claude/settings.json`:
+
 ```json
-// ~/.claude/settings.json
 {
   "permissions": {
     "defaultMode": "auto"
   }
 }
 ```
+
+⚠️ Y de paso, un error que este mismo módulo llegó a cometer: **ese bloque no
+puede llevar un comentario `//` dentro**. JSON no admite comentarios, y del M3:
+usuario, proyecto y local son **estrictos**, así que un archivo con un comentario
+dentro **se rechaza entero** y no se aplica ninguna de sus claves. La ruta va en
+la prosa, no dentro del JSON.
 
 Las sesiones nuevas muestran entonces `auto mode on` en la barra de estado.
 

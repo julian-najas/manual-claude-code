@@ -1,4 +1,4 @@
-<!-- generado por ensamblar.py, no editar a mano -->
+<!-- GENERADO por fabrica/construir.py · no editar a mano -->
 
 # Guía Definitiva de Claude Code
 
@@ -16,7 +16,6 @@
 ---
 
 ## Índice
-
 - [M1 · Qué es Claude Code y cómo funciona por dentro](#m1-qué-es-claude-code-y-cómo-funciona-por-dentro)
   - [1.1 · El bucle agéntico](#11-el-bucle-agéntico)
   - [1.2 · Qué puede tocar](#12-qué-puede-tocar)
@@ -1300,14 +1299,21 @@ Qué significa exactamente:
 
 Para fijar tu propio valor antes del cambio, y no descubrirlo por sorpresa:
 
+En `~/.claude/settings.json`:
+
 ```json
-// ~/.claude/settings.json
 {
   "permissions": {
     "defaultMode": "auto"
   }
 }
 ```
+
+⚠️ Y de paso, un error que este mismo módulo llegó a cometer: **ese bloque no
+puede llevar un comentario `//` dentro**. JSON no admite comentarios, y del M3:
+usuario, proyecto y local son **estrictos**, así que un archivo con un comentario
+dentro **se rechaza entero** y no se aplica ninguna de sus claves. La ruta va en
+la prosa, no dentro del JSON.
 
 Las sesiones nuevas muestran entonces `auto mode on` en la barra de estado.
 

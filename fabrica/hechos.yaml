@@ -1,0 +1,104 @@
+# Hechos canónicos
+#
+# Un hecho vive AQUÍ una sola vez. Todo lo demás lo cita.
+#
+# El problema que resuelve este archivo es real y ya nos pasó: al corregir que
+# MCP difiere sus esquemas de herramientas, parcheé la referencia de una skill
+# pero no su SKILL.md, y la contradicción sobrevivió a la corrección. Un
+# verificador de afirmaciones no la vio, porque las dos frases estaban en
+# archivos distintos y ninguna era una prueba ejecutable.
+#
+# Cada hecho declara:
+#   valor       la formulación canónica, para citarla igual en todas partes
+#   fuente      de dónde sale: doc oficial, binario, medición propia
+#   prohibido   patrones que lo CONTRADICEN. Si aparecen en cualquier .md del
+#               repositorio, `comprobar-coherencia.py` falla.
+#   excepto     archivos donde el patrón es legítimo, por ejemplo cuando el
+#               texto documenta el error para explicarlo.
+
+hechos:
+
+  - id: MCP-DIFERIDO
+    valor: "Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search."
+    fuente: "code.claude.com/docs/en/mcp.md y context-window.md, 12-ago-2026"
+    prohibido:
+      - "MCP mete sus definiciones"
+      - "todas sus definiciones de herramientas, siempre"
+      - "con todas sus definiciones de herramientas dentro"
+      - "las dos únicas piezas que cobran en cada turno"
+    excepto:
+      - "guia-21/M21-retiradas-y-cambios.md"
+      - "entregables/AUDITORIA.md"
+      - "fabrica/hechos.yaml"
+
+  - id: MODOS-SEIS
+    valor: "Hay seis modos de permisos: default (Manual), acceptEdits, plan, auto, dontAsk y bypassPermissions."
+    fuente: "code.claude.com/docs/en/permission-modes.md, 12-ago-2026"
+    prohibido:
+      - "los cinco modos de permisos"
+      - "cinco modos, uno a uno"
+    excepto:
+      - "guia-21/M5-permisos-y-seguridad.md"
+      - "guia-21/FASE-1-indice.md"
+      - "entregables/AUDITORIA.md"
+      - "fabrica/hechos.yaml"
+
+  - id: CACHE-OCHO
+    valor: "Ocho acciones invalidan la caché, incluida denegar una herramienta entera."
+    fuente: "code.claude.com/docs/en/prompt-caching.md, 12-ago-2026"
+    prohibido:
+      - "siete invalidadores"
+    excepto:
+      # el M15 y la auditoría DESCRIBEN la corrección: ahí el patrón es legítimo.
+      # Basta declararlo sobre la fuente canónica: las copias generadas no se revisan.
+      - "guia-21/M15-modelos-coste-observabilidad.md"
+      - "entregables/AUDITORIA.md"
+      - "entregables/PENDIENTE-VERIFICAR.md"
+      - "fabrica/hechos.yaml"
+
+  - id: RATIO-ENTRADA-SALIDA
+    valor: "24 tokens de entrada por cada token de salida, medido sobre 4.195 llamadas propias."
+    fuente: "telemetría propia, 10-abr a 12-ago-2026, D4-factura/analizar_gasto.py"
+    prohibido: []
+
+  - id: CORTESIA
+    valor: "Cada confirmación de una palabra costó 7.891 tokens de entrada para devolver 34."
+    fuente: "telemetría propia, misma serie"
+    prohibido: []
+
+  - id: AUTO-MEMORY-LIMITE
+    valor: "De MEMORY.md se cargan las primeras 200 líneas o 25 KB, lo que llegue antes."
+    fuente: "code.claude.com/docs/en/how-claude-code-works.md y memory.md"
+    prohibido: []
+
+  - id: SKILLS-COMPACTAR
+    valor: "Al compactar se reenganchan las skills conservando 5.000 tokens de cada una, con un presupuesto conjunto de 25.000."
+    fuente: "code.claude.com/docs/en/skills.md"
+    prohibido: []
+
+  - id: SUBAGENTES-TOPE
+    valor: "No hay tope total de subagentes por sesión: se eliminó en la semana 32. Siguen la concurrencia (20 por defecto) y la profundidad."
+    fuente: "whats-new/2026-w32.md"
+    prohibido:
+      - "tope de 200 subagentes por sesión sigue"
+      - "hay un límite de 200 subagentes"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: IDIOMA-NO-ES-DIFERENCIAL
+    valor: "La documentación oficial ya está traducida al castellano: 14 de 16 páginas muestreadas existen en code.claude.com/docs/es/. El diferencial no es el idioma, es la verificación contra el binario."
+    fuente: "muestreo propio, 13-ago-2026"
+    prohibido:
+      - "la única guía en español"
+      - "no existe documentación oficial en español"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: DOS-PRODUCTOS
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 1 de 12."
+    fuente: "estado del repositorio"
+    prohibido:
+      - "el manual profesional está terminado"
+      - "los 12 módulos del manual, completos"
+    excepto:
+      - "fabrica/hechos.yaml"
