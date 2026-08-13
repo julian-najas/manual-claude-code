@@ -1,0 +1,91 @@
+# Licencia
+
+Este repositorio tiene **dos licencias distintas** según el tipo de contenido.
+No es un descuido: el código está para que lo uses y lo adaptes, y el texto de la
+guía es el producto.
+
+---
+
+## 1 · Código y plantillas — Licencia MIT
+
+Se licencia bajo MIT todo lo siguiente:
+
+- `fabrica/` — la fábrica: generadores, comprobador de coherencia, publicador
+- `D2-verificador/` — verificador de afirmaciones, de ejemplos y de estado
+- `D4-factura/` — analizador de gasto
+- `D8-boletin/` — detector de roturas
+- `D6-repo-feo/` — el repositorio de laboratorio
+- `entregables/plantillas/` — hooks, skills, subagentes, plugin, settings e instaladores
+- `.github/workflows/` — los flujos de integración continua
+- Cualquier otro archivo `.py`, `.sh`, `.json`, `.yaml` o `.yml` del repositorio
+
+```
+Copyright (c) 2026 Cosas Agénticas
+
+Se concede permiso, de forma gratuita, a cualquier persona que obtenga una copia
+de este software y de los archivos de documentación asociados (el "Software"),
+para tratar con el Software sin restricción, incluidos, entre otros, los derechos
+de uso, copia, modificación, fusión, publicación, distribución, sublicencia y
+venta de copias del Software, y para permitir a las personas a quienes se les
+proporcione el Software que lo hagan, con sujeción a las siguientes condiciones:
+
+El aviso de copyright anterior y este aviso de permiso se incluirán en todas las
+copias o partes sustanciales del Software.
+
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O
+IMPLÍCITA, INCLUIDAS, ENTRE OTRAS, LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD
+PARA UN FIN DETERMINADO Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O TITULARES
+DEL COPYRIGHT SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN, DAÑO U OTRA
+RESPONSABILIDAD, YA SEA EN UNA ACCIÓN CONTRACTUAL, EXTRACONTRACTUAL O DE OTRO
+TIPO, DERIVADA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U OTROS TRATOS
+EN EL SOFTWARE.
+```
+
+**En claro:** coge los hooks, el verificador, la fábrica o las plantillas, úsalos
+en tu empresa, modifícalos, véndelos si quieres. Solo conserva el aviso.
+
+---
+
+## 2 · Texto de la guía y del manual — Todos los derechos reservados
+
+**Copyright © 2026 Cosas Agénticas. Todos los derechos reservados.**
+
+Se reserva el texto de:
+
+- `guia-21/` — los 21 módulos de la guía de referencia
+- `manuscrito/` — el manual guiado
+- `entregables/guia-claude-code-*.md`, `entregables/cheatsheet.md`
+- `D3-arbol/` — la lámina del árbol de decisión y su PDF
+- `D1-skill/`, `D5-politica/`, `D7-esceptico/` — contenido editorial
+- `evidencias/` — los experimentos propios
+- El sitio publicado en el companion, que se genera de lo anterior
+
+**Puedes:** leerlo, usarlo en tu trabajo, citarlo con atribución y enlace, y
+comentarlo o criticarlo públicamente.
+
+**No puedes:** republicarlo entero o en partes sustanciales, traducirlo,
+venderlo, incluirlo en otro producto, ni usarlo para entrenar modelos.
+
+Está público **para que se pueda auditar**, no para que se pueda redistribuir.
+Esa es la diferencia entre código abierto y fuente disponible, y aquí es
+deliberada: el argumento del producto es que cualquiera puede comprobar sus
+afirmaciones, y eso exige poder leerlo.
+
+---
+
+## 3 · Material de terceros
+
+Las atribuciones de material reutilizado, con su licencia de origen, están en
+[`NOTICE-FUENTES.md`](NOTICE-FUENTES.md).
+
+Este repositorio **no está afiliado, patrocinado ni respaldado por Anthropic**.
+Claude y Claude Code son marcas de Anthropic PBC, citadas de forma descriptiva.
+La documentación oficial de Claude Code, citada como fuente a lo largo de la
+guía, pertenece a Anthropic y se rige por sus propios términos.
+
+---
+
+## 4 · Si tienes dudas
+
+Escribe antes de asumir. Casi todo lo que la gente quiere hacer con esto
+(usarlo en su equipo, adaptarlo, citarlo en una charla) está permitido.

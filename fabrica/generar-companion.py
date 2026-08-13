@@ -372,6 +372,15 @@ La procedencia completa, legible por máquina, está en
 [`procedencia.json`]({RUTA}procedencia.json): con ella cualquiera puede clonar la
 fábrica en ese commit exacto y **regenerar byte a byte** lo que está leyendo.
 
+## Licencia
+
+El **generador y la fábrica** que producen este sitio son MIT: están en el
+[repositorio de origen]({REPO_MANUAL}/blob/main/LICENSE).
+
+El **texto de estas páginas** es © 2026 Cosas Agénticas, todos los derechos
+reservados. Puedes leerlo, usarlo en tu trabajo y citarlo con enlace. No puedes
+republicarlo ni traducirlo.
+
 ## Aviso
 
 Sin afiliación, patrocinio ni respaldo de Anthropic. Claude y Claude Code son

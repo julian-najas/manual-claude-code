@@ -43,7 +43,7 @@ La skill de `D1-skill/` es la del **manual**, que es más pequeña y aún está 
 | Carpeta | Qué es | Estado |
 |---|---|---|
 | `D1-skill/` | El **manual** empaquetado como skill. Para la **guía**, ver `entregables/skill-guia/` | Instalable, en obra |
-| `D2-verificador/` | Registro de afirmaciones del libro y runner que las comprueba contra el CLI | Funciona, 21/21 |
+| `D2-verificador/` | Registro de afirmaciones del libro y runner que las comprueba contra el CLI | 22 pasan, 0 fallan |
 | `D3-arbol/` | La lámina del árbol de decisión, en HTML e imprimible | Lista |
 | `D4-factura/` | Analizador de gasto real y el capítulo de costes | Con datos medidos |
 | `D5-politica/` | Plantilla de política interna de uso de agentes | Lista para firmar |
@@ -85,7 +85,7 @@ python3 D8-boletin/detectar-roturas.py
 ## Las reglas de esta fábrica
 
 1. **Toda afirmación crítica y automatizable está en `registro.yaml`** y se
-   ejecuta contra el CLI instalado. Hoy son 25. **No son todas las afirmaciones
+   ejecuta contra el CLI instalado. Hoy son 28. **No son todas las afirmaciones
    del libro**: son las que se pueden comprobar solas y las que más daño harían
    si dejaran de ser ciertas. El resto lleva fuente, fecha y nivel de evidencia
    al pie de su módulo.
@@ -110,6 +110,21 @@ Cuatro revisiones al año, más parche cuando algo se rompa.
 Cuando el verificador detecta una rotura, abre una incidencia sola. Antes de
 cerrarla hay que: corregir el capítulo, subir la versión, anotar el changelog y
 mandarlo al boletín.
+
+---
+
+## Licencia
+
+**Dos licencias, a propósito** ([texto completo](LICENSE)):
+
+| Qué | Licencia | En claro |
+|---|---|---|
+| **Código y plantillas** · `fabrica/`, `D2-verificador/`, `entregables/plantillas/`, hooks, workflows | **MIT** | Cógelo, adáptalo, úsalo en tu empresa, véndelo. Solo conserva el aviso |
+| **Texto de la guía y el manual** · `guia-21/`, `manuscrito/`, láminas, evidencias | **Derechos reservados** | Léelo, úsalo en tu trabajo, cítalo con enlace. No lo republiques ni lo traduzcas |
+
+Está público **para que se pueda auditar**, no para que se pueda redistribuir.
+El argumento del producto es que cualquiera puede comprobar sus afirmaciones, y
+eso exige poder leerlo.
 
 ---
 
