@@ -86,13 +86,22 @@ hechos:
       - "fabrica/hechos.yaml"
 
   - id: IDIOMA-NO-ES-DIFERENCIAL
-    valor: "La documentación oficial ya está traducida al castellano: 14 de 16 páginas muestreadas existen en code.claude.com/docs/es/. El diferencial no es el idioma, es la verificación contra el binario."
-    fuente: "muestreo propio, 13-ago-2026"
+    valor: "173 de las 187 páginas oficiales existen en castellano, el 92,5 %. El diferencial no es el idioma: es la verificación contra el binario, y llegar a lo nuevo antes que la traducción oficial."
+    fuente: "medición propia sobre las 187, evidencias/EXP-002, 13-ago-2026"
     prohibido:
       - "la única guía en español"
       - "no existe documentación oficial en español"
+      # el muestreo de 16 páginas queda superado por la medición completa
+      - "14 de 16 páginas"
+      - "de una muestra de 16"
     excepto:
+      - "evidencias/EXP-002-cobertura-castellano.md"
       - "fabrica/hechos.yaml"
+
+  - id: TRADUCCION-VA-DETRAS
+    valor: "Las 14 páginas sin traducir son casi todas de lo más reciente: los seis archivos de entornos self-hosted, la mensajería entre sesiones, Claude Tag, Actions con proveedores cloud y los digests de las semanas 30 y 32."
+    fuente: "medición propia, evidencias/EXP-002, 13-ago-2026"
+    prohibido: []
 
   - id: DOS-PRODUCTOS
     valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 1 de 12."

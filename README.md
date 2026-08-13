@@ -9,12 +9,17 @@ máquina.**
 
 Este repositorio no está afiliado, patrocinado ni respaldado por Anthropic.
 
-> **Nota de posicionamiento, comprobada el 13 de agosto de 2026.** La
-> documentación oficial de Claude Code **ya está traducida al castellano**: de una
-> muestra de 16 páginas, 14 existen en `code.claude.com/docs/es/`. Así que "en
-> español" **no es el diferencial**. El diferencial es que aquí cada afirmación
-> crítica se ejecuta contra el binario y el resultado se publica, se vea bien o se
-> vea mal.
+> **Nota de posicionamiento, medida el 13 de agosto de 2026.** La documentación
+> oficial de Claude Code **ya está traducida al castellano**: **173 de las 187
+> páginas**, el **92,5 %**. Medición completa, no muestra, en
+> [`evidencias/EXP-002`](evidencias/EXP-002-cobertura-castellano.md).
+>
+> Así que "en español" **no es el diferencial**. Lo son dos cosas: que aquí cada
+> afirmación crítica **se ejecuta contra el binario** y el resultado se publica se
+> vea bien o se vea mal; y que **las 14 páginas que faltan por traducir son casi
+> todas de lo más reciente** (entornos self-hosted, mensajería entre sesiones,
+> Claude Tag, los digests de las semanas 30 y 32), así que la traducción oficial
+> va por detrás justo donde esta guía llega antes.
 
 ---
 

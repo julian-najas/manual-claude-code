@@ -97,6 +97,32 @@ def archivos_md() -> tuple[list[Path], int]:
     return out, derivados
 
 
+def aplanar(texto: str) -> tuple[str, list[int]]:
+    """Devuelve el texto en una sola línea y el mapa de posición → línea original.
+
+    Sin esto el comprobador tiene un punto ciego enorme: todo el markdown del
+    repositorio va justificado a unos 80 caracteres, así que **cualquier patrón
+    de más de tres palabras acaba partido por un salto de línea** y deja de
+    coincidir. Pasó de verdad: la cifra vieja del muestreo sobrevivió en el
+    README porque «de una muestra de 16» estaba cortada entre dos líneas, con un
+    `> ` de cita en medio.
+
+    Se colapsan los saltos y los prefijos de markdown (cita, lista, encabezado),
+    y se guarda a qué línea pertenece cada carácter para poder señalarla.
+    """
+    plano: list[str] = []
+    lineas: list[int] = []
+    for n, linea in enumerate(texto.splitlines(), 1):
+        limpia = re.sub(r"^\s*(?:>+\s*|[-*+]\s+|#{1,6}\s+)*", "", linea).rstrip()
+        if plano and not plano[-1].isspace():
+            plano.append(" ")
+            lineas.append(n)
+        for ch in limpia:
+            plano.append(ch)
+            lineas.append(n)
+    return "".join(plano), lineas
+
+
 def main() -> int:
     hechos = cargar_hechos()
     archivos, derivados = archivos_md()
@@ -113,11 +139,14 @@ def main() -> int:
             rel = str(f.relative_to(RAIZ))
             if rel in excepto:
                 continue
-            texto = f.read_text(encoding="utf-8")
+            plano, mapa = aplanar(f.read_text(encoding="utf-8"))
             for pat in prohibidos:
-                for m in re.finditer(re.escape(pat), texto, re.I):
-                    linea = texto[: m.start()].count("\n") + 1
-                    ctx = texto.splitlines()[linea - 1].strip()[:110]
+                # el patrón también se normaliza: si en hechos.yaml está escrito
+                # con espacios de más, debe casar igual
+                patron = re.escape(re.sub(r"\s+", " ", pat.strip()))
+                for m in re.finditer(patron, plano, re.I):
+                    linea = mapa[m.start()] if m.start() < len(mapa) else 0
+                    ctx = plano[max(0, m.start() - 40): m.end() + 40].strip()
                     fallos.append((h["id"], rel, pat, linea, ctx))
 
     if not fallos:
