@@ -138,6 +138,7 @@ def recoger() -> list[dict]:
                 "sintoma": sintoma,
                 "causa": causa,
                 "modulo": mod,
+                "archivo": f.name,
                 "titulo_modulo": titulo_mod,
                 "resuelve": limpiar_md(resuelve.group(1)) if resuelve else "",
                 "contexto": contexto(t, sintoma, causa),
@@ -154,6 +155,7 @@ def recoger() -> list[dict]:
             if d["modulo"] not in otro["modulos"]:
                 otro["modulos"].append(d["modulo"])
                 otro["titulos_modulo"].append(d["titulo_modulo"])
+                otro["archivos"].append(d["archivo"])
             # se queda la explicación más larga de las dos
             if len(d["contexto"]) > len(otro["contexto"]):
                 otro["contexto"] = d["contexto"]
@@ -162,6 +164,7 @@ def recoger() -> list[dict]:
         else:
             d["modulos"] = [d["modulo"]]
             d["titulos_modulo"] = [d["titulo_modulo"]]
+            d["archivos"] = [d["archivo"]]
             fusionado[clave] = d
     return list(fusionado.values())
 
@@ -234,6 +237,20 @@ Generado desde
 </p>"""
 
 
+def enlaces_modulo(d: dict) -> str:
+    """Enlace al archivo exacto de cada módulo, no al directorio.
+
+    Enlazar a `blob/main/guia-21/` era doblemente malo: `blob` es el verbo de un
+    archivo y esto es un directorio, así que GitHub redirige; y además dejaba al
+    lector en la puerta en vez de llevarlo al módulo que responde su pregunta.
+    """
+    partes = [
+        f'<a href="{REPO_MANUAL}/blob/main/guia-21/{a}">Leer el {m} completo</a>'
+        for m, a in zip(d["modulos"], d["archivos"])
+    ]
+    return " · ".join(partes)
+
+
 def pagina_sintoma(d: dict, total: int, pr: dict) -> str:
     ctx = f'<h2>Por qué pasa</h2><p>{html.escape(d["contexto"])}</p>' if d["contexto"] else ""
     cuerpo = f"""<a class="eb" href="{RUTA}">← Índice por síntoma</a>
@@ -244,7 +261,7 @@ def pagina_sintoma(d: dict, total: int, pr: dict) -> str:
 <p>{"Esto sale de" if len(d["modulos"]) == 1 else "Esto aparece en"}
 <strong>{html.escape(" y ".join(d["titulos_modulo"]))}</strong>.</p>
 <p>
-<a href="{REPO_MANUAL}/blob/main/guia-21/">Leer el módulo completo</a> ·
+{enlaces_modulo(d)} ·
 <a href="{REPO_MANUAL}/tree/main/entregables/skill-guia">Instalar la guía como skill</a> ·
 <a href="{ESTADO}">Ver el estado de verificación</a>
 </p>

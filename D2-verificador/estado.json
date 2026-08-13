@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.231 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-13 16:42:37 UTC",
+  "cli_verificado": "2.1.229 (Claude Code)",
+  "sistema": "Linux 6.17.0-41-generic",
+  "python": "3.13.7",
+  "fecha_utc": "2026-08-13 17:06:04 UTC",
   "resumen": {
     "PASA": 22,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.231 (Claude Code)\n"
+      "salida": "2.1.229 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.231)\nCommit: bbff368ec698\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.231\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.229)\nCommit: 10b3e93beb60\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.229\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.229 (2026-08-12)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
     },
     {
       "id": "CLI-003",
@@ -99,7 +99,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /home/nombre/.claude",
       "salida": ""
     },
     {
