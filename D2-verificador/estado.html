@@ -60,19 +60,19 @@
   </header>
 
   <div class="veredicto">
-    <p class="titular">De las 21 afirmaciones comprobables de este libro,
-      <span class="n">21 siguen siendo ciertas</span> hoy.</p>
+    <p class="titular">De las 19 afirmaciones comprobables de este libro,
+      <span class="n">19 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
-      Verificado contra <strong>2.1.228 (Claude Code)</strong><br>
-      2026-08-12 17:45:47 UTC · Linux 6.17.0-41-generic · versión del libro v2026.08
+      Verificado contra <strong>2.1.231 (Claude Code)</strong><br>
+      2026-08-13 09:25:37 UTC · Linux 6.17.0-1020-azure · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">21</span><span class="k">Pasan</span></div>
+    <div class="cifra ok"><span class="v">19</span><span class="k">Pasan</span></div>
     <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
     <div class="cifra rev"><span class="v">3</span><span class="k">A revisar</span></div>
-    <div class="cifra"><span class="v">1</span><span class="k">Omitidas</span></div>
+    <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
     <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
   </div>
 
@@ -93,7 +93,7 @@
 <tr class="cap ok"><td colspan="4">04 · Permisos y sandbox</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-001</td><td>--allowedTools acepta una lista de herramientas permitidas.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-002</td><td>Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa.</td><td class="cmd">claude --help</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/nombre/.claude</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/runner/.claude</td></tr>
 <tr class="cap ok"><td colspan="4">05 · Hooks</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">HOK-001</td><td>Los hooks se configuran en settings.json, no en un archivo aparte.</td><td class="cmd">Comprobar contra la documentación oficial en cada revisión trimestral.</td></tr>
 <tr class="cap ok"><td colspan="4">06 · MCP</td></tr>
@@ -111,8 +111,8 @@
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-002</td><td>claude ultrareview lanza una revisión multiagente de la rama actual.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-003</td><td>claude import trae la configuración de otro agente de codificación.</td><td class="cmd">claude --help</td></tr>
 <tr class="cap ok"><td colspan="4">10 · Seguridad y costes</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">SEG-002</td><td>Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad.</td><td class="cmd">claude -p Explícame qué hace esta aplicación y cuáles son sus endpoints. Sé breve. --allowedTools Read,Glob,Grep</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">CST-001</td><td>Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada.</td><td class="cmd">claude -p Responde solo con la palabra: listo</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">SEG-002</td><td>Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">CST-001</td><td>Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
 <tr class="omi"><td class="ic">⚪</td><td class="id">SEG-001</td><td>rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo.</td><td class="cmd">prueba destructiva, documentada pero nunca ejecutada</td></tr>
 <tr class="cap ok"><td colspan="4">11 · Troubleshooting</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">TRB-001</td><td>claude update comprueba e instala actualizaciones.</td><td class="cmd">claude --help</td></tr>
