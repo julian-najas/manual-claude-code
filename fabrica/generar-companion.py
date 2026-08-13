@@ -27,6 +27,12 @@ RAIZ = Path(__file__).resolve().parent.parent
 FUENTE = RAIZ / "guia-21"
 SALIDA = RAIZ / "companion"
 BASE = "https://julian-najas.github.io/claude-code-companion"
+# GitHub Pages sirve el sitio bajo /claude-code-companion/. Un href="./" desde
+# una página de síntoma resuelve a su PROPIA carpeta y recarga la misma página:
+# el companion se quedaba sin salida. Todos los enlaces internos salen de aquí.
+RUTA = "/claude-code-companion/"
+REPO_MANUAL = "https://github.com/julian-najas/manual-claude-code"
+ESTADO = REPO_MANUAL + "/blob/main/D2-verificador/ESTADO.md"
 
 PALABRAS_VACIAS = {
     "que", "de", "la", "el", "en", "y", "a", "los", "las", "un", "una", "no", "se",
@@ -103,16 +109,27 @@ def recoger() -> list[dict]:
                 "contexto": contexto(t, sintoma, causa),
                 "ranura": ranura(sintoma),
             })
-    # ranuras únicas
-    vistas: dict[str, int] = {}
+    # Un mismo síntoma puede salir en dos módulos, y ahí no queremos dos páginas
+    # compitiendo entre sí: queremos una canónica que cite los dos sitios. Antes
+    # esto generaba ranuras del tipo "...-2", que es señal de duplicación editorial.
+    fusionado: dict[str, dict] = {}
     for d in out:
-        r = d["ranura"]
-        if r in vistas:
-            vistas[r] += 1
-            d["ranura"] = f"{r}-{vistas[r]}"
+        clave = d["ranura"]
+        if clave in fusionado:
+            otro = fusionado[clave]
+            if d["modulo"] not in otro["modulos"]:
+                otro["modulos"].append(d["modulo"])
+                otro["titulos_modulo"].append(d["titulo_modulo"])
+            # se queda la explicación más larga de las dos
+            if len(d["contexto"]) > len(otro["contexto"]):
+                otro["contexto"] = d["contexto"]
+            if len(d["causa"]) > len(otro["causa"]):
+                otro["causa"] = d["causa"]
         else:
-            vistas[r] = 1
-    return out
+            d["modulos"] = [d["modulo"]]
+            d["titulos_modulo"] = [d["titulo_modulo"]]
+            fusionado[clave] = d
+    return list(fusionado.values())
 
 
 CSS = """
@@ -167,37 +184,68 @@ def envoltura(titulo: str, desc: str, cuerpo: str, canon: str) -> str:
 <style>{CSS}</style></head><body><div class="w">{cuerpo}</div></body></html>"""
 
 
-PIE = """<p class="meta">
+PIE = f"""<p class="meta">
 Companion público de <strong>Claude Code en producción</strong>, la guía en castellano
 que se verifica contra el binario.<br>
-Verificado contra Claude Code 2.1.228 · Cosas Agénticas · sin afiliación con Anthropic.
+<strong>Edición redactada contra:</strong> Claude Code 2.1.228 ·
+<strong>compatibilidad comprobada contra:</strong> <a href="{ESTADO}">la última verificación</a>,
+que corre cada madrugada.<br>
+Cosas Agénticas · sin afiliación con Anthropic.
 </p>"""
 
 
-def pagina_sintoma(d: dict) -> str:
+def pagina_sintoma(d: dict, total: int) -> str:
     ctx = f'<h2>Por qué pasa</h2><p>{html.escape(d["contexto"])}</p>' if d["contexto"] else ""
-    cuerpo = f"""<a class="eb" href="./">← Índice por síntoma</a>
+    cuerpo = f"""<a class="eb" href="{RUTA}">← Índice por síntoma</a>
 <h1>{html.escape(d["sintoma"])}</h1>
 <div class="card"><div class="t">Qué está pasando</div><p>{html.escape(d["causa"])}</p></div>
 {ctx}
-<h2>Dónde se cuenta entero</h2>
-<p>Esto sale del <strong>{html.escape(d["titulo_modulo"])}</strong> de la guía,
-que resuelve {html.escape(d["resuelve"] or "este tipo de problema")}</p>
-<div class="cta"><div class="t">La guía completa</div>
-<p>21 módulos, 15 tablas de referencia y 156 síntomas como este, todos con su causa.
-Cada afirmación crítica se ejecuta contra el binario instalado y el resultado se
-publica, se vea bien o se vea mal.</p>
-<p><a href="./">Ver los 156 síntomas</a></p></div>
+<div class="cta"><div class="t">Resolverlo del todo</div>
+<p>{"Esto sale de" if len(d["modulos"]) == 1 else "Esto aparece en"}
+<strong>{html.escape(" y ".join(d["titulos_modulo"]))}</strong>.</p>
+<p>
+<a href="{REPO_MANUAL}/blob/main/guia-21/">Leer el módulo completo</a> ·
+<a href="{REPO_MANUAL}/tree/main/entregables/skill-guia">Instalar la guía como skill</a> ·
+<a href="{ESTADO}">Ver el estado de verificación</a>
+</p>
+<p><a href="{RUTA}">Ver los {total} síntomas</a></p></div>
 {PIE}"""
     desc = f"{d['sintoma']} — {d['causa'][:120]}"
     return envoltura(f"{d['sintoma']} · Claude Code", desc, cuerpo,
                      f"{BASE}/{d['ranura']}/")
 
 
+BUSCADOR = r"""
+<script>
+const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const q=document.getElementById('q'), l=document.getElementById('l'), c=document.getElementById('c');
+const items=[...l.children].map(el=>({el, t:norm(el.dataset.t)}));
+const TOTAL=items.length;
+function buscar(){
+  const tk = norm(q.value).split(/\s+/).filter(Boolean);
+  let n=0;
+  const res = items.map(it=>{
+    if(!tk.length) return {it, ok:true, pts:0};
+    // todos los tokens deben estar; puntúa mejor si aparecen al principio
+    const ok = tk.every(k=>it.t.includes(k));
+    const pts = ok ? tk.reduce((a,k)=>a+(200-Math.min(199,it.t.indexOf(k))),0) : 0;
+    return {it, ok, pts};
+  });
+  res.sort((a,b)=>b.pts-a.pts);
+  for(const r of res){
+    r.it.el.hidden = !r.ok;
+    if(r.ok){ n++; l.appendChild(r.it.el); }
+  }
+  c.textContent = tk.length ? (n ? n+' de '+TOTAL+' síntomas' : 'Ningún síntoma para «'+q.value.trim()+'». Si el tuyo falta, es material para la próxima versión.') : TOTAL+' síntomas';
+}
+q.addEventListener('input', buscar);
+</script>"""
+
+
 def pagina_indice(ds: list[dict]) -> str:
     items = "".join(
-        f'<li data-t="{html.escape((d["sintoma"]+" "+d["causa"]).lower())}">'
-        f'<a href="{d["ranura"]}/">{html.escape(d["sintoma"])}'
+        f'<li data-t="{html.escape((d["sintoma"]+" "+d["causa"]+" "+d["modulo"]).lower())}">'
+        f'<a href="{RUTA}{d["ranura"]}/">{html.escape(d["sintoma"])}'
         f'<span class="m">{d["modulo"]}</span></a></li>'
         for d in ds
     )
@@ -205,29 +253,84 @@ def pagina_indice(ds: list[dict]) -> str:
 <h1>Índice por síntoma</h1>
 <p>Busca <strong>lo que te pasa</strong>, no lo que crees que es. {len(ds)} síntomas
 reales con su causa, extraídos de los 21 módulos de la guía.</p>
-<input type="search" id="q" placeholder="mi skill no se activa, se me acaba el contexto…"
+<input type="search" id="q" placeholder="skill activa, contexto gateway, permisos…"
  autocomplete="off" aria-label="Buscar síntoma">
 <p class="cnt" id="c">{len(ds)} síntomas</p>
 <ul class="lista" id="l">{items}</ul>
 <div class="cta"><div class="t">¿Por qué existe esto?</div>
 <p>Porque Claude Code publica versiones casi a diario y un manual estático envejece
 en silencio. Este índice sale de una guía cuyas afirmaciones se ejecutan cada
-madrugada contra el binario real, y cuyo resultado es público.</p></div>
+madrugada contra el binario real, y cuyo resultado es público.</p>
+<p><a href="{REPO_MANUAL}">Ver la fábrica entera</a> ·
+<a href="{ESTADO}">Estado de verificación de hoy</a></p></div>
 {PIE}
-<script>
-const q=document.getElementById('q'),l=document.getElementById('l'),c=document.getElementById('c');
-const items=[...l.children];
-q.addEventListener('input',()=>{{
-  const v=q.value.toLowerCase().trim();let n=0;
-  for(const it of items){{const ok=!v||it.dataset.t.includes(v);it.hidden=!ok;if(ok)n++;}}
-  c.textContent=v?n+' de {len(ds)} síntomas':'{len(ds)} síntomas';
-}});
-</script>"""
+{BUSCADOR}"""
     return envoltura(
         "Índice por síntoma · Claude Code en producción",
         f"{len(ds)} síntomas reales de Claude Code con su causa: skills que no se activan, "
         "contexto que se agota, hooks que no disparan, permisos, MCP y coste.",
         cuerpo, f"{BASE}/")
+
+
+def pagina_404(ds: list[dict]) -> str:
+    sugerencias = "".join(
+        f'<li><a href="{RUTA}{d["ranura"]}/">{html.escape(d["sintoma"])}</a></li>'
+        for d in ds[:8]
+    )
+    cuerpo = f"""<p class="eb">404</p>
+<h1>Aquí no hay nada</h1>
+<p>Puede que la página se retirara al cambiar de versión de la guía, o que la
+dirección esté mal escrita.</p>
+<div class="card"><div class="t">Qué hacer</div>
+<p>Vuelve al <a href="{RUTA}">índice por síntoma</a> y busca lo que te pasa. Son
+{len(ds)} síntomas con buscador.</p></div>
+<h2>Algunos de los más consultados</h2>
+<ul class="lista">{sugerencias}</ul>
+{PIE}"""
+    return envoltura("No encontrado · Claude Code en producción",
+                     "La página no existe. Vuelve al índice por síntoma.",
+                     cuerpo, f"{BASE}/")
+
+
+def readme(ds: list[dict]) -> str:
+    """README del repositorio público. También generado: nadie edita esto a mano."""
+    return f"""# Claude Code · índice por síntoma
+
+**Este repositorio es una salida generada. No lo edites a mano.**
+
+{len(ds)} páginas, una por síntoma real de Claude Code, con su causa y el módulo
+que lo explica. Se generan desde los 21 módulos canónicos de la guía
+[Claude Code en producción]({REPO_MANUAL}).
+
+**Sitio:** {BASE}/
+
+## Cómo se genera
+
+```bash
+# en el repositorio de la fábrica, no en este
+python3 fabrica/generar-companion.py
+./fabrica/publicar-companion.sh
+```
+
+Si encuentras un error en una página, **el arreglo va en el módulo de origen**,
+no aquí: cualquier cambio hecho en este repositorio se pierde en la siguiente
+publicación.
+
+## Qué lo hace distinto
+
+Las afirmaciones de la guía de la que sale este índice **se ejecutan cada
+madrugada contra el binario de Claude Code instalado**, y el resultado se publica
+se vea bien o se vea mal:
+[estado de verificación]({ESTADO}).
+
+- **Edición redactada contra:** Claude Code 2.1.228
+- **Compatibilidad comprobada contra:** la última verificación diaria
+
+## Aviso
+
+Sin afiliación, patrocinio ni respaldo de Anthropic. Claude y Claude Code son
+marcas de Anthropic PBC.
+"""
 
 
 def main() -> int:
@@ -237,10 +340,12 @@ def main() -> int:
     SALIDA.mkdir(parents=True)
 
     (SALIDA / "index.html").write_text(pagina_indice(ds), encoding="utf-8")
+    (SALIDA / "404.html").write_text(pagina_404(ds), encoding="utf-8")
+    (SALIDA / "README.md").write_text(readme(ds), encoding="utf-8")
     for d in ds:
         carpeta = SALIDA / d["ranura"]
         carpeta.mkdir()
-        (carpeta / "index.html").write_text(pagina_sintoma(d), encoding="utf-8")
+        (carpeta / "index.html").write_text(pagina_sintoma(d, len(ds)), encoding="utf-8")
 
     urls = "".join(f"<url><loc>{BASE}/{d['ranura']}/</loc></url>" for d in ds)
     (SALIDA / "sitemap.xml").write_text(

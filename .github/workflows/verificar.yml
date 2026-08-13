@@ -8,33 +8,37 @@ on:
   schedule:
     - cron: "0 5 * * *"   # 05:00 UTC, todos los días
   workflow_dispatch:       # y a mano cuando haga falta
+  # Sin filtro de rutas: la fábrica, las plantillas y los entregables también
+  # pueden romper el producto, y una lista de rutas siempre se queda corta. Una
+  # ejecución cuesta minutos; un fallo que se cuela, mucho más.
   push:
     # Solo ramas. Un push de etiqueta deja el checkout en HEAD desprendido y
     # el paso de commit no tiene dónde publicar.
     branches:
       - main
-    # Los módulos también disparan: si cambia una afirmación del libro, hay que
-    # comprobarla. Antes solo vigilaba el verificador y eso dejaba fuera lo
-    # que más cambia.
-    paths:
-      - "D2-verificador/**"
-      - "guia-21/**"
-      - "manuscrito/**"
-      - ".github/workflows/**"
+  # Una PR podía fusionarse sin comprobarse. Ya no.
+  pull_request:
 
-# Sin esto, el paso de commit falla con 403: el token por defecto es de solo
-# lectura, y abrir incidencias necesita su propio permiso.
+# Permiso mínimo en la raíz. Cada trabajo pide lo suyo.
 permissions:
-  contents: write
-  issues: write
+  contents: read
 
 jobs:
+  # ---------------------------------------------------------------------
+  # Trabajo 1: comprobar. Instala Claude Code desde un script remoto, así que
+  # corre en SOLO LECTURA y SIN credenciales persistidas. Si ese script fuera
+  # comprometido algún día, aquí no encuentra con qué escribir en el repo.
+  # ---------------------------------------------------------------------
   verificar:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Instalar Claude Code
         run: |
@@ -87,24 +91,54 @@ jobs:
             D2-verificador/estado.json
             D2-verificador/estado.html
 
+      - name: Fallar si hubo roturas
+        if: >-
+          steps.verificador.outcome == 'failure' ||
+          steps.ejemplos.outcome == 'failure' ||
+          steps.fabrica.outcome == 'failure' ||
+          steps.coherencia.outcome == 'failure'
+        run: exit 1
+
+  # ---------------------------------------------------------------------
+  # Trabajo 2: publicar. Solo se ejecuta en la rama principal, nunca en una PR
+  # de fuera. NO instala nada remoto: recibe el artefacto del trabajo 1 y ya.
+  # Aquí sí hay permiso de escritura, y aquí no hay superficie de ataque.
+  # ---------------------------------------------------------------------
+  publicar-estado:
+    needs: verificar
+    if: always() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: estado-verificacion
+          path: D2-verificador
+
       - name: Commit del estado solo si cambió la sustancia
         # `estado.json` lleva la fecha de ejecución, así que un `git diff` a secas
         # daría cambios todos los días y ensuciaría el historial con ruido. Se
         # compara la sustancia: versión del CLI y resultado de cada prueba.
-        if: always() && github.event_name != 'pull_request'
         run: |
           if python3 D2-verificador/cambio-sustancial.py; then
+            VERSION=$(python3 -c "import json;print(json.load(open('D2-verificador/estado.json'))['cli_verificado'])")
             git config user.name  "verificador"
             git config user.email "verificador@cosasagenticas.com"
             git add D2-verificador/ESTADO.md D2-verificador/estado.json D2-verificador/estado.html
-            git commit -m "estado: verificado contra ${VERSION_CLI}"
+            git commit -m "estado: verificado contra ${VERSION}"
             git push
           else
             echo "Nada que publicar."
           fi
 
       - name: Abrir incidencia si algo se ha roto
-        if: steps.verificador.outcome == 'failure'
+        if: needs.verificar.result == 'failure'
         uses: actions/github-script@v7
         with:
           script: |
@@ -130,11 +164,3 @@ jobs:
               body: cuerpo,
               labels: ['rotura', 'manual'],
             });
-
-      - name: Fallar el trabajo si hubo roturas
-        if: >-
-          steps.verificador.outcome == 'failure' ||
-          steps.ejemplos.outcome == 'failure' ||
-          steps.fabrica.outcome == 'failure' ||
-          steps.coherencia.outcome == 'failure'
-        run: exit 1
