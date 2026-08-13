@@ -1,0 +1,83 @@
+name: Publicar el companion
+
+# La fábrica es la única que publica. El repositorio del companion es una salida
+# inmutable: nada se edita allí a mano, y si alguien lo hace, la siguiente
+# publicación lo borra.
+#
+# Antes esto era un script local. Un script local significa que el sitio depende
+# de que alguien se acuerde de ejecutarlo desde su máquina, que es justo lo que
+# este proyecto dice que no se hace.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "guia-21/**"
+      - "fabrica/generar-companion.py"
+      - ".github/workflows/publicar-companion.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publicar-companion
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # hace falta el historial para que la procedencia registre el commit
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Generar el sitio desde los módulos canónicos
+        run: python3 fabrica/generar-companion.py
+
+      - name: Comprobar que no hay enlaces internos rotos
+        # el fallo que encontró la auditoría externa: href="./" desde una página
+        # de síntoma recarga esa misma página. No vuelve a colarse.
+        run: |
+          set -euo pipefail
+          MALOS=$(grep -rlo 'href="\./"' companion/ | wc -l)
+          if [ "$MALOS" -ne 0 ]; then
+            echo "Hay $MALOS páginas con enlaces relativos rotos:" >&2
+            grep -rlo 'href="\./"' companion/ | head -5 >&2
+            exit 1
+          fi
+          N=$(find companion -name index.html | wc -l)
+          echo "$N páginas, ningún enlace interno roto."
+          if [ "$N" -lt 100 ]; then
+            echo "Solo $N páginas. Algo ha ido mal, no publico." >&2
+            exit 1
+          fi
+
+      - name: Publicar en el repositorio del companion
+        env:
+          TOKEN: ${{ secrets.COMPANION_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN:-}" ]; then
+            echo "Falta el secreto COMPANION_TOKEN. Configúralo para publicar." >&2
+            exit 1
+          fi
+          COMMIT=$(git rev-parse --short HEAD)
+          git clone -q "https://x-access-token:${TOKEN}@github.com/julian-najas/claude-code-companion.git" /tmp/pub
+          find /tmp/pub -mindepth 1 -maxdepth 1 -not -name .git -exec rm -rf {} +
+          cp -r companion/. /tmp/pub/
+          cd /tmp/pub
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name  "fabrica"
+          git config user.email "fabrica@cosasagenticas.com"
+          git commit -q -m "companion: regenerado desde ${COMMIT}"
+          git push -q origin HEAD:main
+          echo "Publicado desde ${COMMIT}"

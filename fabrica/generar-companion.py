@@ -20,7 +20,9 @@ import html
 import json
 import re
 import shutil
+import subprocess
 import unicodedata
+from datetime import datetime, timezone
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -52,6 +54,38 @@ def limpiar_md(s: str) -> str:
     s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
     s = re.sub(r"\*([^*]+)\*", r"\1", s)
     return s.strip().strip('"')
+
+
+def procedencia() -> dict:
+    """De qué commit exacto de la fábrica sale este build.
+
+    Sin esto, el companion es un sitio que dice cosas y nadie puede comprobar de
+    qué versión de la guía salió. Con esto, cualquiera puede clonar la fábrica en
+    ese commit y regenerar byte a byte lo que está leyendo.
+    """
+    def git(*a: str) -> str:
+        r = subprocess.run(["git", "-C", str(RAIZ), *a], capture_output=True, text=True)
+        return r.stdout.strip() if r.returncode == 0 else ""
+
+    estado = RAIZ / "D2-verificador" / "estado.json"
+    verificado, fecha_verif = "", ""
+    if estado.exists():
+        d = json.loads(estado.read_text(encoding="utf-8"))
+        verificado, fecha_verif = d.get("cli_verificado", ""), d.get("fecha_utc", "")
+
+    version = (RAIZ / "VERSION").read_text(encoding="utf-8").strip() if (RAIZ / "VERSION").exists() else ""
+
+    return {
+        "source_repository": "julian-najas/manual-claude-code",
+        "source_commit": git("rev-parse", "HEAD"),
+        "source_commit_corto": git("rev-parse", "--short", "HEAD"),
+        "source_limpio": git("status", "--porcelain") == "",
+        "guide_version": version,
+        "written_against": "2.1.228",
+        "verified_against": verificado,
+        "verified_at": fecha_verif,
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
 
 
 def modulos() -> list[Path]:
@@ -184,17 +218,23 @@ def envoltura(titulo: str, desc: str, cuerpo: str, canon: str) -> str:
 <style>{CSS}</style></head><body><div class="w">{cuerpo}</div></body></html>"""
 
 
-PIE = f"""<p class="meta">
+def pie(pr: dict) -> str:
+    commit = pr["source_commit_corto"] or "?"
+    return f"""<p class="meta">
 Companion público de <strong>Claude Code en producción</strong>, la guía en castellano
 que se verifica contra el binario.<br>
-<strong>Edición redactada contra:</strong> Claude Code 2.1.228 ·
-<strong>compatibilidad comprobada contra:</strong> <a href="{ESTADO}">la última verificación</a>,
+<strong>Edición redactada contra:</strong> Claude Code {pr["written_against"]} ·
+<strong>compatibilidad comprobada contra:</strong>
+<a href="{ESTADO}">{html.escape(pr["verified_against"] or "la última verificación")}</a>,
 que corre cada madrugada.<br>
-Cosas Agénticas · sin afiliación con Anthropic.
+Generado desde
+<a href="{REPO_MANUAL}/commit/{pr["source_commit"]}">{commit}</a>
+· <a href="{RUTA}procedencia.json">procedencia</a>
+· Cosas Agénticas, sin afiliación con Anthropic.
 </p>"""
 
 
-def pagina_sintoma(d: dict, total: int) -> str:
+def pagina_sintoma(d: dict, total: int, pr: dict) -> str:
     ctx = f'<h2>Por qué pasa</h2><p>{html.escape(d["contexto"])}</p>' if d["contexto"] else ""
     cuerpo = f"""<a class="eb" href="{RUTA}">← Índice por síntoma</a>
 <h1>{html.escape(d["sintoma"])}</h1>
@@ -209,7 +249,7 @@ def pagina_sintoma(d: dict, total: int) -> str:
 <a href="{ESTADO}">Ver el estado de verificación</a>
 </p>
 <p><a href="{RUTA}">Ver los {total} síntomas</a></p></div>
-{PIE}"""
+{pie(pr)}"""
     desc = f"{d['sintoma']} — {d['causa'][:120]}"
     return envoltura(f"{d['sintoma']} · Claude Code", desc, cuerpo,
                      f"{BASE}/{d['ranura']}/")
@@ -242,7 +282,7 @@ q.addEventListener('input', buscar);
 </script>"""
 
 
-def pagina_indice(ds: list[dict]) -> str:
+def pagina_indice(ds: list[dict], pr: dict) -> str:
     items = "".join(
         f'<li data-t="{html.escape((d["sintoma"]+" "+d["causa"]+" "+d["modulo"]).lower())}">'
         f'<a href="{RUTA}{d["ranura"]}/">{html.escape(d["sintoma"])}'
@@ -263,7 +303,7 @@ en silencio. Este índice sale de una guía cuyas afirmaciones se ejecutan cada
 madrugada contra el binario real, y cuyo resultado es público.</p>
 <p><a href="{REPO_MANUAL}">Ver la fábrica entera</a> ·
 <a href="{ESTADO}">Estado de verificación de hoy</a></p></div>
-{PIE}
+{pie(pr)}
 {BUSCADOR}"""
     return envoltura(
         "Índice por síntoma · Claude Code en producción",
@@ -272,7 +312,7 @@ madrugada contra el binario real, y cuyo resultado es público.</p>
         cuerpo, f"{BASE}/")
 
 
-def pagina_404(ds: list[dict]) -> str:
+def pagina_404(ds: list[dict], pr: dict) -> str:
     sugerencias = "".join(
         f'<li><a href="{RUTA}{d["ranura"]}/">{html.escape(d["sintoma"])}</a></li>'
         for d in ds[:8]
@@ -286,13 +326,13 @@ dirección esté mal escrita.</p>
 {len(ds)} síntomas con buscador.</p></div>
 <h2>Algunos de los más consultados</h2>
 <ul class="lista">{sugerencias}</ul>
-{PIE}"""
+{pie(pr)}"""
     return envoltura("No encontrado · Claude Code en producción",
                      "La página no existe. Vuelve al índice por síntoma.",
                      cuerpo, f"{BASE}/")
 
 
-def readme(ds: list[dict]) -> str:
+def readme(ds: list[dict], pr: dict) -> str:
     """README del repositorio público. También generado: nadie edita esto a mano."""
     return f"""# Claude Code · índice por síntoma
 
@@ -323,8 +363,14 @@ madrugada contra el binario de Claude Code instalado**, y el resultado se public
 se vea bien o se vea mal:
 [estado de verificación]({ESTADO}).
 
-- **Edición redactada contra:** Claude Code 2.1.228
-- **Compatibilidad comprobada contra:** la última verificación diaria
+- **Edición redactada contra:** Claude Code {pr["written_against"]}
+- **Compatibilidad comprobada contra:** {pr["verified_against"]}
+- **Generado desde el commit:** [`{pr["source_commit_corto"]}`]({REPO_MANUAL}/commit/{pr["source_commit"]})
+- **Generado el:** {pr["generated_at"]}
+
+La procedencia completa, legible por máquina, está en
+[`procedencia.json`]({RUTA}procedencia.json): con ella cualquiera puede clonar la
+fábrica en ese commit exacto y **regenerar byte a byte** lo que está leyendo.
 
 ## Aviso
 
@@ -335,17 +381,18 @@ marcas de Anthropic PBC.
 
 def main() -> int:
     ds = recoger()
+    pr = procedencia()
     if SALIDA.exists():
         shutil.rmtree(SALIDA)
     SALIDA.mkdir(parents=True)
 
-    (SALIDA / "index.html").write_text(pagina_indice(ds), encoding="utf-8")
-    (SALIDA / "404.html").write_text(pagina_404(ds), encoding="utf-8")
-    (SALIDA / "README.md").write_text(readme(ds), encoding="utf-8")
+    (SALIDA / "index.html").write_text(pagina_indice(ds, pr), encoding="utf-8")
+    (SALIDA / "404.html").write_text(pagina_404(ds, pr), encoding="utf-8")
+    (SALIDA / "README.md").write_text(readme(ds, pr), encoding="utf-8")
     for d in ds:
         carpeta = SALIDA / d["ranura"]
         carpeta.mkdir()
-        (carpeta / "index.html").write_text(pagina_sintoma(d, len(ds)), encoding="utf-8")
+        (carpeta / "index.html").write_text(pagina_sintoma(d, len(ds), pr), encoding="utf-8")
 
     urls = "".join(f"<url><loc>{BASE}/{d['ranura']}/</loc></url>" for d in ds)
     (SALIDA / "sitemap.xml").write_text(
@@ -356,6 +403,8 @@ def main() -> int:
     (SALIDA / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n", encoding="utf-8")
     (SALIDA / ".nojekyll").write_text("", encoding="utf-8")
+    (SALIDA / "procedencia.json").write_text(
+        json.dumps(pr, ensure_ascii=False, indent=2), encoding="utf-8")
     (SALIDA / "sintomas.json").write_text(
         json.dumps(ds, ensure_ascii=False, indent=1), encoding="utf-8")
 
