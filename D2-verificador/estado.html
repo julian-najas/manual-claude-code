@@ -60,16 +60,16 @@
   </header>
 
   <div class="veredicto">
-    <p class="titular">De las 19 afirmaciones comprobables de este libro,
-      <span class="n">19 siguen siendo ciertas</span> hoy.</p>
+    <p class="titular">De las 22 afirmaciones comprobables de este libro,
+      <span class="n">22 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
-      Verificado contra <strong>2.1.231 (Claude Code)</strong><br>
-      2026-08-13 09:40:49 UTC · Linux 6.17.0-1020-azure · versión del libro v2026.08
+      Verificado contra <strong>2.1.229 (Claude Code)</strong><br>
+      2026-08-13 10:36:48 UTC · Linux 6.17.0-41-generic · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">19</span><span class="k">Pasan</span></div>
+    <div class="cifra ok"><span class="v">22</span><span class="k">Pasan</span></div>
     <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
     <div class="cifra rev"><span class="v">3</span><span class="k">A revisar</span></div>
     <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
@@ -82,7 +82,11 @@
       <table>
         <thead><tr><th></th><th>ID</th><th>Lo que dice el libro</th><th>Cómo se comprueba</th></tr></thead>
         <tbody>
-          <tr class="cap ok"><td colspan="4">02 · Instalación y autenticación</td></tr>
+          <tr class="cap ok"><td colspan="4">00 · Gobierno del proyecto</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-001</td><td>El repositorio del manual está público, como se decidió el 13 de agosto de 2026.</td><td class="cmd">curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-002</td><td>El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.</td><td class="cmd">curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-003</td><td>El sitio del companion responde y sirve el índice por síntoma.</td><td class="cmd">curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/</td></tr>
+<tr class="cap ok"><td colspan="4">02 · Instalación y autenticación</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-001</td><td>El binario responde a --version y devuelve una versión semántica.</td><td class="cmd">claude --version</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-002</td><td>claude doctor comprueba la salud de la instalación sin abrir sesión.</td><td class="cmd">claude doctor</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-003</td><td>claude setup-token crea un token de larga duración para suscriptores.</td><td class="cmd">claude --help</td></tr>
@@ -93,7 +97,7 @@
 <tr class="cap ok"><td colspan="4">04 · Permisos y sandbox</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-001</td><td>--allowedTools acepta una lista de herramientas permitidas.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-002</td><td>Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa.</td><td class="cmd">claude --help</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/runner/.claude</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/nombre/.claude</td></tr>
 <tr class="cap ok"><td colspan="4">05 · Hooks</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">HOK-001</td><td>Los hooks se configuran en settings.json, no en un archivo aparte.</td><td class="cmd">Comprobar contra la documentación oficial en cada revisión trimestral.</td></tr>
 <tr class="cap ok"><td colspan="4">06 · MCP</td></tr>

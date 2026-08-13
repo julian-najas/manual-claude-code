@@ -95,6 +95,11 @@ python3 D8-boletin/detectar-roturas.py
    las tiene.
 5. **Si el libro y la máquina se contradicen, gana la máquina**, y eso es un
    fallo que se reporta, no que se disimula.
+6. **Las decisiones de gobierno también se comprueban.** Que los dos repositorios
+   sigan públicos y que el companion siga sirviendo son tres afirmaciones del
+   registro (`REPO-001` a `REPO-003`), no algo que alguien tenga que recordar. Se
+   añadieron después de que este repositorio cambiara de visibilidad y nadie se
+   enterara en veinticuatro horas.
 
 ## Cómo se versiona
 

@@ -187,6 +187,47 @@ pruebas:
     tipo: manual
     nota: "Requiere una máquina limpia. Se comprueba en la revisión trimestral."
 
+  # ---------------------------------------------------------------------
+  # Gobierno del propio proyecto.
+  #
+  # Estas dos no comprueban Claude Code: comprueban que este proyecto sigue
+  # siendo como decidimos. Se añaden el 13-ago-2026 después de que el
+  # repositorio del manual cambiara de visibilidad y nadie se enterara en
+  # veinticuatro horas. Es la regla del módulo 10 aplicada a nosotros: lo que
+  # depende de que alguien se acuerde, no se cumple.
+  #
+  # Se consultan sin autenticar a propósito. Si un repositorio deja de ser
+  # público, la API responde 404 y el patrón falla igual, que es justo lo que
+  # queremos detectar.
+  # ---------------------------------------------------------------------
+
+  - id: REPO-001
+    capitulo: "00 · Gobierno del proyecto"
+    afirmacion: "El repositorio del manual está público, como se decidió el 13 de agosto de 2026."
+    tipo: cli
+    comando: ["curl", "-sS", "--max-time", "25", "https://api.github.com/repos/julian-najas/manual-claude-code"]
+    espera_salida: 0
+    espera_patron: '"private":\s*false'
+    nota: "Si pasa a privado, la API sin autenticar devuelve 404 y esta prueba falla. Para cambiar la decisión hay que actualizar esta entrada, a propósito."
+
+  - id: REPO-002
+    capitulo: "00 · Gobierno del proyecto"
+    afirmacion: "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas."
+    tipo: cli
+    comando: ["curl", "-sS", "--max-time", "25", "https://api.github.com/repos/julian-najas/claude-code-companion"]
+    espera_salida: 0
+    espera_patron: '"private":\s*false'
+    nota: "Este es el silencioso: si el companion se cierra, el sitio se cae sin aviso y se pierde el experimento de medición."
+
+  - id: REPO-003
+    capitulo: "00 · Gobierno del proyecto"
+    afirmacion: "El sitio del companion responde y sirve el índice por síntoma."
+    tipo: cli
+    comando: ["curl", "-sS", "--max-time", "25", "https://julian-najas.github.io/claude-code-companion/"]
+    espera_salida: 0
+    espera_patron: 'Índice por síntoma'
+    nota: "Comprueba el sitio de verdad, no solo la configuración del repositorio: Pages puede estar caído aunque el repo esté bien."
+
   - id: SEG-001
     capitulo: "10 · Seguridad y costes"
     afirmacion: "rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo."

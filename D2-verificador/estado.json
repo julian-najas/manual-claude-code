@@ -1,12 +1,12 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.231 (Claude Code)",
-  "sistema": "Linux 6.17.0-1020-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-13 09:40:49 UTC",
+  "cli_verificado": "2.1.229 (Claude Code)",
+  "sistema": "Linux 6.17.0-41-generic",
+  "python": "3.13.7",
+  "fecha_utc": "2026-08-13 10:36:48 UTC",
   "resumen": {
-    "PASA": 19,
+    "PASA": 22,
     "FALLA": 0,
     "REVISAR": 3,
     "OMITIDO": 3
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.231 (Claude Code)\n"
+      "salida": "2.1.229 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.231)\nCommit: bbff368ec698\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.231\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.229)\nCommit: 10b3e93beb60\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.229\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.229 (2026-08-12)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
     },
     {
       "id": "CLI-003",
@@ -99,7 +99,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /home/nombre/.claude",
       "salida": ""
     },
     {
@@ -251,6 +251,36 @@
       "motivo": "Requiere una máquina limpia. Se comprueba en la revisión trimestral.",
       "comando": "",
       "salida": ""
+    },
+    {
+      "id": "REPO-001",
+      "capitulo": "00 · Gobierno del proyecto",
+      "afirmacion": "El repositorio del manual está público, como se decidió el 13 de agosto de 2026.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code",
+      "salida": "{\n  \"id\": 1332281208,\n  \"node_id\": \"R_kgDOT2j_eA\",\n  \"name\": \"manual-claude-code\",\n  \"full_name\": \"julian-najas/manual-claude-code\",\n  \"private\": false,\n  \"owner\": {\n    \"login\": \"julian-najas\",\n    \"id\": 222686980,\n    \"node_id\": \"U_kgDODUXvBA\",\n    \"avatar_url\": \"https://avatars.githubusercontent.com/u/222686980?v=4\",\n    \"gravatar_id\": \"\",\n    \"url\": \"https://api.github.com/users/julian-najas\","
+    },
+    {
+      "id": "REPO-002",
+      "capitulo": "00 · Gobierno del proyecto",
+      "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion",
+      "salida": "{\n  \"id\": 1332975328,\n  \"node_id\": \"R_kgDOT3OW4A\",\n  \"name\": \"claude-code-companion\",\n  \"full_name\": \"julian-najas/claude-code-companion\",\n  \"private\": false,\n  \"owner\": {\n    \"login\": \"julian-najas\",\n    \"id\": 222686980,\n    \"node_id\": \"U_kgDODUXvBA\",\n    \"avatar_url\": \"https://avatars.githubusercontent.com/u/222686980?v=4\",\n    \"gravatar_id\": \"\",\n    \"url\": \"https://api.github.com/users/julian-n"
+    },
+    {
+      "id": "REPO-003",
+      "capitulo": "00 · Gobierno del proyecto",
+      "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
+      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"156 síntomas reales de Claude Code con su causa: skills que no se activan, contexto que se agota, hooks que no disparan, permisos, MCP y coste.\">\n<link rel=\"canonical\" href=\"ht"
     },
     {
       "id": "SEG-001",

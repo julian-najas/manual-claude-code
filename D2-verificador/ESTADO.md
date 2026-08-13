@@ -1,11 +1,11 @@
 # Estado de verificación · Claude Code en producción
 
 **Versión del libro:** v2026.08  
-**Verificado contra:** `2.1.231 (Claude Code)`  
-**Sistema:** Linux 6.17.0-1020-azure  
-**Fecha:** 2026-08-13 09:40:49 UTC
+**Verificado contra:** `2.1.229 (Claude Code)`  
+**Sistema:** Linux 6.17.0-41-generic  
+**Fecha:** 2026-08-13 10:36:48 UTC
 
-🟢 19 pasan · 🔴 0 fallan · 🟡 3 a revisar · ⚪ 3 omitidas
+🟢 22 pasan · 🔴 0 fallan · 🟡 3 a revisar · ⚪ 3 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -17,7 +17,7 @@
 | 🟢 | CTX-003 | 03 · Memoria y contexto | --bare arranca sin CLAUDE.md, sin hooks y sin plugins, para depurar contexto. | `claude --help` |
 | 🟢 | PRM-001 | 04 · Permisos y sandbox | --allowedTools acepta una lista de herramientas permitidas. | `claude --help` |
 | 🟢 | PRM-002 | 04 · Permisos y sandbox | Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa. | `claude --help` |
-| 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /home/runner/.claude` |
+| 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /home/nombre/.claude` |
 | 🟡 | HOK-001 | 05 · Hooks | Los hooks se configuran en settings.json, no en un archivo aparte. | Comprobar contra la documentación oficial en cada revisión trimestral. |
 | 🟢 | MCP-001 | 06 · MCP | claude mcp gestiona los servidores MCP desde la línea de comandos. | `claude mcp --help` |
 | 🟡 | MCP-002 | 06 · MCP | Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search. | Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral. |
@@ -33,6 +33,9 @@
 | ⚪ | CST-001 | 10 · Seguridad y costes | Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada. | gasta tokens, se ejecuta solo con --con-coste |
 | 🟢 | TRB-001 | 11 · Troubleshooting | claude update comprueba e instala actualizaciones. | `claude --help` |
 | 🟡 | TRB-002 | 11 · Troubleshooting | Borrar la caché de proyecto no borra la configuración de usuario. | Requiere una máquina limpia. Se comprueba en la revisión trimestral. |
+| 🟢 | REPO-001 | 00 · Gobierno del proyecto | El repositorio del manual está público, como se decidió el 13 de agosto de 2026. | `curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code` |
+| 🟢 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion` |
+| 🟢 | REPO-003 | 00 · Gobierno del proyecto | El sitio del companion responde y sirve el índice por síntoma. | `curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/` |
 | ⚪ | SEG-001 | 10 · Seguridad y costes | rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo. | prueba destructiva, documentada pero nunca ejecutada |
 
 ---
