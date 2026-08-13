@@ -2,10 +2,10 @@
 
 **Versión del libro:** v2026.08  
 **Verificado contra:** `2.1.231 (Claude Code)`  
-**Sistema:** Linux 6.17.0-1022-azure  
-**Fecha:** 2026-08-13 10:38:21 UTC
+**Sistema:** Linux 6.17.0-1020-azure  
+**Fecha:** 2026-08-13 11:11:16 UTC
 
-🟢 22 pasan · 🔴 0 fallan · 🟡 3 a revisar · ⚪ 3 omitidas
+🟢 20 pasan · 🔴 2 fallan · 🟡 3 a revisar · ⚪ 3 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -33,8 +33,8 @@
 | ⚪ | CST-001 | 10 · Seguridad y costes | Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada. | gasta tokens, se ejecuta solo con --con-coste |
 | 🟢 | TRB-001 | 11 · Troubleshooting | claude update comprueba e instala actualizaciones. | `claude --help` |
 | 🟡 | TRB-002 | 11 · Troubleshooting | Borrar la caché de proyecto no borra la configuración de usuario. | Requiere una máquina limpia. Se comprueba en la revisión trimestral. |
-| 🟢 | REPO-001 | 00 · Gobierno del proyecto | El repositorio del manual está público, como se decidió el 13 de agosto de 2026. | `curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code` |
-| 🟢 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion` |
+| 🔴 | REPO-001 | 00 · Gobierno del proyecto | El repositorio del manual está público, como se decidió el 13 de agosto de 2026. | `curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code` |
+| 🔴 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion` |
 | 🟢 | REPO-003 | 00 · Gobierno del proyecto | El sitio del companion responde y sirve el índice por síntoma. | `curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/` |
 | ⚪ | SEG-001 | 10 · Seguridad y costes | rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo. | prueba destructiva, documentada pero nunca ejecutada |
 
