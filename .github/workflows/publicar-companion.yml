@@ -44,18 +44,20 @@ jobs:
         # de síntoma recarga esa misma página. No vuelve a colarse.
         run: |
           set -euo pipefail
-          MALOS=$(grep -rlo 'href="\./"' companion/ | wc -l)
-          if [ "$MALOS" -ne 0 ]; then
-            echo "Hay $MALOS páginas con enlaces relativos rotos:" >&2
-            grep -rlo 'href="\./"' companion/ | head -5 >&2
+          # `grep` devuelve 1 cuando no encuentra nada, y con pipefail eso tumba
+          # el paso justo en el caso bueno. El `|| true` es obligatorio aquí.
+          MALOS=$(grep -rl 'href="\./"' companion/ || true)
+          if [ -n "$MALOS" ]; then
+            echo "Páginas con enlaces relativos rotos:" >&2
+            echo "$MALOS" | head -5 >&2
             exit 1
           fi
           N=$(find companion -name index.html | wc -l)
-          echo "$N páginas, ningún enlace interno roto."
           if [ "$N" -lt 100 ]; then
             echo "Solo $N páginas. Algo ha ido mal, no publico." >&2
             exit 1
           fi
+          echo "$N páginas, ningún enlace interno roto."
 
       - name: Publicar en el repositorio del companion
         env:
@@ -63,8 +65,14 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${TOKEN:-}" ]; then
-            echo "Falta el secreto COMPANION_TOKEN. Configúralo para publicar." >&2
-            exit 1
+            # Sin secreto configurado esto no es un fallo, es un "todavía no".
+            # Un workflow permanentemente rojo enseña a la gente a ignorar el rojo,
+            # que es peor que no tenerlo.
+            echo "::warning::Falta el secreto COMPANION_TOKEN, así que no publico."
+            echo "Crea un PAT de alcance fino sobre claude-code-companion con"
+            echo "permiso Contents: write y guárdalo como COMPANION_TOKEN."
+            echo "Mientras tanto: ./fabrica/publicar-companion.sh desde tu máquina."
+            exit 0
           fi
           COMMIT=$(git rev-parse --short HEAD)
           git clone -q "https://x-access-token:${TOKEN}@github.com/julian-najas/claude-code-companion.git" /tmp/pub
