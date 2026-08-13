@@ -82,6 +82,18 @@ no trabaja aquí.
 
 ### El montaje
 
+> **Antes de empezar, tres cosas que este playbook no decía y que se descubrieron
+> ejecutándolo** (`evidencias/EXP-003`):
+>
+> - **Instala las dependencias del proyecto primero.** Si faltan, el agente puede
+>   construirse un sustituto para que la suite corra, y entonces tus tests verdes
+>   no han tocado el framework real. Aquí: `pip install -r requirements.txt pytest`.
+> - **Decide los permisos.** En interactivo apruebas a mano. Para el paso 1 va bien
+>   `--permission-mode acceptEdits`; para los pasos de solo análisis, `plan` con
+>   `--allowedTools "Read,Glob,Grep"`.
+> - **Presupuesto:** unos 8 minutos y unos céntimos por paso. El recorrido entero
+>   ronda la media hora de reloj.
+
 **Uno, y va primero por un motivo medido:** sin algo que devuelva pasa o falla,
 **tú eres el bucle de verificación** (M6). En un repositorio sin tests, cada tarea
 te obliga a revisar a mano. Así que el primer encargo al agente **no es tocar el
@@ -97,6 +109,13 @@ código tal cual está.
 Tests de caracterización, no tests correctos: **congelan el comportamiento
 actual** para poder cambiarlo sin miedo después.
 
+⚠️ **Y la trampa que hay que decir en voz alta:** ese prompt acota a **una
+función**, así que la red que construye es **parcial**. En la prueba real produjo
+46 tests que dejaban las otras tres rutas sin cubrir, **dos de ellas con inyección
+SQL**. "Los tests pasan" puede ser cierto con la aplicación abierta de par en par.
+Anota qué queda fuera y ponlo en la lista, o repite el encargo por cada superficie
+de entrada.
+
 **Dos.** Escribe el `CLAUDE.md` que resuelve los empates (M4). Un repositorio
 legacy tiene siempre tres o cuatro contradicciones a la vista; el agente las va a
 encontrar y **no puede saber cuál gana**:
@@ -105,13 +124,23 @@ encontrar y **no puede saber cuál gana**:
 # gestor-pedidos
 
 ## Qué manda
-- La configuración efectiva es `settings.py`. `config.py` está muerto, no lo toques.
+- **Ni `config.py` ni `settings.py` se usan**: `app.py` fija sus valores a mano.
+  Los dos están muertos. Migrar es una decisión pendiente, no un hecho.
 - El README está desactualizado desde 2021. Ante duda, gana el código.
-- `/pedido_old` es código muerto pendiente de borrar. No lo mejores.
+- `/pedido_old` sigue publicado como ruta. Está pendiente de borrar: no lo mejores,
+  y si lo tocas, es para borrarlo.
 
 ## Cómo se prueba
 - `pytest -q`. Todo cambio necesita test.
 ```
+
+⚠️ **La primera versión de esta plantilla decía "la configuración efectiva es
+`settings.py`", y era falso**: nadie lo importa. Lo detectó el propio agente al
+ejecutar la prueba de realidad, y **corrigió el `CLAUDE.md`**. Se deja escrito
+porque es el error más instructivo de este playbook: un `CLAUDE.md` que afirma
+algo que el código desmiente es exactamente el README mentiroso del módulo 1, solo
+que escrito por ti. **Comprueba tus "qué manda" contra el código antes de
+escribirlos.**
 
 **Tres.** Pon los límites antes de dar permisos amplios (M5):
 
@@ -128,10 +157,17 @@ comparte contexto y comparte sesgo.
 
 ### Cómo se sabe que funciona
 
-- Los tests de caracterización pasan **antes** de tocar nada.
-- El agente deja de proponer cambios sobre el código muerto y sobre la
-  configuración equivocada, **sin que se lo recuerdes**.
-- El revisor encuentra fallos que el agente principal dio por buenos.
+- Los tests de caracterización pasan **antes** de tocar nada, **con las
+  dependencias reales instaladas**, no contra un sustituto.
+- El agente **respeta lo que el `CLAUDE.md` declara muerto**: no lo mejora ni
+  propone migrar a ello, sin que se lo recuerdes. Proponer **borrarlo** sí es
+  correcto, porque la propia plantilla lo declara pendiente de borrado.
+- **Sabes qué queda fuera de la red.** Si los tests cubren una función, di cuáles
+  son las demás superficies de entrada sin cubrir.
+- El revisor encuentra fallos que el agente principal dio por buenos. **Comprobado
+  en la prueba de realidad**: encontró que los 46 tests dejaban dos rutas con
+  inyección SQL sin cubrir, que la suite fija el valor literal de la clave (así que
+  rotarla deja la CI en rojo), y corrigió a la baja dos hallazgos previos.
 
 ### Riesgos
 
@@ -139,6 +175,9 @@ comparte contexto y comparte sesgo.
   revisa. Se acota en el plan (M6), no después.
 - **Los tests de caracterización congelan bugs.** Es intencionado, pero hay que
   escribirlo en el `CLAUDE.md` para que nadie los tome por especificación.
+- **Y congelan más de lo que crees.** En la prueba real, la suite acabó fijando por
+  contrato el valor literal de una credencial hardcodeada: rotarla dejaba la CI en
+  rojo. Revisa qué está afirmando tu red antes de fiarte de ella.
 
 ---
 

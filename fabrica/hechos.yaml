@@ -111,3 +111,14 @@ hechos:
       - "los 12 módulos del manual, completos"
     excepto:
       - "fabrica/hechos.yaml"
+
+  - id: CONFIG-NINGUNO-SE-USA
+    valor: "En el laboratorio gestor-pedidos ni config.py ni settings.py se importan: app.py fija sus valores a mano. La respuesta a 'cuál manda' es ninguno de los dos."
+    fuente: "lectura del código y prueba de realidad, evidencias/EXP-003, 13-ago-2026"
+    prohibido:
+      - "La configuración efectiva es `settings.py`"
+      - "la configuración efectiva es settings.py"
+    excepto:
+      - "guia-21/M20-playbooks.md"
+      - "evidencias/EXP-003-prueba-realidad-20.2.md"
+      - "fabrica/hechos.yaml"

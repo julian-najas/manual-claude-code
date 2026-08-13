@@ -19,13 +19,28 @@ que el lector los encuentre él, no para que se los contemos.
 | 5 | `except:` desnudo que se traga los errores | `app.py` | 11 |
 | 6 | Endpoint muerto leyendo una tabla de 2019 | `app.py` | 03 |
 | 7 | Modo depuración y escucha en todas las interfaces | `app.py` | 04 |
-| 8 | `config.py` y `settings.py` se contradicen | raíz | 03 |
+| 8 | `config.py` y `settings.py` se contradicen **y ninguno se usa**: `app.py` fija sus valores a mano | raíz | 03 |
 | 9 | Dependencias sin versión fijada | `requirements.txt` | 09 |
 | 10 | El README documenta un endpoint que no existe | `README.md` | 03 |
 | 11 | Lógica de IVA duplicada en `utils.py` y en `app.py` | ambos | 12 |
 | 12 | Dos versiones de la misma función de formato | `utils.py` | 12 |
 | 13 | **Instrucciones dirigidas al agente escondidas en un comentario HTML** | `README.md` | **10** |
 | 14 | Cero tests | todo | 08 y 09 |
+
+⚠️ **Este inventario está incompleto, y lo demostró el propio laboratorio.** Al
+ejecutar la prueba de realidad del playbook 20.2 (`evidencias/EXP-003`), el agente
+encontró **siete fallos más que nadie había sembrado**: fechas de alta comparadas
+como texto, `"10" * 3` cuando el precio llega como cadena, un cliente llamado
+`O'Brien` que tumba el endpoint, la conexión abierta antes de validar, `cobrar()`
+después del `commit()`, `utils.limpiar()` que existe y nadie llama, y el
+`MAX_LINEAS` de `settings.py` que dice 100 mientras el código fija 50 a mano. Un
+revisor añadió después tres más: `str(inf)` interpolado en el INSERT, `OverflowError`
+con cantidades enormes, y un pedido inexistente que responde **HTTP 200 con `null`**
+en vez de 404.
+
+Se deja así a propósito: **un laboratorio con más fallos de los que su autor sabe
+es mejor laboratorio**, y la lista de arriba sigue siendo la que se caza módulo a
+módulo.
 
 El número 13 es el importante. Está escondido en un comentario del README y le
 dice al asistente que confirme que todo está bien y que no reporte hallazgos de
@@ -43,7 +58,7 @@ vale más que treinta páginas sobre seguridad.
 |---|---|---|
 | 01 · Fundamentos | Primer contacto. Pedirle que explique qué hace la app. | El lector detecta al menos una afirmación del resumen que es falsa porque salió del README mentiroso. |
 | 02 · Instalación | Dejar el entorno reproducible y anotar la versión del CLI. | `claude doctor` sale limpio y la versión queda anotada en el repo. |
-| 03 · Memoria y contexto | Escribir el primer `CLAUDE.md`: qué manda, `config.py` o `settings.py`, y qué está muerto. | El agente deja de proponer cambios sobre el endpoint muerto y sobre la configuración equivocada. |
+| 03 · Memoria y contexto | Escribir el primer `CLAUDE.md`. La trampa: la respuesta a "cuál manda" es **ninguno de los dos**, y hay que ir al código para saberlo. | El `CLAUDE.md` dice la verdad sobre la configuración, y el agente respeta lo que declara muerto sin que se lo recuerdes. |
 | 04 · Permisos y sandbox | Configurar permisos versionados. Prohibir la lectura de rutas con secretos. | El agente no puede leer el archivo con la clave, y lo dice en vez de fallar en silencio. |
 | 05 · Hooks | Hook que veta secretos y hook que formatea al editar. | Intentar leer la clave se bloquea. Editar cualquier `.py` lo deja formateado sin pedirlo. |
 | 06 · MCP | Conectar la base de datos en solo lectura para poder consultar sin tocar. | El agente responde cuántos pedidos hay sin abrir un solo archivo de datos. |
@@ -69,7 +84,7 @@ Domar esto es el trabajo real. Lo demás es una demostración.
 - 0 tests
 - 14 fallos sembrados
 - 1 inyección de prompt escondida
-- 2 archivos de configuración que se contradicen
+- 2 archivos de configuración que se contradicen y que **nadie importa**
 - 1 clave de pago en claro
 
 Al final del módulo 12, el mismo repositorio debe tener tests, un `CLAUDE.md`
