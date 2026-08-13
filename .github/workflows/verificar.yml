@@ -9,8 +9,24 @@ on:
     - cron: "0 5 * * *"   # 05:00 UTC, todos los días
   workflow_dispatch:       # y a mano cuando haga falta
   push:
+    # Solo ramas. Un push de etiqueta deja el checkout en HEAD desprendido y
+    # el paso de commit no tiene dónde publicar.
+    branches:
+      - main
+    # Los módulos también disparan: si cambia una afirmación del libro, hay que
+    # comprobarla. Antes solo vigilaba el verificador y eso dejaba fuera lo
+    # que más cambia.
     paths:
       - "D2-verificador/**"
+      - "guia-21/**"
+      - "manuscrito/**"
+      - ".github/workflows/**"
+
+# Sin esto, el paso de commit falla con 403: el token por defecto es de solo
+# lectura, y abrir incidencias necesita su propio permiso.
+permissions:
+  contents: write
+  issues: write
 
 jobs:
   verificar:
@@ -61,17 +77,20 @@ jobs:
             D2-verificador/estado.json
             D2-verificador/estado.html
 
-      - name: Commit del estado si ha cambiado
-        if: always()
+      - name: Commit del estado solo si cambió la sustancia
+        # `estado.json` lleva la fecha de ejecución, así que un `git diff` a secas
+        # daría cambios todos los días y ensuciaría el historial con ruido. Se
+        # compara la sustancia: versión del CLI y resultado de cada prueba.
+        if: always() && github.event_name != 'pull_request'
         run: |
-          git config user.name  "verificador"
-          git config user.email "verificador@cosasagenticas.com"
-          git add D2-verificador/ESTADO.md D2-verificador/estado.json D2-verificador/estado.html
-          if git diff --cached --quiet; then
-            echo "Sin cambios en el estado."
-          else
+          if python3 D2-verificador/cambio-sustancial.py; then
+            git config user.name  "verificador"
+            git config user.email "verificador@cosasagenticas.com"
+            git add D2-verificador/ESTADO.md D2-verificador/estado.json D2-verificador/estado.html
             git commit -m "estado: verificado contra ${VERSION_CLI}"
             git push
+          else
+            echo "Nada que publicar."
           fi
 
       - name: Abrir incidencia si algo se ha roto

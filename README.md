@@ -1,6 +1,7 @@
 # Claude Code en producción
 
-Repositorio companion del manual profesional en castellano.
+**El manual en castellano que no te pide que confíes en él: se verifica contra la
+máquina.**
 
 **Versión:** v2026.08
 **Verificado contra:** Claude Code 2.1.228, el 12 de agosto de 2026
@@ -8,14 +9,36 @@ Repositorio companion del manual profesional en castellano.
 
 Este repositorio no está afiliado, patrocinado ni respaldado por Anthropic.
 
+> **Nota de posicionamiento, comprobada el 13 de agosto de 2026.** La
+> documentación oficial de Claude Code **ya está traducida al castellano**: de una
+> muestra de 16 páginas, 14 existen en `code.claude.com/docs/es/`. Así que "en
+> español" **no es el diferencial**. El diferencial es que aquí cada afirmación
+> crítica se ejecuta contra el binario y el resultado se publica, se vea bien o se
+> vea mal.
+
+---
+
+## Aquí hay dos productos, y no están al mismo nivel
+
+| | Qué es | Estado |
+|---|---|---|
+| **Guía de referencia** · `guia-21/` | 21 módulos ordenados por materia, para consultar. 44.717 palabras, 15 tablas, 3 diagramas | **Terminada** |
+| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 € | **En obra: 1 de 12 módulos** |
+
+La guía alimenta al manual; el manual no repite la guía. **Lo terminado es la
+guía.** Llamar terminado al manual sería falso.
+
+Para instalar la guía completa como skill: `entregables/skill-guia/instalar.sh`.
+La skill de `D1-skill/` es la del **manual**, que es más pequeña y aún está en obra.
+
 ---
 
 ## Qué hay aquí
 
 | Carpeta | Qué es | Estado |
 |---|---|---|
-| `D1-skill/` | El manual empaquetado como skill, consultable desde dentro de Claude Code | Instalable |
-| `D2-verificador/` | Registro de afirmaciones del libro y runner que las comprueba contra el CLI | Funciona, 19/19 |
+| `D1-skill/` | El **manual** empaquetado como skill. Para la **guía**, ver `entregables/skill-guia/` | Instalable, en obra |
+| `D2-verificador/` | Registro de afirmaciones del libro y runner que las comprueba contra el CLI | Funciona, 21/21 |
 | `D3-arbol/` | La lámina del árbol de decisión, en HTML e imprimible | Lista |
 | `D4-factura/` | Analizador de gasto real y el capítulo de costes | Con datos medidos |
 | `D5-politica/` | Plantilla de política interna de uso de agentes | Lista para firmar |
@@ -56,8 +79,11 @@ python3 D8-boletin/detectar-roturas.py
 
 ## Las reglas de esta fábrica
 
-1. **Ninguna afirmación entra en el libro sin estar en `registro.yaml`.** Si no
-   se puede comprobar, no se publica.
+1. **Toda afirmación crítica y automatizable está en `registro.yaml`** y se
+   ejecuta contra el CLI instalado. Hoy son 25. **No son todas las afirmaciones
+   del libro**: son las que se pueden comprobar solas y las que más daño harían
+   si dejaran de ser ciertas. El resto lleva fuente, fecha y nivel de evidencia
+   al pie de su módulo.
 2. **Fecha de corte visible.** En la portada, no escondida en los créditos.
 3. **Sin system prompts filtrados.** Sala limpia, declarada en el libro.
 4. **Los euros no se inventan.** Los tokens se miden; las tarifas las pone quien

@@ -57,9 +57,11 @@ Porque una instrucción se interpreta. Si no es negociable, es un hook: código
 determinista ante un evento, no una frase en un archivo. Cap. 5.
 
 **"Se me acaba el contexto enseguida."**
-Mira las dos únicas piezas que cobran en cada turno: el tamaño de CLAUDE.md y
-cuántos servidores MCP hay conectados, con todas sus definiciones de
-herramientas dentro. Cap. 3 y 6.
+Empieza por el tamaño del `CLAUDE.md`, que es lo único que se paga entero en cada
+turno. Con MCP el reflejo habitual está mal calibrado: por defecto solo pesan los
+**nombres** de las herramientas y los esquemas van diferidos, así que desconectar
+servidores ahorra menos de lo que crees. Mide con `/mcp` y `/context` antes de
+amputar. Cap. 3 y 6.
 
 **"Mi skill no se activa sola."**
 El problema casi nunca está en el cuerpo, está en la descripción, que es el
