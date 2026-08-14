@@ -141,10 +141,17 @@ def render_indice_sintomas(mods: list[Path]) -> str:
         "",
         "Busca lo que te pasa, no lo que crees que es.",
         "",
-        f"De los {len(filas)}, **{n} tienen resolución verificable publicada**: "
-        "diagnóstico, un comando para comprobarlo, los pasos y un criterio objetivo "
-        "que dice si quedó resuelto. La columna **Resolución** enlaza a la suya. "
-        "Los demás llegan hasta la causa, que es lo que hay en esta tabla.",
+        # el texto se deriva del dato: cuando faltaban resoluciones, esta línea lo
+        # decía; decir "los demás llegan hasta la causa" con cobertura completa
+        # sería mentir por inercia
+        (f"**Los {len(filas)} tienen resolución verificable publicada**: diagnóstico, "
+         "un comando para comprobarlo, los pasos y un criterio objetivo que dice si "
+         "quedó resuelto. La columna **Resolución** enlaza a la suya."
+         if n >= len(filas) else
+         f"De los {len(filas)}, **{n} tienen resolución verificable publicada**: "
+         "diagnóstico, un comando para comprobarlo, los pasos y un criterio objetivo "
+         "que dice si quedó resuelto. La columna **Resolución** enlaza a la suya. "
+         "Los demás llegan hasta la causa, que es lo que hay en esta tabla."),
         "",
         "| Síntoma | Qué está pasando | Módulo | Resolución |",
         "|---|---|---|---|",

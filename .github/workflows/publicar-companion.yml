@@ -68,8 +68,8 @@ jobs:
           # sitio entero de páginas cortas. Sería una regresión silenciosa, que es
           # la peor clase. Este suelo la convierte en un rojo.
           R=$(grep -rl 'class="pasa"' companion/ | wc -l)
-          if [ "$R" -lt 60 ]; then
-            echo "Solo $R páginas con resolución completa. Esperaba 60 o más." >&2
+          if [ "$R" -lt 150 ]; then
+            echo "Solo $R páginas con resolución completa. Esperaba 150 o más." >&2
             exit 1
           fi
           echo "$N páginas ($R con resolución completa), ningún enlace interno roto."

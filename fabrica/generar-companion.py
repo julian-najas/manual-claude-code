@@ -12,12 +12,20 @@ con datos en vez de con criterio.
 Fuentes, las dos canónicas y ninguna editada a mano:
 
 - los 21 módulos de `guia-21/` dan el síntoma y su causa;
-- `fabrica/resoluciones.yaml` da la resolución completa de los que la tienen.
+- `fabrica/resoluciones.yaml` da la resolución: diagnóstico, comando de
+  comprobación, pasos, criterio de aceptación, versión mínima, nivel de
+  evidencia, fuente, límites y síntomas vecinos.
 
-Hay dos formas de página **a propósito**. Un síntoma con resolución sale con las
-nueve secciones, comprobación incluida. Uno sin resolución sale con síntoma y
-causa. La alternativa era rellenar las 74 restantes con procedimientos que nadie
-ha comprobado, y eso es justo lo que este proyecto dice que no se hace.
+Un síntoma **sin** entrada en `resoluciones.yaml` sale con síntoma y causa, y su
+página lo dice en vez de disimularlo. Hoy no hay ninguno, pero el camino sigue
+existiendo a propósito: cuando un módulo añada un error típico nuevo, su página
+saldrá corta y honesta hasta que alguien haga el trabajo de campo, en vez de
+salir rellena con un procedimiento que nadie ha comprobado.
+
+El nivel de evidencia no es decorativo: `ejecutada` significa que el comando de
+«Compruébalo» se lanzó contra el binario instalado y devolvió lo que dice la
+página. `documentada`, que sale de la documentación oficial citada y no se ha
+ejecutado. La página lo declara siempre, sea cual sea.
 
 Salida: `companion/` con index.html, una página por síntoma, sitemap.xml y robots.txt.
 """
@@ -55,12 +63,15 @@ PALABRAS_VACIAS = {
 # Cómo se traduce cada nivel de evidencia a una frase que el lector pueda juzgar.
 # El objetivo es que nadie tenga que adivinar cuánta confianza merece la página.
 CLI_COMPROBADO = "2.1.229"
-FECHA_COMPROBACION = "13 de agosto de 2026"
+# Dos tandas, dos días. Poner solo el primero era falso en las páginas de la
+# segunda, así que se nombra el rango: cada resolución dice además en su `fuente`
+# qué comando concreto se ejecutó.
+FECHA_COMPROBACION = "los días 13 y 14 de agosto de 2026"
 NIVELES = {
     "ejecutada": (
         "Comprobación ejecutada",
         f"El comando de «Compruébalo» se lanzó contra Claude Code {CLI_COMPROBADO} "
-        f"el {FECHA_COMPROBACION} y devolvió lo que dice esta página. "
+        f"{FECHA_COMPROBACION} y devolvió lo que dice esta página. "
         "Ejecutar la comprobación no es reproducir la avería: el arreglo sale de la fuente citada.",
     ),
     "documentada": (
@@ -511,7 +522,7 @@ function buscar(){
     r.it.el.hidden = !r.ok;
     if(r.ok){ n++; l.appendChild(r.it.el); }
   }
-  const suf = filtro ? ' con resolución' : '';
+  const suf = filtro ? ' verificados contra el binario' : '';
   c.textContent = tk.length
     ? (n ? n+' de '+universo+' síntomas'+suf
          : 'Ningún síntoma para «'+q.value.trim()+'». Si el tuyo falta, es material para la próxima versión.')
@@ -523,31 +534,61 @@ solo.addEventListener('change', buscar);
 
 
 def pagina_indice(ds: list[dict], pr: dict) -> str:
-    insignia = '<span class="bd">resuelto</span>'
+    # Cuando todos tienen resolución, marcar "resuelto" en los 155 es ruido: la
+    # insignia deja de distinguir nada. Lo que sigue distinguiendo es si la
+    # comprobación se ejecutó contra el binario, así que la insignia y el filtro
+    # pasan a marcar eso.
+    todos = all(d.get("resolucion") for d in ds)
+
+    def destacado(d: dict) -> bool:
+        r = d.get("resolucion")
+        if not r:
+            return False
+        return r["evidencia"] == "ejecutada" if todos else True
+
+    insignia = ('<span class="bd">verificado</span>' if todos
+                else '<span class="bd">resuelto</span>')
     items = "".join(
-        f'<li data-r="{1 if d.get("resolucion") else 0}" '
+        f'<li data-r="{1 if destacado(d) else 0}" '
         f'data-t="{html.escape((d["sintoma"]+" "+d["causa"]+" "+d["modulo"]).lower())}">'
         f'<a href="{RUTA}{d["ranura"]}/">{html.escape(d["sintoma"])}'
-        f'{insignia if d.get("resolucion") else ""}'
+        f'{insignia if destacado(d) else ""}'
         f'<span class="m">{d["modulo"]}</span></a></li>'
         for d in ds
     )
     con = sum(1 for d in ds if d.get("resolucion"))
     ejec = sum(1 for d in ds
                if d.get("resolucion") and d["resolucion"]["evidencia"] == "ejecutada")
+    # El copy se deriva del dato en vez de estar escrito a mano. Cuando faltaban
+    # 74 resoluciones, la página lo decía; ahora que no falta ninguna, decir
+    # "los demás llegan hasta la causa" sería mentir por inercia.
+    if con == len(ds):
+        cobertura = (f"<p><strong>Los {len(ds)} llevan el procedimiento entero</strong>: "
+                     "diagnóstico, un comando para comprobarlo, los pasos, y un criterio "
+                     "objetivo que dice si quedó resuelto. En "
+                     f"<strong>{ejec}</strong> de ellos, ese comando se ejecutó contra "
+                     f"Claude Code {CLI_COMPROBADO} y la página lo declara; en el resto la "
+                     "fuente es la documentación oficial citada, y también lo declara.</p>")
+        filtro = ('<div class="filtro"><label><input type="checkbox" id="solo"> '
+                  "Solo los verificados ejecutando el comando contra el binario"
+                  f" ({ejec})</label></div>")
+    else:
+        cobertura = (f"<p><strong>{con} de ellos</strong> llevan además el procedimiento "
+                     "entero: diagnóstico, un comando para comprobarlo, los pasos, y un "
+                     "criterio objetivo que dice si quedó resuelto. En "
+                     f"<strong>{ejec}</strong> de esos, el comando se ejecutó contra Claude "
+                     f"Code {CLI_COMPROBADO}. Los demás llegan hasta la causa y ahí paran, "
+                     "<em>a propósito</em>.</p>")
+        filtro = ('<div class="filtro"><label><input type="checkbox" id="solo"> '
+                  "Solo los que tienen resolución completa</label></div>")
     cuerpo = f"""<p class="eb">Claude Code en producción</p>
 <h1>Índice por síntoma</h1>
 <p>Busca <strong>lo que te pasa</strong>, no lo que crees que es. {len(ds)} síntomas
 reales con su causa, extraídos de los 21 módulos de la guía.</p>
-<p><strong>{con} de ellos</strong> llevan además el procedimiento entero: diagnóstico,
-un comando para comprobarlo, los pasos, y un criterio objetivo que dice si quedó
-resuelto. En <strong>{ejec}</strong> de esos, el comando se ejecutó contra Claude Code
-{CLI_COMPROBADO}. Los demás llegan hasta la causa y ahí paran, <em>a propósito</em>.</p>
+{cobertura}
 <input type="search" id="q" placeholder="skill activa, contexto gateway, permisos…"
  autocomplete="off" aria-label="Buscar síntoma">
-<div class="filtro">
-<label><input type="checkbox" id="solo"> Solo los que tienen resolución completa</label>
-</div>
+{filtro}
 <p class="cnt" id="c">{len(ds)} síntomas</p>
 <ul class="lista" id="l">{items}</ul>
 <div class="cta"><div class="t">¿Por qué existe esto?</div>

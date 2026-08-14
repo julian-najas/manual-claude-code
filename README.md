@@ -156,20 +156,32 @@ D2-verificador/registro.yaml ─→ verificar.py ─→ falla si el libro deja d
 | `python3 fabrica/comprobar-coherencia.py` | Falla si un archivo contradice un hecho canónico |
 | `python3 fabrica/generar-companion.py` | Regenera el companion. Falla si `resoluciones.yaml` no valida |
 
-### Las dos formas de página del companion, y por qué
+### Cobertura del companion
 
-**81 de los 155 síntomas** salen con el procedimiento entero. **Los otros 74
-llegan hasta la causa y ahí paran, y la página lo dice.** No es una obra a
-medias que se disimula: solo se publica el arreglo completo cuando existe un
-comando que el lector puede ejecutar y un criterio objetivo que diga si quedó
-resuelto. En **43** de las 81, ese comando se ejecutó contra el binario y la
-página lo declara; en las demás, la fuente es la documentación oficial citada y
-también lo declara.
+**Los 155 síntomas** salen con el procedimiento entero: diagnóstico, un comando
+para comprobarlo, los pasos, un criterio objetivo de aceptación, versión mínima,
+nivel de evidencia, límites y tres síntomas vecinos. Son **204 comprobaciones** y
+**589 pasos**.
 
-Rellenar las 74 restantes con procedimientos que nadie ha comprobado habría
-dejado un sitio uniforme y peor. El generador falla si una resolución apunta a un
-síntoma que ya no existe, si un «síntoma vecino» es un enlace roto o si falta
-cualquiera de los nueve campos.
+| Nivel de evidencia | Cuántos | Qué significa |
+|---|---:|---|
+| **Ejecutada** | **73** | El comando de «Compruébalo» se lanzó contra el binario instalado y devolvió lo que dice la página |
+| **Documentada** | 82 | Sale de la página oficial citada. No se ha ejecutado, y la página lo dice |
+| Sin respaldo | **0** | No se publica |
+
+La distinción se declara en cada página, no se promedia. Muchas de las
+documentadas dependen de un entorno que esta máquina no tiene (Bedrock, Foundry,
+Team, Enterprise, macOS, móvil): ahí el comando lo puede ejecutar el lector que
+sí lo tenga, y el campo «No aplica si» nombra el entorno.
+
+Un síntoma sin entrada en `resoluciones.yaml` sale con síntoma y causa, y su
+página lo dice. Hoy no hay ninguno, pero el camino sigue existiendo a propósito:
+cuando un módulo añada un error típico nuevo, su página saldrá corta y honesta
+hasta que alguien haga el trabajo de campo.
+
+El generador falla si una resolución apunta a un síntoma que ya no existe, si un
+«síntoma vecino» es un enlace roto, si falta cualquiera de los nueve campos o si
+el nivel de evidencia no está en el vocabulario.
 
 **Por qué existe esto.** Al corregir que MCP difiere sus esquemas de herramientas,
 la corrección llegó a la referencia de una skill pero **no a su `SKILL.md`**, y las

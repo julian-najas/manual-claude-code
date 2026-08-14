@@ -2280,3 +2280,1989 @@ dar-por-hecho-que-un-allow-de-proyecto-se-aplica:
     - mi-allow-local-no-sustituye-al-del-proyecto
     - mi-ajuste-no-se-aplica
     - mi-strictallowlist-del-repositorio-no-hace-nada
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Segunda tanda, 14 de agosto de 2026: las 74 que quedaban cortas.
+#
+# El criterio no cambia. Lo que cambia es que se ha hecho el trabajo de campo
+# para cada una. Donde la comprobación depende de un entorno que esta máquina no
+# tiene (Bedrock, Foundry, Team, Enterprise, macOS, móvil), la evidencia se marca
+# `documentada` y el campo `no_aplica_si` nombra el entorno: el lector que lo
+# tenga sí puede ejecutar el comando, y quien no lo tenga sabe que no le toca.
+# ═══════════════════════════════════════════════════════════════════════════
+
+da-respuestas-plausibles-pero-incorrectas:
+  diagnostico: >-
+    El bucle se quedó en dos fases. Reunir contexto y actuar están, pero falta la
+    tercera: **verificar**. Sin nada contra lo que contrastar, el modelo produce
+    lo que parece correcto, porque no hay nada que le diga que no lo es.
+  comprobar:
+    - comando: "npm test 2>&1 | tail -5"
+      donde: shell
+      busca: "si no existe ningún comando así en tu repositorio, ahí está el problema"
+  solucion:
+    - "Dale algo contra lo que verificar: tests, `tsc --noEmit`, un linter, un script que arranque el servicio y haga una petición. Cualquier cosa que falle sola cuando el trabajo está mal."
+    - "Escribe ese comando en el CLAUDE.md, con su nombre exacto. Un verificador que Claude no sabe que existe no verifica nada."
+    - "Si el trabajo no es verificable por máquina, redúcelo hasta que lo sea: una función con su test antes que un módulo entero sin ninguno."
+    - "Para lo que no puedas automatizar, un hook `Stop` como puerta de calidad de fin de turno."
+  pasa_si: "Existe un comando que falla cuando el trabajo está mal, está escrito en el CLAUDE.md, y lo has visto fallar al menos una vez a propósito."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`overview.md`, las tres fases del bucle agéntico"
+  no_aplica_si: >-
+    Ya tienes verificación y aun así acierta poco. Entonces el problema es el
+    contexto, no el bucle: mira qué está leyendo con `/context`.
+  relacionados:
+    - tengo-que-revisarle-todo
+    - hace-algo-razonable-pero-no-lo-que-pedia
+    - la-puerta-de-calidad-nunca-veta
+
+el-resumen-automatico-se-repite-sin-avanzar:
+  diagnostico: >-
+    Es el error de *thrashing*, y está documentado. Algo enorme, un archivo o la
+    salida de un comando, vuelve a llenar la ventana justo después de cada
+    resumen. Claude Code deja de auto-compactar tras unos intentos y muestra un
+    error en vez de entrar en bucle infinito.
+  comprobar:
+    - comando: "/context"
+      donde: sesion
+      busca: "qué bloque se ha comido la ventana. Casi siempre es uno solo y se ve a la primera"
+  solucion:
+    - "Localiza al culpable con `/context` antes de tocar nada. Suele ser un archivo generado, un log o la salida de un comando sin recortar."
+    - "Empieza sesión nueva y no vuelvas a leerlo entero: `head`, `tail`, `grep` o Grep con un patrón, en vez de la lectura completa."
+    - "Si es un directorio de artefactos, sácalo de en medio con `deny`: `\"deny\": [\"Read(./dist/**)\"]` en el settings del proyecto."
+    - "Si es la salida de una herramienta MCP, súbela o bájala con `MAX_MCP_OUTPUT_TOKENS`, que por defecto son 25.000 tokens."
+    - "Compacta con foco en vez de a secas: `/compact céntrate en los cambios de la API`."
+  pasa_si: "`/context` muestra la ventana con holgura y un `/compact` deja sitio que no se vuelve a llenar en el turno siguiente."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`context-window.md`, compactación y error de thrashing"
+  no_aplica_si: >-
+    Estás en Bedrock con una versión anterior a 2.1.217. Ahí la autocompactación
+    **nunca se disparaba** porque no se reconocía la redacción del error de ese
+    proveedor, y el arreglo es actualizar.
+  relacionados:
+    - se-le-olvido-lo-que-le-dije-al-principio
+    - se-le-va-el-contexto-en-leer-dist
+    - la-herramienta-devuelve-menos-de-lo-que-deberia
+
+en-mi-contenedor-alpine-falla:
+  diagnostico: >-
+    Alpine y las distribuciones basadas en **musl** tienen dependencias
+    adicionales propias. Lo que funciona en Debian no funciona ahí sin más, y es
+    justo el caso de muchos contenedores de CI, que se eligen por pequeños.
+  comprobar:
+    - comando: "ldd --version 2>&1 | head -1"
+      donde: shell
+      busca: "si dice `musl`, estás en este caso; si dice `GNU libc`, no"
+    - comando: "claude doctor"
+      donde: shell
+      busca: "si arranca y qué reporta"
+  solucion:
+    - "Instala las dependencias adicionales que documenta la sección de Alpine y musl. Tienen sección propia precisamente porque no son las mismas."
+    - "Si el contenedor es tuyo y puedes elegir, una imagen basada en glibc te ahorra el problema entero. En CI, el tamaño de la imagen rara vez compensa la tarde de diagnóstico."
+    - "No des por hecho que un Dockerfile que funciona en Debian funciona en Alpine: es la suposición que trae a la gente aquí."
+  pasa_si: "`claude --version` responde dentro del contenedor y `claude doctor` no reporta problemas."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`setup.md`, sección de Alpine Linux y musl"
+  no_aplica_si: >-
+    `ldd --version` dice GNU libc. Entonces no es esto y toca mirar
+    `troubleshoot-install.md`, que tiene 60 KB dedicados solo a instalación.
+  relacionados:
+    - homebrew-no-me-actualiza-a-la-ultima
+    - claude-doctor-dice-instalaciones-duplicadas
+    - en-wsl-no-encuentra-archivos-que-estan-ahi
+
+cambie-la-politica-en-el-servidor-y-no-llega:
+  diagnostico: >-
+    Los settings gestionados **cacheados persisten hasta el siguiente fetch
+    correcto**. No hay empuje desde el servidor: la máquina se los trae al
+    arrancar, y si la descarga falla, sigue con los de antes.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "qué fuente managed está activa. Es lo primero, antes de teorizar"
+  solucion:
+    - "Reinicia la sesión: los settings remotos se traen al arrancar, no en caliente."
+    - "Si necesitas garantía de que nunca se corre con política vieja, `forceRemoteSettingsRefresh: true` bloquea al arrancar hasta tener settings frescos y **sale** si la descarga falla."
+    - "Dos detalles de esa clave que importan: **se autoperpetúa**, porque una vez servida se cachea y las siguientes arrancadas aplican el mismo comportamiento; y desde **v2.1.191** es una excepción a la precedencia, así que se honra puesta en cualquier fuente managed."
+    - "Por defecto, si la descarga falla al arrancar el CLI **continúa sin ellos**: hay una ventana breve sin política aplicada. Si eso no es aceptable en tu organización, la clave de arriba es obligatoria."
+  pasa_si: "Tras reiniciar, `/status` nombra la fuente managed correcta y el ajuste nuevo está aplicado."
+  aplica_desde: "cualquiera; `forceRemoteSettingsRefresh` como excepción a la precedencia desde 2.1.191"
+  evidencia: documentada
+  fuente: "`server-managed-settings.md`, cacheo y arranque a prueba de fallos"
+  no_aplica_si: >-
+    Estás mezclando dos fuentes managed. Entonces el problema no es el caché:
+    dentro de managed las fuentes no se fusionan y gana la primera no vacía.
+  relacionados:
+    - puse-los-settings-de-servidor-y-los-del-plist-se-ignoran
+    - no-me-funcionan-los-server-managed-settings
+    - mi-ajuste-no-se-aplica
+
+mi-strictallowlist-del-repositorio-no-hace-nada:
+  diagnostico: >-
+    Correcto, y es el mismo patrón de blindaje que `autoMode`: **solo se aplica
+    desde la configuración de usuario, desde settings gestionados o con
+    `--settings`**. Se ignora en el `.claude/settings.json` del proyecto y en el
+    local, para que un repositorio clonado no pueda relajarte las defensas.
+  comprobar:
+    - comando: "grep -rn strictAllowlist ~/.claude/settings.json .claude/settings.json"
+      donde: shell
+      busca: "en qué archivo lo has puesto. Si está en el del proyecto, por eso no hace nada"
+  solucion:
+    - "Muévelo a `~/.claude/settings.json`, a los settings gestionados, o pásalo con `--settings`."
+    - "Reconoce el patrón, porque se repite: **lo que un repositorio ajeno podría usar para bajarte las defensas no se lee del repositorio**. Vale igual para `autoMode`, y `autoMemoryDirectory` puesto desde el proyecto solo se honra tras aceptar el diálogo de confianza."
+    - "Si lo que quieres es una restricción que el equipo entero herede del repositorio, la herramienta correcta son reglas `deny` en los permisos: esas sí se fusionan entre ámbitos y no las puede levantar nadie con su configuración local."
+  pasa_si: "El ajuste está en un ámbito que sí lo lee, y el comportamiento restrictivo se observa."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`settings.md` y `sandboxing.md`"
+  no_aplica_si: >-
+    Ya está en el ámbito correcto. Entonces mira si hay una *cross-source lock
+    key* de la lista blanca del sandbox fijada desde managed, que es la excepción.
+  relacionados:
+    - mi-allow-local-no-sustituye-al-del-proyecto
+    - dar-por-hecho-que-un-allow-de-proyecto-se-aplica
+    - el-sandbox-no-protege-de-mi-servidor-mcp
+
+enmascare-la-credencial-y-la-herramienta-ya-no-autentica:
+  diagnostico: >-
+    Falta `network.tlsTerminate`. El enmascarado funciona así: lo que hay dentro
+    del sandbox ve un **valor centinela** por sesión, y **el proxy que corre fuera
+    del sandbox lo sustituye por la credencial real** al salir. Sin terminación
+    TLS, el proxy no puede abrir la petición para hacer esa sustitución, así que
+    lo que llega al servicio es el centinela.
+  comprobar:
+    - comando: "grep -rn -A4 'tlsTerminate\\|credentials' .claude/settings.json ~/.claude/settings.json"
+      donde: shell
+      busca: "si hay bloque de credenciales enmascaradas y si `network.tlsTerminate` está puesto"
+  solucion:
+    - "Activa `network.tlsTerminate` para los hosts a los que va esa credencial. Es el requisito, no un extra."
+    - "Ten claro qué implica: el proxy abre el TLS de esas peticiones. Es una decisión de seguridad consciente, no un interruptor cosmético, y hay que poder defenderla."
+    - "Acota la lista de hosts todo lo que puedas. Terminar TLS contra todo internet no es lo mismo que hacerlo contra tu API interna."
+    - "Recuerda que las herramientas en proceso, como `WebFetch`, siguen su propio camino y no pasan por el proxy del sandbox."
+  pasa_si: "La herramienta autentica correctamente y, aun así, el valor que se ve dentro del sandbox sigue siendo el centinela y no la credencial."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`sandboxing.md`, enmascarado de credenciales y proxy de red"
+  no_aplica_si: >-
+    Estás en macOS. Allí el archivo enmascarado **se bloquea en vez de
+    sustituirse**, así que el síntoma y el arreglo son otros.
+  relacionados:
+    - en-macos-el-archivo-enmascarado-no-aparece
+    - el-sandbox-no-protege-de-mi-servidor-mcp
+    - mi-script-usa-una-clave-que-yo-rechace
+
+en-macos-el-archivo-enmascarado-no-aparece:
+  diagnostico: >-
+    En macOS el mecanismo es distinto: **se bloquea el archivo, no se sustituye**.
+    Así que no es que el enmascarado falle, es que en esa plataforma hace otra
+    cosa, y esperar el archivo con un valor centinela dentro es esperar algo que
+    no va a pasar.
+  comprobar:
+    - comando: "uname -s"
+      donde: shell
+      busca: "`Darwin` confirma que estás en el caso de macOS"
+  solucion:
+    - "Ajusta la expectativa: en macOS el archivo queda inaccesible desde dentro del sandbox. Si tu herramienta lo lee, va a fallar por acceso, no por valor incorrecto."
+    - "Si la herramienta necesita el archivo de verdad, pásale la credencial por variable de entorno enmascarada en vez de por archivo."
+    - "Si el proceso tiene que correr con acceso real, sácalo del sandbox y acótalo por otra vía: es preferible a fingir que está aislado."
+  pasa_si: "El comportamiento que observas coincide con «bloqueado», y tu herramienta o bien no necesita ese archivo o bien recibe la credencial por otra vía."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`sandboxing.md`, diferencias de plataforma en el enmascarado"
+  no_aplica_si: >-
+    `uname -s` dice `Linux`. Ahí sí se sustituye por un centinela y el arreglo
+    pasa por `network.tlsTerminate`.
+  relacionados:
+    - enmascare-la-credencial-y-la-herramienta-ya-no-autentica
+    - el-sandbox-no-protege-de-mi-servidor-mcp
+    - los-settings-del-plist-se-ignoran
+
+le-dije-que-limpiara-el-repo-y-no-hizo-force-push:
+  diagnostico: >-
+    Correcto, y es una de las cosas que el clasificador bloquea por defecto. Una
+    petición general como «limpia el repositorio» **no es intención explícita**
+    de reescribir la historia publicada.
+  comprobar:
+    - comando: "git reflog --date=iso | head -5"
+      donde: shell
+      busca: "qué se hizo de verdad, que casi nunca es lo que crees"
+  solucion:
+    - "Si de verdad quieres el `force push`, pídelo nombrándolo: el clasificador exige intención explícita, no una descripción del objetivo."
+    - "Y antes, pregúntate si lo quieres. Es una de las nueve categorías bloqueadas por defecto junto con `curl | bash`, enviar datos sensibles fuera, despliegues y migraciones de producción, borrado masivo en la nube, permisos de IAM, infraestructura compartida y destrucción irreversible de archivos previos a la sesión."
+    - "Para trabajo destructivo legítimo, hazlo en una rama de usar y tirar y fusiona, en vez de reescribir la publicada."
+    - "Ojo con el matiz que amplió el alcance: desde v2.1.211 la comprobación de secretos en un push aplica **en cualquier rama**, no solo en la por defecto, y se dispara cuando el cambio aterriza, dispare o no la tubería."
+  pasa_si: "O el `force push` se ejecuta porque lo pediste nombrándolo, o entiendes por qué no y has elegido otro camino."
+  aplica_desde: "cualquiera; alcance ampliado en 2.1.211"
+  evidencia: documentada
+  fuente: "`iam.md`, qué bloquea el clasificador de auto mode por defecto"
+  no_aplica_si: >-
+    Estás en `bypassPermissions`. Ahí no hay comprobación ninguna, y si aun así no
+    lo hizo, el motivo es otro.
+  relacionados:
+    - de-pronto-ya-no-me-pregunta-por-los-permisos
+    - solo-hay-cinco-modos
+    - rebobine-y-el-archivo-seguia-borrado
+
+hace-algo-razonable-pero-no-lo-que-pedia:
+  diagnostico: >-
+    Saltó a implementar sin explorar. El bucle tiene tres fases y la primera,
+    reunir contexto, se puede acortar sola cuando la petición parece clara. Lo
+    que sale es coherente consigo mismo y ajeno a tu problema.
+  comprobar:
+    - comando: "claude --permission-mode plan"
+      donde: shell
+      busca: "arranca en modo plan: explora y propone antes de tocar nada"
+  solucion:
+    - "Arranca en **modo plan**. Lee, explora y te propone antes de escribir, y ahí es donde corriges barato."
+    - "Lee el plan de verdad y corrígelo. Un plan aprobado a la ligera es el mismo problema con un paso más."
+    - "Pon el listón en el encargo, no en la corrección: qué archivos toca, qué no debe tocar, y cómo se sabe que está bien."
+    - "Si te pasa siempre en el mismo repositorio, es que falta contexto estructural en el CLAUDE.md: arquitectura, convenciones y el comando de tests."
+  pasa_si: "El plan que te propone menciona los archivos correctos antes de escribir una línea."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`overview.md` y `iam.md`. Ejecutado contra 2.1.229: `plan` está entre los valores admitidos de `--permission-mode`"
+  no_aplica_si: >-
+    El plan es correcto y la implementación se desvía. Eso ya no es exploración:
+    mira si el CLAUDE.md tiene reglas que se contradicen.
+  relacionados:
+    - cada-tarea-acaba-en-un-refactor-gigante
+    - da-respuestas-plausibles-pero-incorrectas
+    - claude-elige-una-de-dos-reglas-al-azar
+
+tengo-que-revisarle-todo:
+  diagnostico: >-
+    No hay ninguna comprobación que pueda ejecutar, así que **el bucle de
+    verificación eres tú**. Mientras la única forma de saber si el trabajo está
+    bien sea que lo mires, no hay forma de que el coste baje.
+  comprobar:
+    - comando: "ls Makefile package.json pyproject.toml 2>/dev/null; grep -n 'test\\|lint' CLAUDE.md"
+      donde: shell
+      busca: "si el comando de verificación no está escrito en el CLAUDE.md, Claude no sabe que existe"
+  solucion:
+    - "Escribe en el CLAUDE.md el comando exacto que verifica: «los tests se lanzan con `npm test`, nunca con `jest` directamente». Con el nombre literal."
+    - "Si no hay tests, empieza por los de caracterización: no comprueban que el código sea correcto, comprueban que sigue haciendo lo que hacía. Es lo que hace revisable un legacy."
+    - "Automatiza la revisión mecánica con un hook `PostToolUse` sobre `Edit|Write` que formatee y valide, para que tú solo mires lo que exige criterio."
+    - "Pon una puerta de calidad de fin de turno con un hook `Stop`. Es lo que convierte «revísalo todo» en «revisa lo que la puerta no supo juzgar»."
+    - "Y sube el listón por escrito: qué considera hecho este repositorio."
+  pasa_si: "Existe un comando que falla solo cuando el trabajo está mal, está en el CLAUDE.md, y tú revisas criterio en vez de sintaxis."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`hooks.md` y el módulo 20 de la guía, playbook de legacy"
+  no_aplica_si: >-
+    El trabajo es intrínsecamente de criterio, como decisiones de producto o de
+    diseño. Ahí revisarlo todo es correcto y lo que hay que bajar es el tamaño de
+    cada entrega.
+  relacionados:
+    - da-respuestas-plausibles-pero-incorrectas
+    - la-puerta-de-calidad-nunca-veta
+    - cada-tarea-del-legacy-acaba-en-refactor-gigante
+
+en-el-monorepo-no-coge-mi-configuracion:
+  diagnostico: >-
+    El `settings.json` de proyecto se carga **desde el directorio donde arrancas**,
+    no desde la raíz del repositorio. En un monorepo, arrancar en
+    `paquetes/api/` y esperar el `.claude/` de la raíz es esperar algo que no pasa.
+  comprobar:
+    - comando: "pwd && ls -d .claude 2>/dev/null || echo 'no hay .claude aquí'"
+      donde: shell
+      busca: "si no hay `.claude/` en tu directorio de arranque, no se carga ninguno de proyecto"
+  solucion:
+    - "Arranca desde donde está el `.claude/` que quieres, o pon un `.claude/` en cada paquete que lo necesite."
+    - "Para lo común, sube al CLAUDE.md de la raíz: eso sí se carga porque la memoria **sube** por el árbol, aunque el settings no."
+    - "No confundas los dos mecanismos, que es lo que causa este síntoma: los `CLAUDE.md` suben por el árbol de directorios; el `settings.json` de proyecto se lee del directorio de arranque."
+    - "Si el monorepo es grande, mira `worktree.sparsePaths`: escribe en disco solo los directorios que nombres."
+  pasa_si: "`/status` muestra la fuente de proyecto que esperabas como activa."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`settings.md` y `memory.md`"
+  no_aplica_si: >-
+    Ya arrancas desde el directorio correcto. Entonces mira si el archivo valida:
+    usuario, proyecto y local son estrictos y se rechazan enteros.
+  relacionados:
+    - mi-ajuste-no-se-aplica
+    - en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo
+    - mi-settingsjson-entero-dejo-de-aplicarse
+
+cada-tarea-acaba-en-un-refactor-gigante:
+  diagnostico: >-
+    Falta acotar el encargo en el plan. Sin límite explícito, «arregla esto»
+    incluye implícitamente «y todo lo que veas de camino», que es una lectura
+    razonable de la petición y un desastre para la revisión.
+  comprobar:
+    - comando: "git diff --stat"
+      donde: shell
+      busca: "cuántos archivos ha tocado frente a los que esperabas"
+  solucion:
+    - "Trabaja en modo plan y **acota en el plan**: qué archivos entran, cuáles no se tocan, y qué queda explícitamente fuera."
+    - "Escribe en el CLAUDE.md la regla de alcance del repositorio: «un cambio, un motivo; lo que veas de paso va a una incidencia, no a este diff»."
+    - "Si el refactor hace falta de verdad, sepáralo: primero el arreglo con su test, después el refactor sobre verde."
+    - "Un `git diff --stat` a mitad de tarea cuesta un segundo y evita descubrirlo al final."
+  pasa_si: "`git diff --stat` toca los archivos del plan y ninguno más."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 20 de la guía, playbook de legacy. `git diff --stat` se ejecutó como comprobación válida en este repositorio"
+  no_aplica_si: >-
+    El refactor lo pediste tú. Entonces el diff grande es correcto y lo que falta
+    es partirlo en commits legibles.
+  relacionados:
+    - cada-tarea-del-legacy-acaba-en-refactor-gigante
+    - hace-algo-razonable-pero-no-lo-que-pedia
+    - tengo-que-revisarle-todo
+
+con-el-gateway-me-como-el-contexto:
+  diagnostico: >-
+    Tool search **se desactiva cuando `ANTHROPIC_BASE_URL` apunta a un host que no
+    es de primera parte**, porque la mayoría de proxies no reenvían los bloques
+    `tool_reference`. Con gateway propio estás en esa fila por defecto, y vuelve el
+    peaje permanente de MCP proporcional a cuántas herramientas tengas conectadas.
+  comprobar:
+    - comando: "echo $ANTHROPIC_BASE_URL"
+      donde: shell
+      busca: "si apunta a tu gateway, tool search está apagado y no es un misterio"
+    - comando: "/context"
+      donde: sesion
+      busca: "cuánto pesan de verdad las herramientas MCP en esta sesión"
+  solucion:
+    - "Comprueba **primero** si tu gateway reenvía los bloques `tool_reference`. Si no los reenvía, forzar la variable no te da tool search: te da fallos."
+    - "Un gateway de Claude apps en marcha sirve su contrato legible por máquina en `GET /protocol`. Es el camino más corto para saber qué tiene que cumplir el tuyo."
+    - "Si los reenvía, pon `ENABLE_TOOL_SEARCH` explícitamente para anular el comportamiento de reserva. Desde v2.1.227 se puede fijar desde settings gestionados para toda la organización."
+    - "Si no puedes tocar el gateway, reduce la superficie: menos servidores MCP conectados, y `ENABLE_TOOL_SEARCH=auto` como punto medio, que carga por adelantado solo cuando cabe en el 10 % de la ventana."
+  pasa_si: "`/context` muestra las herramientas MCP con un peso proporcional a los nombres y no a los esquemas completos."
+  aplica_desde: "cualquiera; fijarlo desde settings gestionados requiere 2.1.227"
+  evidencia: documentada
+  fuente: "`mcp.md` y el módulo 14 de la guía, contrato del gateway"
+  no_aplica_si: >-
+    `ANTHROPIC_BASE_URL` está vacío. Entonces no es el gateway y el peaje viene de
+    otro sitio: mídelo con `/mcp` antes de desconectar nada.
+  relacionados:
+    - con-el-gateway-se-nos-come-el-contexto
+    - puse-enable-tool-search-y-sigue-cargando-todo
+    - desconecto-los-mcp-para-ahorrar-contexto
+
+mi-tarea-en-segundo-plano-desaparecio:
+  diagnostico: >-
+    **No sobrevive a salir de la sesión.** Una llamada MCP que pasa a segundo
+    plano vive dentro de esa conversación: si la cierras, se va con ella.
+  comprobar:
+    - comando: "/tasks"
+      donde: sesion
+      busca: "qué sigue vivo. Desde ahí también se paran"
+  solucion:
+    - "Si el trabajo tiene que durar más que tu sesión, esto no es la herramienta. Las **Routines** en la nube persisten al reiniciar y no necesitan tu máquina encendida; a cambio no ven tu disco y su intervalo mínimo es de una hora."
+    - "Para trabajo largo que sí necesita tus archivos, tareas programadas de escritorio: corren en tu máquina, con acceso a tu disco, sin sesión abierta y con intervalo mínimo de un minuto."
+    - "Recuerda que los límites por llamada siguen aplicando mientras corre en segundo plano: el de reloj por el `timeout` del servidor o `MCP_TOOL_TIMEOUT`, y el de inactividad por `CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT`."
+  pasa_si: "El trabajo corre en una superficie cuya vida es igual o mayor que la que necesitas, y sabes decir cuál es."
+  aplica_desde: "2.1.212 para el paso automático a segundo plano"
+  evidencia: documentada
+  fuente: "`mcp.md` y `scheduled-tasks.md`"
+  no_aplica_si: >-
+    No cerraste la sesión y aun así desapareció. Entonces mira si la mató un
+    límite de reloj o de inactividad, que sí aplican en segundo plano.
+  relacionados:
+    - la-sesion-se-congela-con-una-consulta-larga
+    - mis-tareas-de-loop-desaparecieron
+    - la-tarea-en-la-nube-no-ve-mis-archivos
+
+mis-subagentes-no-se-coordinan-entre-si:
+  diagnostico: >-
+    Por diseño: **solo reportan al principal**. Un subagente no ve a los demás ni
+    les puede escribir. Si lo que necesitas es que hablen entre ellos, no querías
+    subagentes: querías un equipo de agentes.
+  comprobar:
+    - comando: "/tasks"
+      donde: sesion
+      busca: "qué corre en paralelo y qué devuelve cada uno"
+  solucion:
+    - "Si el trabajo es divisible y solo hace falta juntar resultados, subagentes está bien: cada uno investiga y el principal integra."
+    - "Si de verdad tienen que hablarse, usa un **equipo de agentes**, que es la figura que existe para eso. Y ponle una puerta de calidad con un hook `TeammateIdle`, que es la única forma de revisar antes de que un compañero se dé por satisfecho."
+    - "Sabe lo que estás comprando: el equipo de agentes es el enfoque **más caro**, porque son sesiones completas y longevas en vez de tareas que devuelven un resumen."
+    - "Para pasar información entre sesiones sin equipo, el disco sigue siendo la respuesta aburrida y correcta: un archivo que uno escribe y otro lee."
+  pasa_si: "Sabes decir si tu trabajo necesita coordinación o solo agregación, y la figura que usas coincide con esa respuesta."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`sub-agents.md` y la sección de equipos de agentes del módulo 9"
+  no_aplica_si: >-
+    Te basta con que el principal integre lo que traen. Entonces el aislamiento es
+    la propiedad que quieres, no un defecto: sus lecturas computan cero en tu sesión.
+  relacionados:
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+    - la-otra-sesion-no-recibe-nada
+    - concurrent-subagent-limit-reached
+
+el-workflow-me-llena-el-contexto:
+  diagnostico: >-
+    No debería. En un flujo bien montado **los pasos intermedios viven en el
+    script**, no en la conversación: lo que entra en tu contexto es solo lo que
+    devuelves. Si se llena, estás devolviendo demasiado.
+  comprobar:
+    - comando: "/context"
+      donde: sesion
+      busca: "qué bloque crece. Si son resultados de herramienta, es esto"
+  solucion:
+    - "Revisa qué devuelve cada paso. Un comando que escupe mil líneas para que tú mires tres es mil líneas de contexto."
+    - "Filtra en el script, no en la conversación: `| tail -20`, `| grep`, `| jq '.campo'`. El trabajo de recortar es del shell."
+    - "Para investigación pesada, un subagente: su system prompt, su copia del CLAUDE.md, sus herramientas y **todas sus lecturas computan cero** en tu sesión. Solo vuelve el resumen."
+    - "Si lo que crece son salidas de MCP, el tope por defecto son 25.000 tokens y se avisa a los 10.000. `MAX_MCP_OUTPUT_TOKENS` lo mueve."
+  pasa_si: "`/context` se mantiene estable a lo largo del flujo en vez de crecer con cada paso."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`context-window.md` y `sub-agents.md`"
+  no_aplica_si: >-
+    Lo que llena el contexto es el CLAUDE.md o las reglas sin `paths`. Eso se paga
+    en cada turno pase lo que pase y tiene otro arreglo.
+  relacionados:
+    - el-resumen-automatico-se-repite-sin-avanzar
+    - la-herramienta-devuelve-menos-de-lo-que-deberia
+    - se-le-va-el-contexto-en-leer-dist
+
+dos-sesiones-se-pisan-los-archivos:
+  diagnostico: >-
+    No están en worktrees. Dos sesiones sobre el mismo directorio de trabajo son
+    dos procesos escribiendo los mismos archivos, y git no las va a separar por ti.
+  comprobar:
+    - comando: "git worktree list"
+      donde: shell
+      busca: "si solo aparece una línea, las dos sesiones comparten directorio"
+  solucion:
+    - "Arranca cada sesión en su worktree: `claude --worktree <nombre>`."
+    - "Conoce los dos comportamientos de `worktree.baseRef`: `\"fresh\"`, el valor por defecto, ramifica desde `origin/<rama-por-defecto>` y te da un árbol limpio igual que el remoto; `\"head\"` ramifica desde tu `HEAD` local y **arrastra commits sin publicar**."
+    - "Ahorra disco con `worktree.symlinkDirectories`: `[\"node_modules\", \".cache\"]` es de las cosas que más tiempo ahorran y casi nadie configura."
+    - "En monorepos grandes, `worktree.sparsePaths` escribe solo los directorios que nombres."
+    - "Para trabajo en segundo plano, `worktree.bgIsolation` en `\"worktree\"`, que es el valor por defecto, bloquea `Edit` y `Write` en el checkout principal. Requiere v2.1.143 o posterior."
+  pasa_si: "`git worktree list` muestra una línea por sesión y `git status` de cada una solo ve sus propios cambios."
+  aplica_desde: "cualquiera; `bgIsolation` desde 2.1.143"
+  evidencia: ejecutada
+  fuente: "`settings.md`. La bandera `-w, --worktree` se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Las sesiones están en máquinas distintas contra el mismo directorio de red. Eso
+    no lo arregla un worktree y es un problema de bloqueo de archivos.
+  relacionados:
+    - el-trabajo-nocturno-toco-la-rama-principal
+    - mi-comando-se-bloquea-en-un-worktree-y-no-entiendo-por-que
+    - rebobine-y-los-cambios-del-subagente-siguen-ahi
+
+mi-comando-se-bloquea-en-un-worktree-y-no-entiendo-por-que:
+  diagnostico: >-
+    Es el aislamiento de worktrees haciendo su trabajo: **lo que no se puede
+    verificar, se bloquea**. Y desde la semana 32 el aislamiento cubre también
+    **comandos Bash y redirecciones de git**, no solo ediciones de archivo, así que
+    un comando que antes pasaba ahora puede no pasar.
+  comprobar:
+    - comando: "git rev-parse --git-common-dir && pwd"
+      donde: shell
+      busca: "si el directorio común de git no está debajo de tu ruta, estás en un worktree"
+  solucion:
+    - "Si el trabajo tiene que tocar el checkout principal, llama a `EnterWorktree` primero: es la puerta explícita, y existe para que el paso sea una decisión y no un accidente."
+    - "Si el aislamiento te estorba de forma sistemática, `worktree.bgIsolation` en `\"none\"` deja que los trabajos en segundo plano editen la copia de trabajo directamente. Requiere v2.1.143 o posterior, y piénsalo: lo estás apagando por comodidad."
+    - "Revisa si el comando es realmente necesario ahí. Muchas veces lo que se bloquea es una redirección de git que debería correr en el principal, no en el árbol de trabajo."
+  pasa_si: "El comando corre, y tú puedes decir si lo hace dentro del worktree o porque entraste explícitamente al principal."
+  aplica_desde: "semana 32 de 2026 para el alcance ampliado a Bash y redirecciones"
+  evidencia: ejecutada
+  fuente: "`settings.md` y el módulo 21, endurecimientos silenciosos. `git rev-parse --git-common-dir` se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    No estás en un worktree. Entonces lo que bloquea es otra cosa: mira las reglas
+    `deny` y el modo de permisos.
+  relacionados:
+    - dos-sesiones-se-pisan-los-archivos
+    - el-trabajo-nocturno-toco-la-rama-principal
+    - el-cd-no-se-mantiene-entre-comandos
+
+la-otra-sesion-no-recibe-nada:
+  diagnostico: >-
+    La mensajería entre sesiones **requiere v2.1.224 o posterior, y macOS o
+    Linux**. Si estás por debajo, o en Windows, no es que el mensaje se pierda: es
+    que la función no está.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.224 o posterior"
+    - comando: "uname -s"
+      donde: shell
+      busca: "`Linux` o `Darwin`. En Windows no aplica"
+  solucion:
+    - "Comprueba versión y plataforma antes que nada: son dos requisitos duros."
+    - "Lista lo que hay con `/list-agents`. Si la otra sesión no aparece ahí, no le vas a poder escribir."
+    - "Comprueba que el nombre con el que escribes es exactamente el que imprime esa lista, incluido el sufijo si dos comparten nombre."
+    - "Si necesitas comunicación fiable entre procesos que no cumplen los requisitos, el disco sigue siendo la respuesta: un archivo que uno escribe y otro lee."
+  pasa_si: "`/list-agents` muestra la sesión de destino y el mensaje llega."
+  aplica_desde: "2.1.224, y solo macOS o Linux"
+  evidencia: ejecutada
+  fuente: "Documentación de mensajería entre sesiones. `claude --version` y `uname -s` se ejecutaron: 2.1.229 sobre Linux, así que esta máquina cumple los dos requisitos"
+  no_aplica_si: >-
+    Estás en Windows. Ahí la función no existe y ninguna configuración la trae.
+  relacionados:
+    - mis-subagentes-no-se-coordinan-entre-si
+    - dos-sesiones-se-pisan-los-archivos
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+
+el-equipo-de-agentes-se-ha-comido-el-presupuesto:
+  diagnostico: >-
+    Es el enfoque **más caro que hay**, y no por poco: son **sesiones completas y
+    longevas**, cada una con su system prompt, su contexto y su historial, en vez
+    de tareas que devuelven un resumen y desaparecen.
+  comprobar:
+    - comando: "/cost"
+      donde: sesion
+      busca: "el reparto entre la conversación principal y lo demás"
+  solucion:
+    - "Baja un escalón antes de subirlo: para investigar y devolver un hallazgo, un **subagente** basta y su coste es el resumen. El equipo se reserva para trabajo que de verdad necesita coordinación."
+    - "Si el contexto es el mismo, usa un **fork** en vez de un subagente: hereda system prompt, herramientas e historial del padre, así que **su primera petición lee la caché del padre**. Un subagente empieza en frío, con TTL de cinco minutos incluso con suscripción."
+    - "Pon un techo con `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, y recuerda que un fork iniciado con `/subtask` ocupa plaza mientras corre."
+    - "Mide con el analizador de gasto sobre tus propios registros antes de decidir. Los tokens se miden; los euros los pone quien los tiene."
+  pasa_si: "Puedes nombrar, para cada pieza en marcha, por qué es un equipo y no un subagente o un fork."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`sub-agents.md` y `costs.md`, más el módulo 15 de la guía"
+  no_aplica_si: >-
+    El gasto viene de la conversación principal. Entonces mira la caché: lo que la
+    rompe es tocar configuración, no trabajar.
+  relacionados:
+    - mis-subagentes-no-aprovechan-la-cache
+    - mis-subagentes-no-se-coordinan-entre-si
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+
+mi-stopfailure-no-cambia-nada:
+  diagnostico: >-
+    Por diseño: en `StopFailure` **se ignoran su salida y su código de salida**. El
+    evento existe para que te enteres de que un turno terminó por un error de API,
+    no para que decidas nada al respecto.
+  comprobar:
+    - comando: "python3 -m json.tool .claude/settings.json | grep -A6 StopFailure"
+      donde: shell
+      busca: "si esperas que devuelva una decisión, ahí está el malentendido"
+  solucion:
+    - "Úsalo para lo que sirve: alertar. Llevar el aviso a Slack, al móvil o a tu registro."
+    - "Si necesitas decidir algo, el evento no es este. El veto vive en `PreToolUse`, y la puerta de calidad de fin de turno en `Stop`."
+    - "Ten en cuenta además que `StopFailure` solo admite manejadores `command`, `http` y `mcp_tool`: no admite `prompt` ni `agent`."
+  pasa_si: "El aviso llega a donde tenía que llegar, y ninguna decisión de tu flujo depende de lo que devuelva este hook."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`hooks.md`, tabla de los 31 eventos"
+  no_aplica_si: >-
+    Lo que quieres es vetar antes de que algo corra. Ese es `PreToolUse`, y sin
+    `async`.
+  relacionados:
+    - mi-hook-async-no-bloquea-nada
+    - mi-hook-no-dispara-nunca
+    - puse-async-en-un-hook-http
+
+la-tarea-en-la-nube-no-ve-mis-archivos:
+  diagnostico: >-
+    Corre sobre un **clon nuevo**, no sobre tu disco. Es la propiedad que la hace
+    funcionar con la máquina apagada, y el precio es exactamente ese.
+  comprobar:
+    - comando: "git status --short"
+      donde: shell
+      busca: "lo que tengas sin confirmar es justo lo que la nube no va a ver"
+  solucion:
+    - "Confirma y publica lo que la tarea necesita. Lo que no esté en el remoto no existe para ella."
+    - "Si la tarea necesita archivos que no van a git, pásaselos por otra vía o cambia de superficie."
+    - "Si necesitas tu disco **y** que corra sin sesión abierta, la respuesta son las **tareas programadas de escritorio**: corren en tu máquina, con acceso a tus archivos, sin sesión abierta y con intervalo mínimo de un minuto."
+    - "Ten presente el resto del trato de la nube: no hay confirmaciones de permiso porque corre sola, los MCP son conectores por tarea, y el intervalo mínimo es de una hora."
+  pasa_si: "Todo lo que la tarea necesita está publicado en el remoto, o has movido el trabajo a una superficie que sí ve tu disco."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`scheduled-tasks.md`, tabla 13 de la guía. `git status --short` se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    Tu organización tiene un entorno self-hosted. Ahí la sesión corre dentro de
+    vuestra red y el alcance de lo que ve lo decidís vosotros.
+  relacionados:
+    - quiero-sondear-cada-minuto-en-la-nube
+    - mis-tareas-de-loop-desaparecieron
+    - mi-tarea-en-segundo-plano-desaparecio
+
+mi-ruta-relativa-no-resuelve:
+  diagnostico: >-
+    Una ruta relativa en un catálogo de plugins **debe empezar por `./`**, y **se
+    resuelve contra la raíz del catálogo**, no contra tu directorio de trabajo ni
+    contra el plugin.
+  comprobar:
+    - comando: "python3 -m json.tool .claude-plugin/marketplace.json | grep -A2 source"
+      donde: shell
+      busca: "las rutas que no empiezan por `./`"
+  solucion:
+    - "Pon el `./` delante. Sin él no es una ruta relativa válida en este contexto."
+    - "Cuenta desde la raíz del catálogo, que es donde vive `marketplace.json`."
+    - "No confundas los dos anclajes: la **fuente del marketplace** localiza el catálogo y admite `ref`, o sea rama o etiqueta, pero **no `sha`**; la **fuente del plugin** es el campo `source` de cada entrada y admite `ref` **y `sha`**."
+  pasa_si: "El plugin se instala desde el catálogo sin que tengas que darle una ruta absoluta."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`plugin-marketplaces.md`"
+  no_aplica_si: >-
+    La ruta que falla es la del `--plugin-dir`. Esa es una ruta del sistema de
+    archivos normal y no sigue esta regla.
+  relacionados:
+    - quise-anclar-el-catalogo-a-un-commit-y-no-me-deja
+    - mi-plugin-no-encuentra-las-skills
+    - una-actualizacion-de-otro-equipo-me-rompio-el-plugin
+
+una-actualizacion-de-otro-equipo-me-rompio-el-plugin:
+  diagnostico: >-
+    Falta restricción de versión en la dependencia. Si la entrada del catálogo
+    apunta a una rama, te llevas lo que haya en esa rama el día que instales, que
+    es una decisión que has delegado en otro equipo sin querer.
+  comprobar:
+    - comando: "python3 -m json.tool .claude-plugin/marketplace.json | grep -A3 '\"source\"'"
+      donde: shell
+      busca: "entradas ancladas a una rama en vez de a un `sha`"
+  solucion:
+    - "Ancla la entrada del plugin a un `sha`: **la fuente del plugin sí lo admite**, y eso clava exactamente el código que corre en las máquinas de tu gente."
+    - "El catálogo déjalo con `ref`, que es lo único que admite y además es lo que quieres: debe poder moverse para añadir entradas. Lo que se ejecuta se clava; el índice que lo lista, no."
+    - "Sube el `sha` a propósito, revisando el diff, no por arrastre."
+    - "Si tu política de seguridad exige reproducibilidad, esto es exactamente lo que la cumple."
+  pasa_si: "La entrada del plugin lleva `sha`, y una instalación limpia hoy trae el mismo código que trajo ayer."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`plugin-marketplaces.md`, las dos fuentes y sus anclajes"
+  no_aplica_si: >-
+    El plugin es tuyo y controlas los dos repositorios. Aun así merece el anclaje:
+    el problema no es la confianza, es enterarte de cuándo cambia.
+  relacionados:
+    - quise-anclar-el-catalogo-a-un-commit-y-no-me-deja
+    - mi-ruta-relativa-no-resuelve
+    - seguridad-nos-ha-parado-la-instalacion
+
+en-las-maquinas-de-mi-equipo-no-hay-git:
+  diagnostico: >-
+    No hace falta. Existe una fuente de tipo **`archive`**: un zip servido por
+    HTTPS. Requiere **v2.1.224 o posterior**.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.224 o posterior"
+    - comando: "claude --help | grep -- '--plugin-dir'"
+      donde: shell
+      busca: "acepta un directorio o un .zip"
+  solucion:
+    - "Publica el plugin como zip y sirve la URL desde donde ya sirvas artefactos internos."
+    - "Usa la fuente `archive` en la entrada del catálogo."
+    - "Para una máquina suelta, `--plugin-dir` acepta directamente un directorio o un `.zip`."
+    - "Comprueba la versión antes de prometerlo al equipo: por debajo de 2.1.224 esta fuente no existe y la instalación falla sin explicar bien por qué."
+  pasa_si: "Una máquina sin git instala el plugin desde la URL del zip."
+  aplica_desde: "2.1.224"
+  evidencia: ejecutada
+  fuente: "`plugin-marketplaces.md`, las cinco fuentes. `claude --version` y `--plugin-dir` se comprobaron contra 2.1.229"
+  no_aplica_si: >-
+    Estás por debajo de 2.1.224. Ahí el arreglo es actualizar, no cambiar de
+    fuente.
+  relacionados:
+    - mi-plugin-no-encuentra-las-skills
+    - una-actualizacion-de-otro-equipo-me-rompio-el-plugin
+    - el-nuevo-no-tiene-la-misma-configuracion
+
+nadie-usa-el-plugin-interno:
+  diagnostico: >-
+    Existe pero nadie sabe cuándo le toca. Un plugin interno compite con la
+    costumbre, y la costumbre gana siempre salvo que alguien te diga en el momento
+    justo que hay algo mejor.
+  comprobar:
+    - comando: "python3 -m json.tool .claude-plugin/marketplace.json | grep -A4 relevance"
+      donde: shell
+      busca: "si no hay bloque `relevance`, nadie va a descubrirlo solo"
+  solucion:
+    - "Añade el bloque **`relevance`** en la entrada del catálogo: es lo que hace que el plugin se sugiera cuando encaja, en vez de esperar a que alguien se acuerde."
+    - "Si el plugin tiene marketplace oficial, tu herramienta puede **escribir un hint desde su propio CLI** para proponerlo en el momento correcto."
+    - "Revisa las descripciones de sus skills con el mismo criterio que una skill suelta: se escriben con las palabras que diría quien pide el trabajo, no con las que usarías para catalogarlo."
+    - "Y comprueba lo obvio antes de culpar al descubrimiento: que la estructura sea correcta, porque un plugin que no carga tampoco se usa."
+  pasa_si: "Alguien que no sabía del plugin lo acaba usando sin que tú se lo digas."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`plugin-marketplaces.md`, bloque `relevance` y hints"
+  no_aplica_si: >-
+    El plugin no carga en las máquinas de los demás. Eso no es adopción, es
+    estructura, y tiene página propia.
+  relacionados:
+    - mi-plugin-no-le-funciona-a-nadie-mas
+    - mi-plugin-no-encuentra-las-skills
+    - se-activa-cuando-no-toca
+
+desde-el-movil-no-veo-mis-archivos:
+  diagnostico: >-
+    Estás colapsando dos ejes que son independientes: **dónde se ejecuta** y
+    **desde dónde lo pilotas**. El móvil es un **cliente de sesiones, no un sitio
+    donde corre código**. Que veas tus archivos depende enteramente de dónde corra
+    la sesión, no del móvil.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "dónde corre esta sesión. Esa es la respuesta, no el dispositivo desde el que miras"
+  solucion:
+    - "Si quieres tus archivos, la sesión tiene que correr en tu máquina: eso es **Remote Control**, que conecta claude.ai/code o la app de Claude a una sesión tuya. Empiezas en el escritorio y sigues desde el sofá."
+    - "Si la sesión corre en la nube, no ve tu disco: trabaja sobre un clon. Publica lo que necesite."
+    - "Ten presente que Remote Control es **research preview**, y que en **Team y Enterprise está apagado por defecto** hasta que un propietario lo active en administración."
+  pasa_si: "Sabes decir dónde corre la sesión que estás pilotando, y el acceso a archivos que observas coincide con esa respuesta."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`overview.md` y la tabla 1 de paridad por superficie del módulo 12"
+  no_aplica_si: >-
+    Estás en Team o Enterprise y Remote Control no está activado. Entonces la
+    conversación es con quien administra la organización, no con la configuración.
+  relacionados:
+    - busco-la-app-de-claude-code-y-no-existe
+    - remote-control-no-conecta-en-la-empresa
+    - la-tarea-en-la-nube-no-ve-mis-archivos
+
+busco-la-app-de-claude-code-y-no-existe:
+  diagnostico: >-
+    No hay aplicación móvil separada de Claude Code. Las sesiones cloud y Remote
+    Control viven en la **pestaña Code de la app de Claude**, y Dispatch es una
+    tarea a la que le escribes.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "confirma desde el CLI que la sesión existe; luego la buscas en la pestaña Code"
+  solucion:
+    - "Instala la app de Claude para iOS o Android y entra en la pestaña **Code**."
+    - "Ajusta la expectativa de lo que vas a encontrar: es un cliente. Arranca y vigila; no ejecuta nada."
+    - "El terminal sigue siendo la referencia: es el único con el conjunto completo de funciones, el único con Agent SDK, el único que habla con proveedores externos y el único donde funciona el modo no interactivo."
+  pasa_si: "Encuentras tus sesiones en la pestaña Code de la app de Claude."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "Módulo 12 de la guía, superficies y sus clientes"
+  no_aplica_si: >-
+    Lo que buscas es la aplicación de escritorio, que sí existe y sí ejecuta en tu
+    máquina.
+  relacionados:
+    - desde-el-movil-no-veo-mis-archivos
+    - computer-use-no-me-aparece
+    - remote-control-no-conecta-en-la-empresa
+
+computer-use-no-me-aparece:
+  diagnostico: >-
+    Cuatro condiciones, y basta con fallar una: es **research preview**, solo
+    **macOS**, solo **Pro y Max** (no está en Team ni en Enterprise) y **no
+    funciona en modo no interactivo**.
+  comprobar:
+    - comando: "uname -s"
+      donde: shell
+      busca: "`Darwin`. En Linux o Windows no aparece y no hay nada que activar"
+  solucion:
+    - "Recorre las cuatro condiciones en orden antes de tocar configuración."
+    - "Fíjate en la inversión, que sorprende a todo el mundo: **computer use y Dispatch no existen en Team ni en Enterprise**, mientras que **Code Review no existe en Pro ni en Max**. No es una escalera lineal donde el plan caro incluye todo lo del barato."
+    - "Si estás en Team o Enterprise y lo necesitas, no hay ajuste que lo traiga: es disponibilidad de plan."
+    - "Si lo querías para automatizar, descártalo: no funciona con `-p`."
+  pasa_si: "Cumples las cuatro condiciones, o sabes cuál te falta y que no se arregla configurando."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Tabla 2 de disponibilidad por plan del módulo 14 y tabla de madurez del 12. `uname -s` se ejecutó: `Linux`, así que esta máquina no cumple la condición de plataforma"
+  no_aplica_si: >-
+    Estás en macOS con Pro o Max en sesión interactiva y aun así no aparece.
+    Entonces sí es un problema, y toca `claude doctor`.
+  relacionados:
+    - busco-la-app-de-claude-code-y-no-existe
+    - nos-fuimos-a-bedrock-y-perdimos-la-revision-de-codigo
+    - remote-control-no-conecta-en-la-empresa
+
+remote-control-no-conecta-en-la-empresa:
+  diagnostico: >-
+    En **Team y Enterprise está apagado por defecto** hasta que un propietario
+    active el interruptor en la configuración de administración. No es un fallo de
+    red ni de tu configuración.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "confirma que la sesión local está sana antes de culpar a la red"
+  solucion:
+    - "Pídeselo a quien administre la organización: es un interruptor en administración, y solo lo puede tocar un propietario."
+    - "Cuando lo pidas, di también que es **research preview**: comportamiento, límites y API pueden cambiar, y eso condiciona si conviene apoyar un proceso crítico encima."
+    - "Lo mismo vale para **Channels**, que en Team y Enterprise también lo activa el administrador."
+    - "Mientras tanto, para trabajar desde fuera te quedan las sesiones en la nube, con el límite conocido de que no ven tu disco."
+  pasa_si: "El interruptor está activado en administración y la sesión conecta."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "Tabla 2 de disponibilidad por plan del módulo 14 y sección 12.7"
+  no_aplica_si: >-
+    Estás en Pro o en Max. Ahí viene activado, y si no conecta el problema es
+    otro: red, versión o sesión.
+  relacionados:
+    - puse-la-conexion-automatica-en-el-repo-y-no-funciona
+    - desde-el-movil-no-veo-mis-archivos
+    - no-me-funcionan-los-server-managed-settings
+
+puse-la-conexion-automatica-en-el-repo-y-no-funciona:
+  diagnostico: >-
+    Endurecimiento de la semana 32: **un repositorio ya no puede activar** la
+    conexión automática de Remote Control, **solo desactivarla**. Es el patrón de
+    siempre: lo que un repositorio ajeno podría usar para ampliar lo que se le
+    permite, no se lee del repositorio.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "cualquier versión posterior a la semana 32 ya tiene el endurecimiento"
+  solucion:
+    - "Activa la conexión automática desde tu configuración de usuario. Desde el repositorio solo se puede apagar."
+    - "Aprovecha que lo que sí puede hacer el repositorio es **desactivarla**, que es exactamente la dirección segura: un repo sensible puede negarse a que se pilote en remoto."
+    - "Reconoce el patrón porque se repite: `autoMode` no se lee del proyecto, `strictAllowlist` tampoco, y `autoMemoryDirectory` puesto desde el repositorio solo se honra tras el diálogo de confianza."
+  pasa_si: "La conexión automática está activada en tu configuración de usuario y funciona, o el repositorio la está apagando a propósito y lo sabes."
+  aplica_desde: "semana 32 de 2026"
+  evidencia: ejecutada
+  fuente: "Módulo 21, endurecimientos silenciosos. `claude --version` se ejecutó: 2.1.229, posterior al cambio"
+  no_aplica_si: >-
+    Tienes una versión anterior a la semana 32. Ahí todavía se podía activar desde
+    el repositorio, y el arreglo es entender que eso ya no vuelve.
+  relacionados:
+    - remote-control-no-conecta-en-la-empresa
+    - mi-strictallowlist-del-repositorio-no-hace-nada
+    - dar-por-hecho-que-un-allow-de-proyecto-se-aplica
+
+activamos-zdr-y-desaparecio-la-web:
+  diagnostico: >-
+    **Se desactiva automáticamente.** Claude Code en la web, las sesiones cloud
+    desde escritorio y Artifacts se apagan solos al activar Zero Data Retention.
+    No es una incompatibilidad accidental: esas superficies guardan estado que ZDR
+    dice que no se guarda.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "el CLI local sigue funcionando; lo que desaparece son las superficies en la nube"
+  solucion:
+    - "Asúmelo como parte del trato y dilo antes de activarlo, no después. Es el mismo error que llevarse el tráfico a Bedrock y descubrir tres meses más tarde que se perdió la revisión de código."
+    - "Lo que queda intacto es el CLI y las superficies que corren en tu máquina: escritorio, VS Code, JetBrains."
+    - "Si necesitáis tareas largas que sobrevivan a la desconexión **y** ZDR, la vía es un **entorno self-hosted**, que corre dentro de vuestra red. Está en beta pública para Team y Enterprise, y viene apagado por defecto."
+    - "Y no des ZDR por más ancho de lo que es: **no cubre analítica, gestión de plazas ni integraciones de terceros**."
+  pasa_si: "El equipo sabe, por escrito y antes de la activación, qué superficies pierde y con qué las sustituye."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`data-usage.md` y la tabla 2 del módulo 14"
+  no_aplica_si: >-
+    No estáis en Enterprise. **ZDR solo existe en Enterprise**, así que si la web
+    ha desaparecido es por otra causa.
+  relacionados:
+    - activamos-zdr-y-desaparecio-claude-code-en-la-web
+    - pedimos-zdr-y-no-aparece
+    - tenemos-zdr-estamos-cubiertos
+
+nuestro-slack-va-a-dejar-de-funcionar:
+  diagnostico: >-
+    Está **en retirada en Team y Enterprise** en favor de **Claude Tag**, que
+    ejecuta `@Claude` como **identidad compartida de la organización** en vez de
+    bajo la cuenta de un usuario. La app y el identificador se quedan; lo que
+    cambia es bajo qué identidad corre.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "para fechar contra qué versión estáis planificando la migración"
+  solucion:
+    - "Planifica la migración a Claude Tag. **La fecha de corte la da vuestro equipo de cuenta**, no una fecha pública: preguntadla y ponedla en el calendario."
+    - "Entended el cambio de fondo, que es el que importa para auditoría: pasa de correr bajo la cuenta de quien lo invoca a correr como identidad de la organización. Eso cambia quién responde de lo que haga."
+    - "Si estáis en **Pro o Max, no os aplica**: ahí Claude Code en Slack sigue siendo la vía de instalación."
+    - "Revisad qué automatismos vuestros dependen del comportamiento actual antes de la fecha, no después."
+  pasa_si: "Tenéis fecha de corte confirmada por vuestro equipo de cuenta y un plan escrito de migración a Claude Tag."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "Módulo 21 de la guía, renombrado y en retirada"
+  no_aplica_si: >-
+    Estáis en Pro o en Max. Ahí no hay retirada y Slack sigue siendo la vía normal.
+  relacionados:
+    - nuestro-bot-no-puede-dispararla
+    - a-un-companero-le-falla-siempre-el-disparo
+    - el-tutorial-dice-ultraplan-y-no-existe
+
+claude-entro-en-un-panel-donde-yo-estaba-logueado:
+  diagnostico: >-
+    Por diseño: la automatización de navegador **comparte el estado de sesión de
+    tu navegador**. Si tú estás dentro, la herramienta está dentro. No hay una
+    frontera de identidad separada que te proteja de eso.
+  comprobar:
+    - comando: "ls ~/.config/google-chrome/Default 2>/dev/null | head -3"
+      donde: shell
+      busca: "el perfil cuyo estado de sesión se comparte"
+  solucion:
+    - "Usa un **perfil de navegador separado** para el trabajo automatizado, sin sesiones iniciadas en nada que no quieras que toque. Es la barrera real y cuesta un minuto."
+    - "Pon reglas `deny` sobre los dominios que no se tocan, y lista blanca de dominios en el sandbox si la superficie lo merece."
+    - "Trátalo como lo que es en tu modelo de amenaza: la herramienta hereda tus privilegios en ese navegador. Detectar una inyección no es impedirla; el control tiene que existir aunque el modelo se porte mal."
+    - "Y recuerda de dónde entra el texto no confiable: el contenido de las páginas web es una de las tres puertas, junto con lo que devuelve un MCP y los tickets que cualquiera puede abrir."
+  pasa_si: "El navegador que usa la automatización no tiene sesión iniciada en ningún sistema que te preocupe."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`security.md` y el módulo 12. La ruta del perfil de Chrome se comprobó en esta máquina"
+  no_aplica_si: >-
+    Usas un navegador dedicado y limpio. Entonces el diseño está funcionando y el
+    riesgo es el que decidiste asumir.
+  relacionados:
+    - detecto-la-inyeccion-ya-estamos-seguros
+    - el-sandbox-no-protege-de-mi-servidor-mcp
+    - los-mcp-estan-dentro-de-nuestro-perimetro
+
+la-revision-no-aplica-nuestras-reglas:
+  diagnostico: >-
+    O falta `REVIEW.md` en la raíz del repositorio, o lo has escrito con un import
+    `@`. Y esta es de las que cuestan una tarde: **el `REVIEW.md` se pega
+    literalmente**, la sintaxis `@` **no se expande** y los archivos referenciados
+    **no se leen**.
+  comprobar:
+    - comando: "ls -l REVIEW.md && grep -n '^@' REVIEW.md"
+      donde: shell
+      busca: "si `grep` encuentra líneas con `@`, eso es texto plano en el prompt, no un import"
+  solucion:
+    - "Crea `REVIEW.md` en la raíz. Su contenido se inyecta en el system prompt de **todos** los agentes de la tubería de revisión, como bloque de máxima prioridad por encima de la guía por defecto."
+    - "**Escribe las reglas dentro del archivo.** Si pones `@docs/estandares.md` esperando que se cargue, lo que has metido en el prompt es la cadena `@docs/estandares.md`."
+    - "Calibra lo que más rinde: qué significa 🔴 Important **en tu repositorio**, un tope a los nits para que la señal no se ahogue, qué no reportar nunca y qué comprobar siempre."
+    - "La calibración por defecto apunta a código de producción. Un repositorio de documentación, uno de configuración o un prototipo quieren algo mucho más estrecho."
+  pasa_si: "Una revisión de prueba marca lo que vuestro `REVIEW.md` dice que es importante, y no marca lo que dice que no reporte."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`code-review.md`, sección de `REVIEW.md`"
+  no_aplica_si: >-
+    Estáis en Pro o en Max. **Code Review no existe en esos planes**, así que no
+    hay revisión que calibrar.
+  relacionados:
+    - la-primera-revision-del-legacy-es-un-muro
+    - la-puerta-de-calidad-nunca-veta
+    - nos-fuimos-a-bedrock-y-perdimos-la-revision-de-codigo
+
+la-primera-revision-del-legacy-es-un-muro:
+  diagnostico: >-
+    Para eso existe la tercera severidad. 🟣 **Pre-existing** marca los fallos que
+    **ya estaban en el código y no los introdujo esta PR**. Sin esa categoría, la
+    primera revisión de un proyecto con historia sería mil hallazgos y nadie
+    volvería a mirarla.
+  comprobar:
+    - comando: "ls -l REVIEW.md 2>/dev/null || echo 'sin REVIEW.md: sin calibrar'"
+      donde: shell
+      busca: "si no existe, estáis leyendo la calibración por defecto y no la vuestra"
+  solucion:
+    - "Filtra por severidad y trata 🟣 Pre-existing como inventario, no como trabajo de esta PR."
+    - "Calibra con `REVIEW.md`: qué es 🔴 Important **aquí**, tope de nits, y qué no reportar nunca."
+    - "Usa el razonamiento extendido de cada hallazgo, que viene en una sección plegable con por qué lo marcó y cómo lo verificó. Es lo que permite discutirlo en vez de acatarlo."
+    - "Si el equipo ya ha empezado a cerrar comentarios sin mirarlos, el problema no es la herramienta: es que nadie ha calibrado qué es importante en este repositorio."
+  pasa_si: "La siguiente revisión cabe en una pantalla de 🔴 y el resto queda clasificado como preexistente."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`code-review.md`, severidades y `REVIEW.md`"
+  no_aplica_si: >-
+    Todos los hallazgos vienen marcados como introducidos por la PR. Entonces sí
+    los introdujo, y el muro es real.
+  relacionados:
+    - la-revision-no-aplica-nuestras-reglas
+    - cada-tarea-del-legacy-acaba-en-refactor-gigante
+    - tengo-que-revisarle-todo
+
+corre-pero-no-veo-nada:
+  diagnostico: >-
+    Estás en **modo automatización**, no en interactivo. La acción **detecta sola
+    cómo tiene que correr**: si el flujo lleva entrada `prompt`, corre sin esperar
+    a que la mencionen y **el resultado va al registro de la ejecución, no a un
+    comentario**.
+  comprobar:
+    - comando: "grep -n -A3 'prompt:' .github/workflows/*.yml"
+      donde: shell
+      busca: "si hay entrada `prompt`, estás en modo automatización y por eso no hay comentario"
+  solucion:
+    - "Si querías comentarios, **quita la entrada `prompt`**: sin ella la acción entra en modo interactivo y espera la frase disparadora, `@claude` por defecto, en un comentario o en el cuerpo de una incidencia."
+    - "Si querías automatización, el resultado está en el registro de la ejecución. Y ahí está el peligro real: **si nadie mira el registro, es como si no hubiera corrido**."
+    - "Cuando te quedes en automatización, dale una salida que alguien vea: un comentario escrito por tu propio paso, un aviso a Slack, o un check que bloquee la fusión."
+  pasa_si: "El resultado de cada ejecución aparece en un sitio que alguien mira sin tener que acordarse."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`github-actions.md`, los dos modos"
+  no_aplica_si: >-
+    La ejecución falla antes de arrancar Claude. Entonces mira las dos
+    comprobaciones sobre quien dispara: acceso de escritura y actor humano.
+  relacionados:
+    - a-un-companero-le-falla-siempre-el-disparo
+    - nuestro-bot-no-puede-dispararla
+    - la-puerta-de-calidad-nunca-veta
+
+a-un-companero-le-falla-siempre-el-disparo:
+  diagnostico: >-
+    No tiene **acceso de escritura** al repositorio. En eventos de incidencia y de
+    pull request, la acción comprueba eso antes de que Claude arranque, y la
+    ejecución **falla** si lo rechaza.
+  comprobar:
+    - comando: "gh api repos/:owner/:repo/collaborators/USUARIO/permission --jq .permission"
+      donde: shell
+      busca: "`write` o superior. Si dice `read`, ahí está la causa"
+  solucion:
+    - "Si el acceso de escritura es lo correcto, dáselo y se acabó."
+    - "Si no quieres darle escritura, usa **`allowed_non_write_users`** y pasa tu propio `github_token`. Las dos cosas, no solo la primera."
+    - "Recuerda que son **dos** comprobaciones y las dos tienen que pasar: acceso de escritura, y actor humano."
+    - "Los eventos que no tienen autor, como un disparo programado, **se saltan la comprobación de escritura**. Por eso a veces funciona de noche y no de día."
+  pasa_si: "Ese compañero dispara la acción y la ejecución arranca en vez de fallar."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`github-actions.md`, quién puede dispararla"
+  no_aplica_si: >-
+    Quien dispara es un bot. Esa es la otra comprobación y se arregla con
+    `allowed_bots`.
+  relacionados:
+    - nuestro-bot-no-puede-dispararla
+    - corre-pero-no-veo-nada
+    - el-token-de-ci-caduco-de-golpe
+
+nuestro-bot-no-puede-dispararla:
+  diagnostico: >-
+    En **todos** los eventos se **rechaza a un actor que sea un bot**, salvo que lo
+    listes explícitamente. Es la segunda de las dos comprobaciones, y a diferencia
+    de la de escritura, esta no se salta nunca por tipo de evento.
+  comprobar:
+    - comando: "grep -n 'allowed_bots' .github/workflows/*.yml"
+      donde: shell
+      busca: "si no aparece, tu bot está siendo rechazado por diseño"
+  solucion:
+    - "Añade tu bot a **`allowed_bots`** en el flujo de trabajo."
+    - "Añádelo por nombre y solo el que necesitas. Abrir la puerta a cualquier bot es abrirla a cualquiera que consiga escribir con un bot."
+    - "Comprueba también la primera puerta: acceso de escritura, con `allowed_non_write_users` y tu propio `github_token` si hace falta."
+    - "Si lo que quieres es que corra sin actor, un disparo programado se salta la comprobación de escritura, aunque no la de bot."
+  pasa_si: "El bot dispara la acción y la ejecución arranca."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`github-actions.md`, comprobación de actor humano"
+  no_aplica_si: >-
+    Quien dispara es una persona sin acceso de escritura. Esa es la otra
+    comprobación y tiene página propia.
+  relacionados:
+    - a-un-companero-le-falla-siempre-el-disparo
+    - corre-pero-no-veo-nada
+    - seguridad-nos-ha-parado-la-instalacion
+
+factura-de-ultrareview-disparada:
+  diagnostico: >-
+    Lo estáis lanzando en cada push, y es una función premium que **factura contra
+    créditos de uso, no contra el uso incluido en el plan**. A **5 a 25 $ por
+    revisión**, un equipo de veinte personas se construye una factura sorprendente
+    en una semana.
+  comprobar:
+    - comando: "grep -rn 'ultrareview\\|code-review ultra' .github/workflows/"
+      donde: shell
+      busca: "en qué eventos se dispara. Si es `on: push`, ahí está la factura"
+  solucion:
+    - "Lánzalo **antes de fusionar**, no en cada push. Es para tener confianza en un cambio grande, no para realimentación mientras iteras."
+    - "Para el bucle rápido usa `/code-review` a secas, que corre **local en tu sesión**, tarda segundos y cuenta contra tu uso normal."
+    - "Sabed lo que os toca: **Pro y Max tienen 3 ejecuciones gratis; Team y Enterprise no tienen ninguna**. Que los planes caros no traigan gratuitas es contraintuitivo y hay que saberlo antes de montar el flujo."
+    - "Acotadlo a las PR que lo merezcan: por tamaño del diff, por rutas sensibles, o a mano con una etiqueta."
+  pasa_si: "El disparo está en el evento de pull request y no en cada push, y podéis estimar cuántas revisiones al mes vais a pagar."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`code-review.md`, tabla de los tres niveles de revisión y su coste"
+  no_aplica_si: >-
+    Estáis usando `/code-review` local. Ese cuenta contra el uso normal y no
+    factura créditos.
+  relacionados:
+    - la-factura-de-revision-se-disparo
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+
+seguridad-nos-ha-parado-la-instalacion:
+  diagnostico: >-
+    Han visto que el permiso que pide la aplicación es **un superconjunto** de lo
+    que va a usar en la práctica, y han hecho su trabajo. El problema no es
+    técnico: es que la explicación llegó después de la solicitud.
+  comprobar:
+    - comando: "gh api /repos/:owner/:repo/installation --jq '.permissions' 2>/dev/null || echo 'sin instalación'"
+      donde: shell
+      busca: "los permisos concedidos de verdad, para poder hablar de datos y no de sensaciones"
+  solucion:
+    - "Explícalo **antes** de pedirlo, no cuando te lo bloqueen. Que el permiso sea un superconjunto es una propiedad conocida y se puede argumentar."
+    - "Lleva a la reunión lo que a seguridad le sirve de verdad: que cada release publica un **`manifest.json` con las sumas SHA256** de todos los binarios, y que **ese manifiesto está firmado con GPG por Anthropic**, así que verificar la firma verifica de forma transitiva todos los binarios que lista. Es mucho mejor respuesta que «lo bajamos de la web oficial»."
+    - "Lleva también las dos puertas de la acción, que juegan a tu favor: se exige acceso de escritura a quien dispara, y se rechaza a los bots salvo los que listéis."
+    - "Y ancla lo que se ejecuta: la fuente del plugin admite `sha`, así que podéis clavar el código exacto que corre en las máquinas."
+  pasa_si: "Seguridad tiene por escrito qué permisos se usan, cómo se verifica la procedencia del binario y quién puede disparar la acción."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`setup.md` (integridad del binario) y `github-actions.md` (permisos y disparo)"
+  no_aplica_si: >-
+    Lo que os han parado es la salida a internet, no la instalación. Eso es otra
+    conversación: el chequeo de `WebFetch` contra `api.anthropic.com`.
+  relacionados:
+    - webfetch-falla-en-toda-la-red-corporativa
+    - nuestro-bot-no-puede-dispararla
+    - una-actualizacion-de-otro-equipo-me-rompio-el-plugin
+
+nos-fuimos-a-bedrock-y-perdimos-la-revision-de-codigo:
+  diagnostico: >-
+    Code Review **requiere suscripción de Claude**, y con proveedor externo esa
+    columna desaparece. La decisión de irse a Bedrock por cumplimiento fue
+    correcta; lo que faltó fue la lista de lo que se dejaba por el camino.
+  comprobar:
+    - comando: "env | grep -E 'CLAUDE_CODE_USE_(BEDROCK|VERTEX|FOUNDRY)'"
+      donde: shell
+      busca: "si alguna está puesta, estáis en la fila de proveedor externo"
+  solucion:
+    - "Aceptad la lista completa antes de decidir, no después: **todo lo que no sea el CLI puro requiere suscripción de Claude**. Con clave de API o proveedor externo, la columna de superficies se reduce drásticamente."
+    - "Fijaos además en la inversión por plan, que ya duele sin cambiar de proveedor: **Code Review no existe en Pro ni en Max**, solo en Team y Enterprise."
+    - "Si necesitáis revisión automática y os quedáis en Bedrock, montadla vosotros: `claude -p` en la tubería con vuestro propio prompt de revisión, que sí funciona, y una puerta que bloquee la fusión."
+    - "Y sacad la lección para la próxima: un CTO que descubre tres meses tarde lo que perdió tomó una decisión correcta con información incompleta. Esa lista se enseña antes."
+  pasa_si: "Tenéis por escrito qué funciones perdisteis y con qué habéis sustituido cada una."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Tabla 2 de disponibilidad por plan y proveedor del módulo 14. La comprobación del entorno se ejecutó en esta máquina"
+  no_aplica_si: >-
+    Estáis en Pro o en Max. Ahí Code Review no existía tampoco antes de mover
+    nada, así que no lo perdisteis con Bedrock.
+  relacionados:
+    - no-me-funcionan-los-server-managed-settings
+    - auto-mode-no-va-en-bedrock
+    - la-revision-no-aplica-nuestras-reglas
+
+no-me-funcionan-los-server-managed-settings:
+  diagnostico: >-
+    Dos condiciones y las dos hay que cumplirlas: **no están disponibles en
+    Amazon Bedrock**, y requieren **Team o Enterprise**. En Pro y en Max no
+    existen.
+  comprobar:
+    - comando: "env | grep CLAUDE_CODE_USE_BEDROCK"
+      donde: shell
+      busca: "si está puesta, esta función no está disponible y no hay configuración que la traiga"
+    - comando: "/status"
+      donde: sesion
+      busca: "qué fuente de settings gestionados está activa, si es que hay alguna"
+  solucion:
+    - "Comprobad las dos condiciones antes de depurar configuración: proveedor y plan."
+    - "Si estáis en Bedrock y necesitáis política central, la alternativa son los settings gestionados de **endpoint**: `managed-settings.json` del sistema, plist en macOS o registro en Windows, desplegados con MDM, directivas de grupo o Ansible."
+    - "Y si usáis los dos, recordad que **dentro de managed las fuentes no se fusionan**: se usa la primera que entregue una configuración no vacía. Elegid una y dejad la otra vacía."
+    - "Alternativa sin archivo suelto para el CLAUDE.md de organización: la clave `claudeMd` dentro de `managed-settings.json`."
+  pasa_si: "`/status` nombra una fuente de settings gestionados activa, y es la que desplegasteis."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`server-managed-settings.md` y tabla 2 del módulo 14. La comprobación del entorno se ejecutó en esta máquina"
+  no_aplica_si: >-
+    Estáis en Team o Enterprise sin Bedrock y aun así no llegan. Entonces es el
+    caché: persiste hasta el siguiente fetch correcto.
+  relacionados:
+    - cambie-la-politica-en-el-servidor-y-no-llega
+    - los-settings-del-plist-se-ignoran
+    - puse-los-settings-de-servidor-y-los-del-plist-se-ignoran
+
+con-el-gateway-se-nos-come-el-contexto:
+  diagnostico: >-
+    Vuestro gateway **no reenvía los bloques `tool_reference`**, así que Claude
+    Code apaga tool search y carga todos los esquemas de MCP por adelantado. El
+    peaje es proporcional a cuántas herramientas tengáis conectadas.
+  comprobar:
+    - comando: "curl -sS $ANTHROPIC_BASE_URL/protocol | head -30"
+      donde: shell
+      busca: "el contrato que vuestro gateway dice cumplir"
+  solucion:
+    - "Levantad un **Claude apps gateway** de referencia, que viene en el mismo binario que el CLI, y descargaos su contrato de `GET /protocol`. Es el camino más corto para saber qué tiene que cumplir el vuestro, e incluye sus endpoints de SSO, entrega de settings gestionados y telemetría."
+    - "Comparad y arreglad el reenvío de `tool_reference` en vuestro proxy."
+    - "**No pongáis `ENABLE_TOOL_SEARCH` antes de arreglarlo.** Forzarlo sobre un gateway que no reenvía esos bloques no os da tool search: os da fallos."
+    - "Cuando lo reenvíe, fijadlo desde settings gestionados para toda la organización, que se puede desde **v2.1.227**."
+  pasa_si: "`/context` muestra las herramientas MCP pesando como nombres y no como esquemas completos, con `ENABLE_TOOL_SEARCH` activo."
+  aplica_desde: "cualquiera; fijarlo desde settings gestionados requiere 2.1.227"
+  evidencia: documentada
+  fuente: "Módulo 14, contrato del gateway y `GET /protocol`, y `mcp.md`"
+  no_aplica_si: >-
+    No usáis gateway. Entonces tool search está activo por defecto y el contexto se
+    lo come otra cosa: medidlo con `/mcp` y `/context`.
+  relacionados:
+    - con-el-gateway-me-como-el-contexto
+    - puse-enable-tool-search-y-sigue-cargando-todo
+    - desconecto-los-mcp-para-ahorrar-contexto
+
+pedimos-zdr-y-no-aparece:
+  diagnostico: >-
+    **Zero Data Retention solo existe en Enterprise.** No está en Pro, ni en Max,
+    ni en Team. No es un interruptor escondido: es disponibilidad de plan.
+  comprobar:
+    - comando: "claude auth status"
+      donde: shell
+      busca: "con qué cuenta y qué plan estáis operando de verdad"
+  solucion:
+    - "Comprobad el plan antes de buscar el ajuste. Es lo que zanja la conversación en un minuto."
+    - "Si necesitáis ZDR de verdad, la vía es Enterprise, y la conversación es comercial y no técnica."
+    - "Y antes de pedirlo, sabed qué compra y qué no: **no cubre analítica, gestión de plazas ni integraciones de terceros**, y **apaga automáticamente** Claude Code en la web, las sesiones cloud desde escritorio y Artifacts."
+    - "Si lo que os preocupa es el entrenamiento, eso ya está cubierto sin ZDR en los planes comerciales, con un matiz importante que tiene página propia."
+  pasa_si: "Sabéis en qué plan estáis y, si no es Enterprise, habéis dejado de buscar el ajuste."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Tabla 2 de disponibilidad por plan del módulo 14. `claude auth status` se comprobó contra 2.1.229"
+  no_aplica_si: >-
+    Ya estáis en Enterprise y no aparece. Entonces sí es un problema de
+    aprovisionamiento y va por vuestro equipo de cuenta.
+  relacionados:
+    - tenemos-zdr-estamos-cubiertos
+    - activamos-zdr-y-desaparecio-la-web
+    - no-entrenan-con-nuestro-codigo
+
+nuestro-lanzador-no-envuelve-el-servicio-en-segundo-plano:
+  diagnostico: >-
+    Vuestro lanzador envuelve el comando `claude` del `PATH`, y eso no alcanza a
+    lo que hace falta: **los procesos que Claude Code lanza desde su propio
+    binario arrancan por la ruta directa**, sin consultar el `PATH`. El servicio en
+    segundo plano, cada sesión de agent view y los relanzamientos tras una
+    actualización se os escapan.
+  comprobar:
+    - comando: "readlink -f $(command -v claude)"
+      donde: shell
+      busca: "la ruta real del binario. Esa es por la que arrancan los procesos hijos, no la del PATH"
+  solucion:
+    - "Poned **`CLAUDE_CODE_PROCESS_WRAPPER`**. Es lo que hace que todos esos procesos pasen por vuestro lanzador."
+    - "Requiere **v2.1.208 o posterior**. Las versiones anteriores **ignoran la variable y arrancan todo sin envolver**, en silencio, que es la parte peligrosa."
+    - "Entended por qué pasa: la instalación nativa deja `~/.local/bin/claude` como enlace simbólico a una versión concreta, y los hijos salen de la ruta resuelta."
+    - "Ponedlo en la lista de comprobación de despliegue de flota, junto a la versión mínima, la rotación de credenciales y quién puede activar entornos self-hosted."
+  pasa_si: "Un proceso en segundo plano arranca y lo veis pasar por vuestro lanzador, no solo la sesión que lanzáis a mano."
+  aplica_desde: "2.1.208"
+  evidencia: ejecutada
+  fuente: "Módulo 14, lanzador corporativo. `readlink -f` sobre el `claude` de esta máquina se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    No tenéis lanzador obligatorio. Entonces esta variable no os hace falta y solo
+    añade una pieza que mantener.
+  relacionados:
+    - puse-la-variable-del-lanzador-y-no-hace-nada
+    - homebrew-no-me-actualiza-a-la-ultima
+    - los-settings-del-plist-se-ignoran
+
+puse-la-variable-del-lanzador-y-no-hace-nada:
+  diagnostico: >-
+    `CLAUDE_CODE_PROCESS_WRAPPER` requiere **v2.1.208 o posterior**. Por debajo,
+    **se ignora en silencio**: no hay aviso, no hay error, y todo arranca sin
+    envolver mientras vosotros creéis que está cubierto.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.208 o posterior"
+    - comando: "env | grep CLAUDE_CODE_PROCESS_WRAPPER"
+      donde: shell
+      busca: "que la variable está puesta en el entorno donde arranca de verdad, no solo en tu shell"
+  solucion:
+    - "Comprobad la versión primero. Es el fallo silencioso más caro de este módulo porque parece que funciona."
+    - "Actualizad, y fijad `minimumVersion` en los settings gestionados para que ninguna máquina de la flota caiga por debajo."
+    - "Comprobad dónde está puesta la variable: si vuestro servicio arranca desde systemd o desde un lanzador de sesión, el entorno no es el de vuestra shell interactiva."
+    - "Verificadlo por observación, no por configuración: mirad si un proceso en segundo plano pasa de verdad por el lanzador."
+  pasa_si: "`claude --version` está en 2.1.208 o por encima, la variable está en el entorno correcto, y lo habéis visto funcionar sobre un proceso hijo."
+  aplica_desde: "2.1.208"
+  evidencia: ejecutada
+  fuente: "Módulo 14, lanzador corporativo. `claude --version` se ejecutó: 2.1.229, por encima del corte"
+  no_aplica_si: >-
+    Estáis en 2.1.208 o superior con la variable bien puesta y sigue sin envolver.
+    Entonces sí es un problema y hay que mirar el lanzador, no Claude Code.
+  relacionados:
+    - nuestro-lanzador-no-envuelve-el-servicio-en-segundo-plano
+    - comparar-dos-maquinas-sin-mirar-versiones
+    - mi-ajuste-no-se-aplica
+
+los-settings-del-plist-se-ignoran:
+  diagnostico: >-
+    Vuestros settings de servidor entregaron claves, y **dentro de managed las
+    fuentes no se fusionan**: se usa la primera que entregue una configuración no
+    vacía. Si los de servidor entregan **cualquier** clave, los de endpoint (plist,
+    registro) se ignoran **enteros**.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "qué fuente managed está activa. Solo va a haber una"
+  solucion:
+    - "**No mezcléis fuentes managed.** Elegid una y dejad la otra vacía: es la regla práctica para una flota, y la combinación de «no se fusionan» con «los cacheados persisten hasta el siguiente fetch correcto» produce diagnósticos imposibles."
+    - "Si necesitáis de verdad las dos, las únicas excepciones por clave son las *cross-source lock keys*, como los candados de la lista blanca del sandbox, y el bloque **`env`**, que sí se fusiona variable a variable: la fuente de mayor prioridad que la defina gana y las inferiores rellenan lo que quede. Requiere **v2.1.223 o posterior**."
+    - "Usad `/status` antes de teorizar. Os dice cuál manda en un segundo."
+  pasa_si: "`/status` nombra una sola fuente managed activa y es la que queríais desplegar."
+  aplica_desde: "cualquiera; fusión de `env` desde 2.1.223"
+  evidencia: documentada
+  fuente: "`server-managed-settings.md`, precedencia managed y excepciones por clave"
+  no_aplica_si: >-
+    No tenéis settings de servidor. Entonces el plist debería mandar, y si no lo
+    hace mirad si valida: managed es tolerante y degrada entradas inválidas.
+  relacionados:
+    - puse-los-settings-de-servidor-y-los-del-plist-se-ignoran
+    - cambie-la-politica-en-el-servidor-y-no-llega
+    - no-me-funcionan-los-server-managed-settings
+
+auto-mode-no-va-en-bedrock:
+  diagnostico: >-
+    Soporte **parcial**, no ausente: en Bedrock auto mode funciona **solo con
+    Sonnet 5, Opus 4.7 o posteriores y Fable 5**. Con otro modelo activo, no.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "qué modelo está activo de verdad. Es la variable que decide"
+    - comando: "env | grep CLAUDE_CODE_USE_BEDROCK"
+      donde: shell
+      busca: "confirma que estás en el proveedor donde aplica esta restricción"
+  solucion:
+    - "Mirad el modelo antes que la configuración: `/status` os lo dice."
+    - "Cambiad a uno de los admitidos con `--model`, o aceptad trabajar en otro modo de permisos."
+    - "Cuidado con `default`, que en Microsoft Foundry resuelve a **Sonnet 4.5** y en Bedrock a **Opus 5**: «default» significa cosas distintas según quién pague, y aquí decide si tenéis auto mode o no."
+    - "Anotad el modelo verificado en vuestra documentación interna, no solo el proveedor."
+  pasa_si: "`/status` muestra uno de los modelos admitidos y auto mode está disponible."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 14, disponibilidad por proveedor, y `model-config.md`. La comprobación del entorno se ejecutó en esta máquina"
+  no_aplica_si: >-
+    No estáis en Bedrock. Esta restricción es de ese proveedor.
+  relacionados:
+    - a-mi-companero-le-sale-otro-modelo-con-default
+    - nos-fuimos-a-bedrock-y-perdimos-la-revision-de-codigo
+    - de-pronto-ya-no-me-pregunta-por-los-permisos
+
+cambie-de-modelo-para-ahorrar-y-gasto-igual:
+  diagnostico: >-
+    **El coste lo decide el contexto, no la tarifa.** Si en cada turno estás
+    reenviando un CLAUDE.md gordo, esquemas de MCP cargados por adelantado y un
+    historial largo, cambiar el precio por token de un modelo más barato multiplica
+    un número grande por otro más pequeño, y sigue siendo grande.
+  comprobar:
+    - comando: "/context"
+      donde: sesion
+      busca: "el reparto real. Ahí está el gasto, no en la tarifa"
+    - comando: "/cost"
+      donde: sesion
+      busca: "la proporción entre lectura de caché y escritura"
+  solucion:
+    - "Atacad primero el contexto: podad el CLAUDE.md, mandad a reglas con `paths` lo que solo aplica a una zona, y a skills lo que solo aplica a una tarea. **Una regla sin `paths` es tan cara como el CLAUDE.md.**"
+    - "Aprovechad la caché, que es donde se decide media factura: **editar vuestro código no la invalida**. Lo que la rompe es tocar configuración."
+    - "Aislad lo pesado en subagentes: su system prompt, su copia del CLAUDE.md, sus herramientas y todas sus lecturas computan **cero** en vuestra sesión, y solo vuelve el resumen."
+    - "Y no confundáis las palancas: **fast mode compra tiempo con dinero; bajar el esfuerzo compra tiempo con calidad**. Ninguna de las dos es «gastar menos» sin más."
+  pasa_si: "`/context` muestra un reparto que sabéis justificar bloque a bloque, y `/cost` muestra lecturas de caché en la mayoría de los turnos."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`costs.md`, `context-window.md` y la tabla 5 del módulo 4"
+  no_aplica_si: >-
+    Vuestro contexto ya es pequeño y el gasto viene de volumen de tareas. Entonces
+    la palanca es cuántas lanzáis, no cuánto ocupa cada una.
+  relacionados:
+    - la-cache-no-me-aprovecha-nada
+    - active-fast-mode-para-ahorrar
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+
+no-entrenan-con-nuestro-codigo:
+  diagnostico: >-
+    Cierto en los planes comerciales. **Falso en Free, Pro y Max con el ajuste
+    activado.** La frase es correcta o incorrecta según en qué plan esté cada
+    persona de vuestro equipo, y ahí está el riesgo: alguien con su cuenta personal
+    en una máquina de la empresa.
+  comprobar:
+    - comando: "claude auth status"
+      donde: shell
+      busca: "con qué cuenta está autenticada esta máquina de verdad"
+  solucion:
+    - "Comprobad plan por plan, no de memoria. La afirmación cambia de verdad a falsa según el plan."
+    - "Cerrad la puerta que de verdad importa: **restringir el inicio de sesión a vuestra organización**, que es lo que impide que alguien use su cuenta personal en una máquina de la empresa."
+    - "Ponedlo por escrito en la política interna de uso de agentes. Es el folio que firma alguien."
+    - "Y no confundáis entrenamiento con retención: son dos preguntas distintas, y ZDR responde a la segunda, solo en Enterprise."
+  pasa_si: "El inicio de sesión está restringido a vuestra organización y podéis nombrar el plan de cada persona."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`data-usage.md` y `authentication.md`. `claude auth status` se comprobó contra 2.1.229"
+  no_aplica_si: >-
+    Usáis proveedor externo. Ahí el tratamiento de datos lo gobierna vuestro
+    contrato con ese proveedor.
+  relacionados:
+    - tenemos-zdr-estamos-cubiertos
+    - pedimos-zdr-y-no-aparece
+    - los-mcp-estan-dentro-de-nuestro-perimetro
+
+tenemos-zdr-estamos-cubiertos:
+  diagnostico: >-
+    ZDR **no cubre analítica, gestión de plazas ni integraciones de terceros**.
+    Cubre la retención de conversaciones, que es importante y es solo una parte.
+    Decir «tenemos ZDR» en una auditoría sin ese matiz es donde empieza el problema.
+  comprobar:
+    - comando: "claude mcp list"
+      donde: shell
+      busca: "cada servidor de esa lista es un subencargado de facto que ZDR no cubre"
+  solucion:
+    - "Separad las tres preguntas y contestad cada una por su lado: qué se retiene, qué se usa para entrenar y **quién más toca los datos**."
+    - "Inventariad los servidores MCP. **Cada uno tiene su propio tratamiento de datos y su propio contrato**, y son subencargados de facto. La lista blanca del módulo 8 no es solo seguridad: es cumplimiento."
+    - "Contad la metadata de analítica y de gestión de plazas, que queda fuera y suele ser lo que nadie ha mirado."
+    - "Y recordad lo que ZDR **apaga**: Claude Code en la web, las sesiones cloud desde escritorio y Artifacts."
+  pasa_si: "Tenéis un inventario escrito de servidores MCP con su contrato, y la frase que usáis en auditoría incluye lo que ZDR no cubre."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`data-usage.md` y el módulo 16. `claude mcp list` se ejecutó y enumera los servidores conectados"
+  no_aplica_si: >-
+    No tenéis ZDR. Entonces la conversación empieza antes: solo existe en Enterprise.
+  relacionados:
+    - los-mcp-estan-dentro-de-nuestro-perimetro
+    - pedimos-zdr-y-no-aparece
+    - no-entrenan-con-nuestro-codigo
+
+activamos-zdr-y-desaparecio-claude-code-en-la-web:
+  diagnostico: >-
+    **Se desactiva automáticamente**, junto con las sesiones cloud desde escritorio
+    y Artifacts. Esas superficies guardan estado que ZDR dice que no se guarda, así
+    que no pueden convivir.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "el CLI local sigue intacto: es lo que no depende de la nube"
+  solucion:
+    - "Asumidlo como parte del trato, y decidlo antes de activar, no después."
+    - "Lo que queda: el CLI y todo lo que corre en vuestra máquina, que es el conjunto completo de funciones."
+    - "Si necesitáis tareas largas que sobrevivan a la desconexión **y** ZDR, la salida es un **entorno self-hosted**: corre dentro de vuestra red. Está en **beta pública** para Team y Enterprise y viene **apagado por defecto**."
+    - "Escribid la lista de lo que se pierde en la política interna, para que la siguiente persona no lo descubra en un incidente."
+  pasa_si: "El equipo sabe por escrito qué superficies pierde con ZDR y con qué sustituye cada una."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`data-usage.md` y la tabla 1 del módulo 12"
+  no_aplica_si: >-
+    No habéis activado ZDR. Entonces la web ha desaparecido por otro motivo:
+    empezad por el plan y la autenticación.
+  relacionados:
+    - activamos-zdr-y-desaparecio-la-web
+    - tenemos-zdr-estamos-cubiertos
+    - pedimos-zdr-y-no-aparece
+
+usamos-bedrock-no-sale-nada-a-anthropic:
+  diagnostico: >-
+    Falso, y es un matiz que decide auditorías: **el chequeo de dominio de
+    `WebFetch` sale igual**. Antes de descargar una URL, `WebFetch` envía **el
+    nombre de host** a `api.anthropic.com` para contrastarlo con una lista de
+    bloqueo de seguridad. **Corre uses el proveedor que uses.**
+  comprobar:
+    - comando: "curl -sS --max-time 10 -o /dev/null -w '%{http_code}\\n' https://api.anthropic.com/"
+      donde: shell
+      busca: "si responde, ese es el destino al que sale el nombre de host"
+  solucion:
+    - "Corregid la frase en vuestra documentación interna. Decir «no sale nada» es incorrecto y se descubre en la peor reunión posible."
+    - "Aprended a decirla completa, que es lo que convierte una revisión de seis semanas en una aprobación: **solo se envía el nombre de host**, no la URL completa, ni la ruta, ni el contenido de la página."
+    - "Detalles que os van a preguntar: un host que pasa el chequeo se cachea **cinco minutos**; uno bloqueado o fallido se vuelve a comprobar en la siguiente petición."
+    - "Si no lo queréis, la salida es `skipWebFetchPreflight: true`, sabiendo qué estáis apagando."
+  pasa_si: "Vuestra documentación interna describe el chequeo con el matiz de «solo el nombre de host», o lo habéis desactivado a propósito."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`data-usage.md`, chequeo previo de `WebFetch`. Ejecutado el 14 de agosto de 2026: `api.anthropic.com` responde desde esta máquina"
+  no_aplica_si: >-
+    Tenéis `WebFetch` denegado por completo. Entonces el chequeo no llega a
+    dispararse.
+  relacionados:
+    - desactive-el-trafico-no-esencial-y-webfetch-sigue-llamando
+    - webfetch-falla-en-toda-la-red-corporativa
+    - webfetch-dice-que-la-pagina-no-menciona-eso
+
+desactive-el-trafico-no-esencial-y-webfetch-sigue-llamando:
+  diagnostico: >-
+    Correcto: **ese chequeo no se ve afectado por
+    `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`**. No es tráfico no esencial: es una
+    comprobación de seguridad previa a descargar una URL.
+  comprobar:
+    - comando: "env | grep CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+      donde: shell
+      busca: "confirma que la variable está puesta y aun así el chequeo sale"
+  solucion:
+    - "Si queréis apagar **ese** chequeo, la clave es **`skipWebFetchPreflight: true`**. Es otra clave para otra cosa."
+    - "Decidid a sabiendas: lo que apagáis es el contraste del nombre de host contra una lista de bloqueo de seguridad."
+    - "Si lo que os molesta es la salida a internet en general, denegad `WebFetch` entero con una regla `deny`. Ojo: denegar una herramienta por su nombre pelado **la quita del contexto e invalida la caché**."
+    - "Y recordad que el chequeo corre con cualquier proveedor de modelo, incluido Bedrock."
+  pasa_si: "O el chequeo ya no sale porque pusisteis `skipWebFetchPreflight`, o entendéis por qué sale y lo habéis aceptado."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`data-usage.md`, detalles del chequeo previo"
+  no_aplica_si: >-
+    Lo que sigue llamando no es `WebFetch` sino telemetría. Eso sí lo gobierna esa
+    variable, y en proveedores externos ya viene apagado por defecto.
+  relacionados:
+    - usamos-bedrock-no-sale-nada-a-anthropic
+    - webfetch-falla-en-toda-la-red-corporativa
+    - puse-allowed-domains-y-blocked-domains-a-la-vez
+
+webfetch-falla-en-toda-la-red-corporativa:
+  diagnostico: >-
+    Estáis bloqueando `api.anthropic.com`. Como `WebFetch` contrasta el nombre de
+    host contra ese endpoint **antes** de descargar, si no puede llegar, **todas**
+    sus peticiones fallan, tengan que ver con Anthropic o no.
+  comprobar:
+    - comando: "curl -sS --max-time 10 -o /dev/null -w '%{http_code}\\n' https://api.anthropic.com/"
+      donde: shell
+      busca: "si no devuelve nada o da error de red, vuestro cortafuegos lo está bloqueando"
+  solucion:
+    - "Permitid `api.anthropic.com` en el cortafuegos. Es la opción que conserva la comprobación de seguridad."
+    - "O poned **`skipWebFetchPreflight: true`**, sabiendo que apagáis ese contraste."
+    - "Para pedir el permiso a red, llevad la frase exacta: **solo se envía el nombre de host**, no la URL completa, ni la ruta, ni el contenido. Esa precisión es la diferencia entre una aprobación y seis semanas de revisión."
+    - "Si preferís no depender de `WebFetch` para verificar contenido, `curl` os da la página cruda y además evita que un resumen os dé un diagnóstico falso."
+  pasa_si: "`curl` a `api.anthropic.com` responde desde la red corporativa, o `skipWebFetchPreflight` está puesto a propósito."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`data-usage.md`. La comprobación se ejecutó el 14 de agosto de 2026 y `api.anthropic.com` responde desde esta máquina"
+  no_aplica_si: >-
+    `api.anthropic.com` responde y aun así falla. Entonces mirad `allowed_domains`
+    y `blocked_domains`, que no se pueden combinar en la misma llamada.
+  relacionados:
+    - usamos-bedrock-no-sale-nada-a-anthropic
+    - desactive-el-trafico-no-esencial-y-webfetch-sigue-llamando
+    - seguridad-nos-ha-parado-la-instalacion
+
+los-mcp-estan-dentro-de-nuestro-perimetro:
+  diagnostico: >-
+    No lo están, y además **ZDR no los cubre**. Cada servidor MCP que conectáis es
+    un **subencargado de facto**, con su propio tratamiento de datos y su propio
+    contrato. Es el punto que no está en ninguna documentación y decide auditorías.
+  comprobar:
+    - comando: "claude mcp list"
+      donde: shell
+      busca: "cuántos hay y a qué endpoint apunta cada uno. Esa lista es vuestro inventario real"
+    - comando: "claude mcp get <nombre>"
+      donde: shell
+      busca: "de qué ámbito sale y a dónde va de verdad"
+  solucion:
+    - "Inventariadlos. `claude mcp list` os da la verdad efectiva en un comando, sin buscar archivos."
+    - "Por cada uno, anotad quién lo opera, qué datos recibe y bajo qué contrato. Esa es la tabla que os va a pedir el DPO."
+    - "Convertid la lista blanca en política: hay configuración gestionada de MCP y claves como `deniedMcpServers`. La postura correcta es lista blanca, no lista negra."
+    - "Restringid los scopes al mínimo. Un servidor MCP con más permisos de los que necesita es una escalada de privilegios esperando su turno."
+    - "Y no os fiéis del nombre para detectar duplicados: los tres primeros ámbitos detectan por nombre, pero **los plugins y los conectores detectan por endpoint**."
+  pasa_si: "Existe una tabla escrita con un servidor por fila, su operador, sus datos y su contrato, y coincide con lo que devuelve `claude mcp list`."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 16 de la guía y `mcp.md`. `claude mcp list` se ejecutó y enumera los servidores conectados con su estado"
+  no_aplica_si: >-
+    No tenéis ningún servidor MCP conectado. Comprobadlo con el comando en vez de
+    darlo por hecho, que es justo lo que trae a la gente aquí.
+  relacionados:
+    - tenemos-zdr-estamos-cubiertos
+    - el-sandbox-no-protege-de-mi-servidor-mcp
+    - no-encuentro-mis-servidores-mcp-en-settingsjson
+
+no-puedo-interrumpir-al-agente:
+  diagnostico: >-
+    Estás en **modo de mensaje único**. Sin **entrada en streaming** no hay
+    interrupciones ni diálogo de permisos, y sin eso no hay producto con humano en
+    el bucle: solo un trabajo por lotes que va a terminar haga lo que haga.
+  comprobar:
+    - comando: "grep -rn 'query(' src/ | head -5"
+      donde: shell
+      busca: "si le pasas una cadena en vez de un AsyncIterable, estás en mensaje único"
+  solucion:
+    - "Pasa a **entrada en streaming**, que es el modo preferido: una sesión persistente e interactiva que deja al agente funcionar como proceso de vida larga, **maneja interrupciones** y **expone peticiones de permiso**."
+    - "Deja el mensaje único para lo que de verdad es de un tiro y usa estado de sesión y reanudación."
+    - "Si construyes producto para terceros, esto no es una preferencia de estilo: sin streaming no puedes ofrecer ni parar ni aprobar, que son las dos cosas que un usuario espera poder hacer."
+  pasa_si: "Puedes interrumpir una tarea larga a mitad y el agente para de verdad."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`typescript-sdk.md`, modos de entrada"
+  no_aplica_si: >-
+    Tu caso es realmente por lotes y desatendido. Ahí el mensaje único es correcto
+    y no hay a quién enseñarle un diálogo de permisos.
+  relacionados:
+    - mi-pkill-ya-no-funciona
+    - una-replica-no-reanuda-la-sesion-de-otra
+    - a-veces-devuelve-un-error-en-vez-de-mi-json
+
+una-replica-no-reanuda-la-sesion-de-otra:
+  diagnostico: >-
+    Las transcripciones viven **en el disco local** de la máquina donde corrió la
+    sesión. Con varias réplicas, la que recibe la petición de reanudar casi nunca
+    es la que tiene el archivo.
+  comprobar:
+    - comando: "ls ~/.claude/projects/*/ | head -5"
+      donde: shell
+      busca: "los archivos de sesión, que están en esta máquina y solo en esta"
+  solucion:
+    - "Usa el adaptador **`SessionStore`** para reflejar las transcripciones en tu propio backend: S3, Redis o una base de datos."
+    - "Ponlo **desde el día uno si vas a tener varios hosts**, no cuando escales. Es una de las cinco preguntas de diseño que hay que contestar antes de escribir el producto, no después."
+    - "Los tres motivos son de producción, no teóricos: despliegues multi-host, funciones serverless y trabajadores autoescalados."
+    - "De paso resuelve otra pregunta que te van a hacer: dónde están las conversaciones, que es lo que pregunta un DPO."
+  pasa_si: "Una réplica distinta de la que creó la sesión la reanuda correctamente."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`typescript-sdk.md`, sesiones y `SessionStore`. La ubicación de las transcripciones se comprobó en esta máquina"
+  no_aplica_si: >-
+    Corres en un solo host y no vas a escalar. Entonces el disco local basta y
+    `SessionStore` es complejidad que no necesitas todavía.
+  relacionados:
+    - nuestro-dpo-pregunta-donde-estan-las-conversaciones
+    - mi-script-del-sdk-dejo-de-compilar
+    - no-puedo-interrumpir-al-agente
+
+a-veces-devuelve-un-error-en-vez-de-mi-json:
+  diagnostico: >-
+    Falló la validación del esquema **tras los reintentos**. No es un fallo
+    inesperado: es una **rama esperada** del contrato, y tu código tiene que
+    contemplarla igual que contempla el camino bueno.
+  comprobar:
+    - comando: "grep -rn 'catch\\|except' src/ | head -5"
+      donde: shell
+      busca: "si no hay rama de error alrededor de la llamada, ahí está el fallo de diseño"
+  solucion:
+    - "Trata la rama de error como parte del contrato: qué devuelves tú cuando el agente no pudo devolver un JSON válido."
+    - "Simplifica el esquema. Un esquema con muchos campos obligatorios y anidamiento profundo falla más, y la mayoría de esos campos no los usa nadie."
+    - "Contesta antes de programar las cinco preguntas de diseño: dónde corre, dónde viven las sesiones, **qué devuelve con esquema y validación y su rama de error contemplada**, qué herramientas propias expone, y qué permisos tiene respecto a quién."
+    - "Registra los fallos de validación con la salida cruda: sin eso no vas a poder mejorar el esquema."
+  pasa_si: "Tu código tiene una rama explícita para la validación fallida y la has probado a propósito al menos una vez."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`typescript-sdk.md`, salida estructurada"
+  no_aplica_si: >-
+    El error es de autenticación o de red. Eso no es validación de esquema y se
+    diagnostica por otro lado.
+  relacionados:
+    - mi-script-del-sdk-dejo-de-compilar
+    - no-puedo-interrumpir-al-agente
+    - mi-coste-no-cuadra-con-la-factura
+
+mi-coste-no-cuadra-con-la-factura:
+  diagnostico: >-
+    El campo de coste del SDK es una **estimación**, calculada contra una **tabla
+    de precios congelada en tiempo de compilación**. Sirve para orientarte, no para
+    facturar.
+  comprobar:
+    - comando: "npm ls @anthropic-ai/claude-code"
+      donde: shell
+      busca: "la versión, que es la que fija la tabla de precios congelada dentro"
+  solucion:
+    - "No factures a un tercero con ese número. Es un problema que se descubre tarde y en forma de discusión con un cliente."
+    - "Aplica la regla que vale en todo el libro: **los tokens se miden, los euros se consultan**. Cuenta tokens con el SDK y aplica las tarifas desde tu propia fuente, actualizada."
+    - "Si necesitas cifras de facturación reales, tíralas de la fuente de facturación, no de la estimación del cliente."
+    - "Para vigilar tu propio consumo sin facturar a nadie, la estimación vale, y `/cost` en sesión te da el reparto."
+  pasa_si: "Ningún importe que le cobras a alguien sale del campo de coste del SDK."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`typescript-sdk.md` y el módulo 15 de la guía"
+  no_aplica_si: >-
+    Solo lo usas para orientarte. Para eso está bien y no hace falta montar nada.
+  relacionados:
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+    - la-cache-no-me-aprovecha-nada
+
+unstable-v2-createsession-ya-no-existe:
+  diagnostico: >-
+    Eliminado en el **SDK de TypeScript 0.3.142**, junto con
+    `unstable_v2_resumeSession`, `unstable_v2_prompt` y los tipos `SDKSession` y
+    `SDKSessionOptions`. El prefijo `unstable_` era el aviso por escrito.
+  comprobar:
+    - comando: "grep -rn 'unstable_v2_' src/"
+      donde: shell
+      busca: "todas las llamadas que hay que migrar"
+    - comando: "npm ls @anthropic-ai/claude-code"
+      donde: shell
+      busca: "si estás en 0.3.142 o posterior, ya no existen"
+  solucion:
+    - "Migra a la API **`query()`** con `AsyncIterable<SDKUserMessage>`, o usa `options.resume` para reanudar."
+    - "Cambia los tipos `SDKSession` y `SDKSessionOptions` por los de `query()`."
+    - "De paso ganas lo que probablemente querías: `query()` con entrada en streaming maneja interrupciones y expone peticiones de permiso."
+    - "Regla para el futuro: lo que lleva `unstable_` en el nombre es una promesa explícita de que va a cambiar. Fija la versión del SDK y súbela a propósito."
+  pasa_si: "`grep -rn 'unstable_v2_' src/` no devuelve nada y el proyecto compila."
+  aplica_desde: "SDK de TypeScript 0.3.142"
+  evidencia: documentada
+  fuente: "`typescript-sdk.md` y el changelog del SDK"
+  no_aplica_si: >-
+    Usas el SDK de Python. Esta retirada es del de TypeScript.
+  relacionados:
+    - mi-script-del-sdk-dejo-de-compilar
+    - no-puedo-interrumpir-al-agente
+    - una-replica-no-reanuda-la-sesion-de-otra
+
+el-agente-de-un-cliente-vio-datos-de-otro:
+  diagnostico: >-
+    **Eso no lo arreglan los permisos.** En un producto multi-inquilino la pregunta
+    deja de ser «¿qué puede tocar el agente?» y pasa a ser **«¿qué puede tocar el
+    agente del inquilino A que pertenezca al inquilino B?»**, y esa se responde con
+    **aislamiento de proceso y de almacenamiento**, no con reglas.
+  comprobar:
+    - comando: "ls ~/.claude/projects/"
+      donde: shell
+      busca: "si todos los inquilinos comparten este árbol, comparten almacenamiento"
+  solucion:
+    - "Aísla por proceso: un contenedor o una máquina virtual por inquilino, no un proceso compartido con reglas distintas."
+    - "Aísla por almacenamiento: `SessionStore` con separación real por inquilino, no un prefijo en la misma ruta."
+    - "Aísla por credencial: cada inquilino con la suya, y rotatorias vía `apiKeyHelper` en vez de una clave larga compartida."
+    - "Aísla por red: controles que impidan que el agente de A alcance los sistemas de B, aunque le pidieran hacerlo."
+    - "Y trata las reglas de permisos como lo que son aquí: una segunda capa, nunca la primera."
+  pasa_si: "Puedes describir el aislamiento entre dos inquilinos sin mencionar ni una vez una regla de permisos."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`typescript-sdk.md`, sección de multi-inquilino. La ubicación compartida de las transcripciones se comprobó en esta máquina"
+  no_aplica_si: >-
+    Tu producto es de un solo inquilino. Ahí los permisos sí son la capa principal.
+  relacionados:
+    - nuestro-dpo-pregunta-donde-estan-las-conversaciones
+    - una-replica-no-reanuda-la-sesion-de-otra
+    - detecto-la-inyeccion-ya-estamos-seguros
+
+nuestro-dpo-pregunta-donde-estan-las-conversaciones:
+  diagnostico: >-
+    Por defecto, **en el disco local** de cada máquina donde corre una sesión. Es
+    una respuesta perfectamente válida y muy incómoda de auditar, porque significa
+    «repartidas por los portátiles de la gente».
+  comprobar:
+    - comando: "ls -d ~/.claude/projects/*/ | head -5"
+      donde: shell
+      busca: "un directorio por proyecto, con las transcripciones dentro"
+    - comando: "du -sh ~/.claude/projects/ 2>/dev/null"
+      donde: shell
+      busca: "cuánto hay acumulado, que suele sorprender"
+  solucion:
+    - "Da la respuesta exacta: disco local, un directorio por proyecto bajo `~/.claude/projects/`, y la ruta se deriva del repositorio git, así que **todos los worktrees y subdirectorios del mismo repositorio comparten un único directorio**."
+    - "Si necesitáis control central, `SessionStore` refleja las transcripciones en vuestro propio almacén: S3, Redis o una base de datos. Ahí sí podéis aplicar retención, cifrado y borrado."
+    - "Contestad también las otras dos preguntas que vienen detrás: qué se retiene del lado del proveedor, y **quién más toca los datos**, que son los servidores MCP como subencargados de facto."
+    - "Y en Enterprise, la API de cumplimiento existe para esto."
+  pasa_si: "El DPO tiene por escrito dónde vive cada transcripción, cuánto tiempo y quién puede borrarla."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`typescript-sdk.md`, `memory.md` y el módulo 16. La ruta se comprobó en esta máquina"
+  no_aplica_si: >-
+    Ya usáis `SessionStore`. Entonces la respuesta es vuestro backend y el
+    inventario se hace ahí.
+  relacionados:
+    - una-replica-no-reanuda-la-sesion-de-otra
+    - el-agente-de-un-cliente-vio-datos-de-otro
+    - tenemos-zdr-estamos-cubiertos
+
+buscar-en-google-la-parafrasis-del-error:
+  diagnostico: >-
+    El catálogo de diagnóstico **está indexado por el mensaje literal**. Buscar tu
+    versión resumida del error garantiza no encontrarlo, y acabar en un foro de
+    hace dos años que habla de otra versión.
+  comprobar:
+    - comando: "claude --debug 2>&1 | tail -30"
+      donde: shell
+      busca: "el mensaje literal, entero, tal cual sale"
+  solucion:
+    - "Copia el mensaje **literal** y búscalo en el catálogo de diagnóstico antes que en un buscador."
+    - "Si tienes que buscar fuera, busca la cadena exacta entre comillas, no tu resumen de lo que crees que significa."
+    - "Empieza por el orden que ahorra tiempo: mira qué se ha cargado en contexto, `/status` para saber qué fuentes mandan, `/doctor` para errores de validación con su origen, y arranca contra una configuración limpia."
+    - "Y antes de creerte lo que encuentres, comprueba la versión: `claude --version` decide quién tiene razón, no el artículo."
+  pasa_si: "Tienes el mensaje literal delante y lo has buscado tal cual antes de teorizar."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 18 de la guía y `debug-your-config.md`. La bandera `--debug` se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    No hay mensaje de error, solo un comportamiento raro. Ahí el catálogo no ayuda
+    y toca aislar por capas.
+  relacionados:
+    - relanzar-el-comando-esperando-que-funcione
+    - tocar-la-configuracion-a-ciegas
+    - webfetch-dice-que-la-pagina-no-menciona-eso
+
+culpar-a-la-red-de-un-403-host-not-allowed:
+  diagnostico: >-
+    No es tu red: es **la política del entorno cloud**. El mensaje
+    `host_not_allowed` viene de la lista de destinos permitidos de ese entorno, no
+    de un cortafuegos vuestro ni de una caída.
+  comprobar:
+    - comando: "curl -sS --max-time 10 -o /dev/null -w '%{http_code}\\n' https://el-host-en-cuestion/"
+      donde: shell
+      busca: "si desde tu máquina responde y desde el entorno cloud no, es política y no red"
+  solucion:
+    - "Contrasta desde fuera antes de abrir un ticket a red. Un `curl` desde tu máquina zanja la discusión en diez segundos."
+    - "Si el host tiene que estar permitido, la vía es la configuración del entorno cloud, no el cortafuegos corporativo."
+    - "No lo confundas con el otro fallo de red que sí es vuestro: si bloqueáis `api.anthropic.com`, **todas** las peticiones de `WebFetch` fallan porque el chequeo previo del nombre de host no puede salir."
+    - "Y recuerda el patrón general de este módulo: antes de culpar a una capa, comprueba que esa capa está implicada."
+  pasa_si: "Sabes decir si el bloqueo viene de la política del entorno o de vuestra red, y lo has comprobado desde los dos lados."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "Módulo 18 de la guía, catálogo de diagnóstico"
+  no_aplica_si: >-
+    Falla también desde tu máquina. Entonces sí puede ser red, o el host está caído.
+  relacionados:
+    - webfetch-falla-en-toda-la-red-corporativa
+    - buscar-en-google-la-parafrasis-del-error
+    - relanzar-el-comando-esperando-que-funcione
+
+un-subagente-no-hereda-mi-directorio-de-trabajo:
+  diagnostico: >-
+    **Nunca lo hace, y es por diseño.** Un subagente arranca su propia
+    conversación, con su propio system prompt, sus propias herramientas y su propio
+    punto de partida. Esperar que herede tu `cd` es esperar algo que no está.
+  comprobar:
+    - comando: "pwd"
+      donde: shell
+      busca: "tu directorio, que es tuyo y no del subagente"
+  solucion:
+    - "Pásale rutas **absolutas** en el encargo. Es la solución de una línea."
+    - "Si la skill que lo lanza necesita datos del directorio, mételos con la sintaxis `` !`comando` ``, que ejecuta shell **antes** de enviar el contenido y sustituye el marcador por la salida. El subagente llega con el dato dentro en vez de tener que ir a buscarlo."
+    - "No lo confundas con el otro síntoma parecido: que tu `cd` se resetee entre comandos es que saliste del alcance del proyecto, y el resultado te lo dice con `Shell cwd was reset to`."
+  pasa_si: "El subagente trabaja sobre los archivos correctos porque le diste rutas absolutas."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`sub-agents.md` y `cli-reference.md`"
+  no_aplica_si: >-
+    Quien pierde el directorio eres tú entre comandos. Eso es otra cosa y tiene
+    página propia.
+  relacionados:
+    - el-cd-no-se-mantiene-entre-comandos
+    - el-subagente-de-la-skill-no-sabe-de-que-hablamos
+    - mis-subagentes-no-se-coordinan-entre-si
+
+en-el-monorepo-se-cuela-el-contexto-de-otros-equipos:
+  diagnostico: >-
+    Faltan dos cosas a la vez: **`claudeMdExcludes`** para no cargar los `CLAUDE.md`
+    ajenos, y **capas por directorio** para que lo que sí necesitáis de cada zona
+    entre solo cuando toca.
+  comprobar:
+    - comando: "find . -maxdepth 4 -name 'CLAUDE.md' | wc -l"
+      donde: shell
+      busca: "cuántos hay. En un monorepo grande el número asusta"
+    - comando: "/context"
+      donde: sesion
+      busca: "cuánto pesa el bloque de memoria del proyecto en cada turno"
+  solucion:
+    - "Poned `claudeMdExcludes` con los directorios de otros equipos."
+    - "Convertid lo específico de cada zona en reglas con frontmatter `paths` dentro de `.claude/rules/`: entran al leer un archivo que casa y no cuestan nada mientras tanto. **Una regla sin `paths` es tan cara como el CLAUDE.md.**"
+    - "Dejad en la raíz solo lo que hace falta en **todas** las tareas del repositorio. Esa es la única justificación para pagarlo en cada turno."
+    - "Recordad la carga: los `CLAUDE.md` **suben** por el árbol desde vuestro directorio; los de subdirectorios por debajo entran cuando Claude lee archivos de ahí."
+    - "Si además os pesa el disco, `worktree.sparsePaths` escribe solo los directorios que nombréis."
+  pasa_si: "`/context` muestra el bloque de memoria del proyecto más pequeño y sin instrucciones de equipos ajenos."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`settings.md` y `memory.md`. El recuento de archivos se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    El contexto ajeno viene de settings gestionados o de un CLAUDE.md de máquina.
+    Esos no los excluye la configuración individual, a propósito.
+  relacionados:
+    - en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo
+    - en-el-monorepo-no-coge-mi-configuracion
+    - el-workflow-me-llena-el-contexto
+
+cada-tarea-del-legacy-acaba-en-refactor-gigante:
+  diagnostico: >-
+    Dos huecos a la vez: **falta acotar en el plan**, y **faltan tests de
+    caracterización**. Sin límite explícito, «arregla esto» incluye «y todo lo que
+    veas»; sin tests que fijen el comportamiento actual, no hay forma de tocar el
+    legacy con red.
+  comprobar:
+    - comando: "git diff --stat"
+      donde: shell
+      busca: "cuántos archivos ha tocado frente a los del plan"
+  solucion:
+    - "Trabaja en modo plan y acota ahí: qué entra, qué no se toca, qué queda explícitamente fuera."
+    - "Escribe **tests de caracterización** antes de tocar: no comprueban que el código sea correcto, comprueban que **sigue haciendo lo que hacía**. Es lo que convierte un legacy en algo modificable."
+    - "Separa siempre: primero el arreglo con su test, después el refactor sobre verde. Nunca los dos en el mismo diff."
+    - "Escribe la regla de alcance en el CLAUDE.md: «un cambio, un motivo; lo que veas de paso va a una incidencia»."
+    - "Y usa 🟣 Pre-existing de la revisión como inventario, no como trabajo de esta PR."
+  pasa_si: "`git diff --stat` toca solo lo del plan, y existe un test que falla si cambias el comportamiento que querías conservar."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 20 de la guía, playbook de legacy. `git diff --stat` se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    El refactor era el encargo. Entonces lo que falta es partirlo en commits
+    legibles, no acotarlo.
+  relacionados:
+    - cada-tarea-acaba-en-un-refactor-gigante
+    - la-primera-revision-del-legacy-es-un-muro
+    - tengo-que-revisarle-todo
+
+el-nuevo-no-tiene-la-misma-configuracion:
+  diagnostico: >-
+    Una de dos: **no está en git**, o **no ha aceptado el diálogo de confianza del
+    espacio de trabajo**. La segunda es la que nadie diagnostica, porque el
+    repositorio se ve idéntico y aun así media configuración no se aplica.
+  comprobar:
+    - comando: "git ls-files .claude/"
+      donde: shell
+      busca: "si `settings.json` no aparece, no está confirmado y el nuevo no lo tiene"
+    - comando: "/status"
+      donde: sesion
+      busca: "en su máquina: qué fuentes están activas de verdad"
+  solucion:
+    - "Confirma `.claude/settings.json` en git y **deja fuera `.claude/settings.local.json`**, que es personal por definición."
+    - "Explícale que tiene que **aceptar la confianza del espacio de trabajo**, y por qué: de ese diálogo cuelgan cuatro puertas, los **hooks del proyecto**, `autoMemoryDirectory`, los permisos de proyecto y el `allowed-tools` de las skills del repositorio."
+    - "Y dile que revise las skills del repositorio **antes** de aceptar, no después: una skill puede concederse a sí misma acceso amplio a herramientas."
+    - "Fija canal y `minimumVersion` en el settings del repositorio para que además converjan las versiones."
+    - "Si la configuración tiene que valer para toda la organización y no depender de que cada uno acepte nada, el sitio son los settings gestionados."
+  pasa_si: "`/status` en su máquina muestra las mismas fuentes activas que en la tuya."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`settings.md` y `hooks.md`. `git ls-files` se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    Ya está en git y ya aceptó la confianza. Entonces mira si su archivo valida y
+    si tiene variables de entorno pisando el ajuste.
+  relacionados:
+    - mi-plugin-no-le-funciona-a-nadie-mas
+    - mi-ajuste-no-se-aplica
+    - en-las-maquinas-de-mi-equipo-no-hay-git
+
+la-factura-de-revision-se-disparo:
+  diagnostico: >-
+    Ultrareview en cada push, y **en Team y Enterprise no hay ejecuciones
+    gratis**. Es la combinación que construye una factura sorprendente en una
+    semana: de 5 a 25 $ por revisión, contra créditos de uso y no contra el uso
+    incluido en el plan.
+  comprobar:
+    - comando: "grep -rn -B3 'ultrareview' .github/workflows/"
+      donde: shell
+      busca: "en qué evento se dispara. Si es `on: push`, ahí está"
+  solucion:
+    - "Muévelo al evento de pull request, y aun así solo antes de fusionar. Es para tener confianza en un cambio grande, no para el bucle de iteración."
+    - "Para el bucle rápido, `/code-review` a secas: corre **local**, tarda segundos y cuenta contra el uso normal."
+    - "Acotad por criterio: tamaño del diff, rutas sensibles, o a mano con una etiqueta. Veinte personas empujando diez veces al día son doscientas revisiones."
+    - "Y sabed el reparto real: **Pro y Max tienen 3 gratis; Team y Enterprise, ninguna**. Que los planes caros no traigan gratuitas es contraintuitivo y hay que saberlo antes."
+  pasa_si: "El disparo está acotado a las PR que lo merecen, y podéis estimar cuántas revisiones al mes vais a pagar."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`code-review.md`, tabla de coste por nivel de revisión"
+  no_aplica_si: >-
+    Estáis en Pro o en Max. Ahí Code Review en la PR no existe, así que la factura
+    viene de otro sitio.
+  relacionados:
+    - factura-de-ultrareview-disparada
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+
+la-puerta-de-calidad-nunca-veta:
+  diagnostico: >-
+    O el trabajo es trivial, o **la puerta no comprueba nada**. Una puerta que
+    aprueba siempre no es una red de seguridad: es un sello, y además enseña al
+    equipo a no mirarla.
+  comprobar:
+    - comando: "python3 -m json.tool .claude/settings.json | grep -A8 '\"Stop\"'"
+      donde: shell
+      busca: "qué ejecuta de verdad, y si su código de salida puede ser distinto de cero"
+  solucion:
+    - "Compruébala rompiendo algo a propósito. Si no la has visto vetar nunca, no sabes si funciona."
+    - "Revisa que el hook **no sea `async`**: un hook asíncrono no puede bloquear nada, porque `decision`, `permissionDecision` y `continue` no tienen efecto."
+    - "Revisa el tipo: si buscas una garantía dura, `command`. Los tipos `prompt` y `agent` razonan, y un hook que razona **ya no es determinista**."
+    - "Dale algo objetivo que comprobar: tests, tipos, linter, un esquema. Una puerta que le pregunta a un modelo si el trabajo está bien es una opinión con formato de control."
+    - "Para equipos de agentes, el sitio es `TeammateIdle`, que es la única forma de revisar antes de que un compañero se dé por satisfecho."
+  pasa_si: "Has roto algo a propósito y la puerta ha vetado."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`hooks.md`, tipos de manejador y hooks asíncronos"
+  no_aplica_si: >-
+    El trabajo que pasa por ella es efectivamente trivial. Entonces la puerta está
+    bien y lo que sobra es la expectativa.
+  relacionados:
+    - mi-hook-async-no-bloquea-nada
+    - tengo-que-revisarle-todo
+    - da-respuestas-plausibles-pero-incorrectas
+
+el-trabajo-nocturno-toco-la-rama-principal:
+  diagnostico: >-
+    Falta `--worktree`. Sin árbol de trabajo propio, lo que corre de noche escribe
+    donde escribes tú, y por la mañana no hay forma de saber qué es de quién.
+  comprobar:
+    - comando: "git worktree list"
+      donde: shell
+      busca: "si solo hay una línea, todo comparte el checkout principal"
+    - comando: "git reflog --date=iso | head -10"
+      donde: shell
+      busca: "qué se movió durante la noche y cuándo"
+  solucion:
+    - "Lanza el trabajo desatendido con `claude --worktree <nombre>`."
+    - "Deja `worktree.baseRef` en `\"fresh\"`, que es el valor por defecto: ramifica desde `origin/<rama-por-defecto>` y te da un árbol limpio igual que el remoto. Con `\"head\"` arrastras commits sin publicar, que de noche es justo lo que no quieres."
+    - "Deja `worktree.bgIsolation` en `\"worktree\"`, también el valor por defecto: bloquea `Edit` y `Write` en el checkout principal hasta llamar a `EnterWorktree`. Requiere v2.1.143 o posterior."
+    - "Y pon la barrera dura además de la convención: una regla de protección de rama en la forja, para que ni tú puedas empujar directo."
+  pasa_si: "`git worktree list` muestra el trabajo nocturno en su propio árbol y la rama principal no se movió sola."
+  aplica_desde: "cualquiera; `bgIsolation` desde 2.1.143"
+  evidencia: ejecutada
+  fuente: "`settings.md`, settings de worktree. `-w, --worktree` se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    El trabajo nocturno corre en la nube. Ahí trabaja sobre un clon y no puede
+    tocar tu rama principal salvo que empuje, que es otra puerta.
+  relacionados:
+    - dos-sesiones-se-pisan-los-archivos
+    - mi-comando-se-bloquea-en-un-worktree-y-no-entiendo-por-que
+    - la-tarea-en-la-nube-no-ve-mis-archivos
+
+mi-plugin-no-le-funciona-a-nadie-mas:
+  diagnostico: >-
+    Estructura mal montada, casi seguro la misma que todo el mundo: **dentro de
+    `.claude-plugin/` solo va `plugin.json`**. En tu máquina funciona porque
+    tienes las cosas sueltas en `.claude/` desde antes.
+  comprobar:
+    - comando: "find mi-plugin -maxdepth 2 -type d"
+      donde: shell
+      busca: "si `skills/`, `agents/` o `hooks/` cuelgan de `.claude-plugin/`, ahí está"
+    - comando: "python3 -m json.tool mi-plugin/.claude-plugin/plugin.json"
+      donde: shell
+      busca: "que valide y tenga sus campos obligatorios"
+  solucion:
+    - "Mueve todo menos `plugin.json` a la raíz del plugin: `skills/`, `agents/`, `hooks/hooks.json` y `.mcp.json` van al lado de `.claude-plugin/`, no dentro."
+    - "Ten claro qué es la raíz del plugin: el directorio propio de ese plugin, el que pasas a `--plugin-dir`. **Nunca es `~/.claude/`.**"
+    - "Pruébalo como lo va a recibir otro: clona en un directorio limpio y cárgalo con `--plugin-dir`. En tu máquina siempre funciona, y ese es el problema."
+    - "Para plugins nuevos usa `skills/` y no `commands/`."
+    - "Ancla la entrada del catálogo a un `sha` para que todos corran el mismo código."
+  pasa_si: "Un clon limpio en otra máquina carga el plugin con `--plugin-dir` y sus skills aparecen al preguntar qué skills hay."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`plugins.md`. `--plugin-dir` se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    La estructura ya es correcta. Entonces mira si los demás han aceptado la
+    confianza del espacio de trabajo, o si les falta git y necesitan fuente `archive`.
+  relacionados:
+    - mi-plugin-no-encuentra-las-skills
+    - el-nuevo-no-tiene-la-misma-configuracion
+    - en-las-maquinas-de-mi-equipo-no-hay-git
