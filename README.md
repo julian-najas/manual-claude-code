@@ -128,17 +128,24 @@ eso exige poder leerlo.
 
 ---
 
-## La fábrica: una fuente, muchas salidas
+## La fábrica: dos fuentes, muchas salidas
 
-**`guia-21/M*.md` es la única fuente canónica de la guía.** Todo lo demás se
-genera. Nunca se editan las salidas a mano.
+**Nada se edita a mano salvo las dos fuentes canónicas:**
+
+- **`guia-21/M*.md`** · los 21 módulos. De su tabla de errores típicos salen los
+  155 síntomas del companion.
+- **`fabrica/resoluciones.yaml`** · el procedimiento completo de los síntomas que
+  lo tienen: diagnóstico, comando de comprobación, pasos, criterio de aceptación,
+  versión mínima, nivel de evidencia, límites y síntomas vecinos.
 
 ```
 guia-21/M*.md  ──┬─→ entregables/guia-claude-code-2026-08.md   (guía ensamblada)
                  ├─→ entregables/skill-guia/.../modulos/        (copias para la skill)
-                 └─→ entregables/skill-guia/.../INDICE-SINTOMAS.md
+                 ├─→ entregables/skill-guia/.../INDICE-SINTOMAS.md
+                 └─┐
+fabrica/resoluciones.yaml ─┴─→ companion/  (155 páginas, una por síntoma)
 
-fabrica/hechos.yaml ─→ comprobar-coherencia.py ─→ falla si algún .md se contradice
+fabrica/hechos.yaml ─→ comprobar-coherencia.py ─→ falla si un .md o el .yaml se contradicen
 D2-verificador/registro.yaml ─→ verificar.py ─→ falla si el libro deja de ser cierto
 ```
 
@@ -147,6 +154,22 @@ D2-verificador/registro.yaml ─→ verificar.py ─→ falla si el libro deja d
 | `python3 fabrica/construir.py` | Regenera todas las salidas |
 | `python3 fabrica/construir.py --comprobar` | No escribe. Falla si alguna está desfasada |
 | `python3 fabrica/comprobar-coherencia.py` | Falla si un archivo contradice un hecho canónico |
+| `python3 fabrica/generar-companion.py` | Regenera el companion. Falla si `resoluciones.yaml` no valida |
+
+### Las dos formas de página del companion, y por qué
+
+**81 de los 155 síntomas** salen con el procedimiento entero. **Los otros 74
+llegan hasta la causa y ahí paran, y la página lo dice.** No es una obra a
+medias que se disimula: solo se publica el arreglo completo cuando existe un
+comando que el lector puede ejecutar y un criterio objetivo que diga si quedó
+resuelto. En **43** de las 81, ese comando se ejecutó contra el binario y la
+página lo declara; en las demás, la fuente es la documentación oficial citada y
+también lo declara.
+
+Rellenar las 74 restantes con procedimientos que nadie ha comprobado habría
+dejado un sitio uniforme y peor. El generador falla si una resolución apunta a un
+síntoma que ya no existe, si un «síntoma vecino» es un enlace roto o si falta
+cualquiera de los nueve campos.
 
 **Por qué existe esto.** Al corregir que MCP difiere sus esquemas de herramientas,
 la corrección llegó a la referencia de una skill pero **no a su `SKILL.md`**, y las

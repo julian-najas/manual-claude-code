@@ -1,0 +1,2282 @@
+# Resoluciones verificables del índice de síntomas
+#
+# FUENTE CANÓNICA. El companion las renderiza; nadie edita el HTML.
+#
+# Un síntoma con entrada aquí sale con las nueve secciones. Uno sin entrada sale
+# con síntoma y causa, como hasta ahora. La regla es deliberada: se publica el
+# arreglo completo SOLO cuando existe una comprobación que el lector puede
+# ejecutar y un criterio objetivo que diga si quedó resuelto. Lo demás se queda
+# corto a propósito, porque un procedimiento sin forma de comprobarlo es una
+# opinión con formato de manual.
+#
+# Campos:
+#   diagnostico    qué está pasando por dentro, no la consecuencia
+#   comprobar[]    comando + dónde se escribe + qué hay que mirar en la salida
+#   solucion[]     pasos concretos, en orden
+#   pasa_si        criterio objetivo. Si esto no se cumple, no está resuelto
+#   aplica_desde   versión mínima de Claude Code, o "cualquiera"
+#   evidencia      ejecutada | documentada | derivada
+#   fuente         de dónde sale el arreglo
+#   no_aplica_si   los límites. Cuándo esta página NO es tu problema
+#   relacionados   ranuras de otros síntomas de este mismo índice
+#
+# "ejecutada" significa que el comando de `comprobar` se lanzó contra el binario
+# instalado el 13 de agosto de 2026 (2.1.229) y devolvió lo que dice la página.
+# No significa que el arreglo entero se haya reproducido.
+
+# ─────────────────────────────────────────── M1 · cómo funciona por dentro
+
+se-le-olvida-lo-que-le-dije-al-principio:
+  diagnostico: >-
+    La instrucción vivía solo en el historial de la conversación. Al compactar,
+    el historial se resume y lo que no esté en un archivo se va con él. El
+    CLAUDE.md de la raíz del proyecto sí se vuelve a leer del disco y se
+    reinyecta después de compactar; el historial no.
+  comprobar:
+    - comando: "/context"
+      donde: sesion
+      busca: "el bloque de memoria del proyecto. Si la instrucción no está en ningún archivo, no aparece ahí"
+    - comando: "grep -n 'la frase exacta' CLAUDE.md"
+      donde: shell
+      busca: "si no devuelve nada, la instrucción nunca estuvo en disco"
+  solucion:
+    - "Descarta las tres causas en este orden, que es el que ahorra tiempo: 1) se dio solo en la conversación, con diferencia la más frecuente; 2) vive en un CLAUDE.md anidado que aún no se ha recargado; 3) es una regla con frontmatter `paths` que no ha casado con ningún archivo desde entonces."
+    - "Si es la primera: mueve la instrucción al CLAUDE.md de la raíz del proyecto. Es el único que se reinyecta tras `/compact`."
+    - "Escríbela específica y corta. «Usa indentación de 2 espacios» se cumple; «formatea bien el código» no."
+    - "Si no es negociable, no la escribas: prográmala. Un hook `PreToolUse` es código y se ejecuta siempre; un CLAUDE.md es contexto y se interpreta."
+  pasa_si: "Tras un `/compact`, `/context` sigue mostrando el bloque de memoria del proyecto y `grep` sigue encontrando la frase en el CLAUDE.md de la raíz."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`memory.md` y `context-window.md`, descargadas el 12 de agosto de 2026"
+  no_aplica_si: >-
+    La instrucción está en un CLAUDE.md de un subdirectorio por debajo de tu
+    directorio de trabajo. Esos no se recargan solos: entran cuando Claude lee
+    un archivo de ese subdirectorio, así que el arreglo es otro.
+  relacionados:
+    - se-le-olvido-lo-que-le-dije-al-principio
+    - el-claudemd-del-subdirectorio-no-aparece
+    - le-digo-que-siempre-haga-x-y-no-siempre-lo-hace
+
+desconecto-los-mcp-para-ahorrar-contexto:
+  diagnostico: >-
+    Tool search está activado por defecto: al arrancar solo entran los nombres
+    de las herramientas y las instrucciones del servidor, y los esquemas
+    completos se difieren hasta que la tarea los necesita. Amputar servidores
+    para ahorrar contexto suele resolver un problema que no tienes. Salvo en un
+    caso, que es justo el que hay que comprobar antes de tocar nada.
+  comprobar:
+    - comando: "/mcp"
+      donde: sesion
+      busca: "el coste por servidor, servidor a servidor"
+    - comando: "echo $ANTHROPIC_BASE_URL"
+      donde: shell
+      busca: "si apunta a un host que no es de primera parte, tool search está desactivado y el peaje sí es real"
+  solucion:
+    - "Mide antes de desconectar. `/context` da el reparto real de la sesión y `/mcp` el coste por servidor."
+    - "Si el peaje es alto, mira si estás en una de las cinco situaciones que apagan tool search: `ANTHROPIC_BASE_URL` hacia un host que no es de primera parte, `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` puesto, despliegues de Microsoft Foundry, Agent Platform de Google con modelos anteriores a la generación 4.5, o un modelo sin soporte de `tool_reference`."
+    - "Con gateway propio: comprueba primero que reenvía los bloques `tool_reference`. Solo entonces pon `ENABLE_TOOL_SEARCH`. Forzarlo sobre un gateway que no los reenvía no te da tool search, te da fallos."
+    - "Si quieres un punto medio, `ENABLE_TOOL_SEARCH=auto` carga los esquemas por adelantado cuando caben en el 10 % de la ventana y difiere el resto."
+  pasa_si: "`echo $ANTHROPIC_BASE_URL` sale vacío o apunta a un host de primera parte, y `/context` te da un número concreto de tokens para las herramientas MCP en vez de una sospecha."
+  aplica_desde: "cualquiera; fijarlo desde settings gestionados requiere 2.1.227"
+  evidencia: documentada
+  fuente: "`mcp.md` y `context-window.md`. Esta guía publicó la afirmación contraria y la corrigió: es la afirmación `MCP-002` del registro del verificador"
+  no_aplica_si: >-
+    Tu modelo no admite `tool_reference` (hace falta Sonnet 4.5, Haiku 4.5,
+    Opus 4.5 o posteriores). Ahí no hay nada que activar y el coste por
+    adelantado es inevitable.
+  relacionados:
+    - con-el-gateway-me-como-el-contexto
+    - puse-enable-tool-search-y-sigue-cargando-todo
+    - con-el-gateway-se-nos-come-el-contexto
+
+deshice-con-esc-esc-y-la-base-de-datos-seguia-modificada:
+  diagnostico: >-
+    Los checkpoints son instantáneas de archivos. Se toman antes de que Claude
+    edite, y solo registran lo que pasó por las herramientas de edición. Lo que
+    sale de tu máquina no lo cubre ninguna instantánea.
+  comprobar:
+    - comando: "git status"
+      donde: shell
+      busca: "si el archivo volvió a su estado anterior, el rebobinado funcionó; el efecto remoto es otro asunto"
+  solucion:
+    - "Asume la regla: rebobinar deshace ediciones de archivo. No deshace comandos de Bash, ni lo que hizo un subagente, ni nada que haya tocado un sistema remoto."
+    - "Revierte a mano lo remoto: migración inversa, restaurar copia, revertir el despliegue. No hay atajo."
+    - "Para que no vuelva a pasar, pon la barrera antes: un hook `PreToolUse` que vete los comandos contra producción, o reglas `deny` sobre las herramientas que salen de la máquina."
+    - "Trabajar contra sistemas remotos es el caso donde el modo `default` (Manual) sigue siendo la respuesta correcta, por muy pesado que sea."
+  pasa_si: "El archivo volvió a su contenido anterior y tú sabes nombrar qué efectos quedaron fuera del rebobinado y qué has hecho con cada uno."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`checkpointing.md`, los cinco límites del rebobinado"
+  no_aplica_si: >-
+    El archivo tampoco volvió. Entonces no es este síntoma: lo borró un comando
+    de Bash, no una herramienta de edición, y eso tiene página propia.
+  relacionados:
+    - rebobine-y-el-archivo-seguia-borrado
+    - rebobine-y-los-cambios-del-subagente-siguen-ahi
+    - le-digo-que-siempre-haga-x-y-no-siempre-lo-hace
+
+# ─────────────────────────────────────────── M2 · instalación y autenticación
+
+a-mi-companero-le-existe-un-comando-que-a-mi-no:
+  diagnostico: >-
+    Versiones distintas. Claude Code publica casi a diario y las funciones nuevas
+    aparecen en `latest` antes que en `stable`. No es un problema de permisos ni
+    de configuración: es que sois dos binarios diferentes.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "el número exacto, en las dos máquinas. Es el dato que zanja la discusión"
+    - comando: "claude doctor"
+      donde: shell
+      busca: "las líneas `Auto-update channel` y `Config install method`"
+  solucion:
+    - "Compara `claude --version` en las dos máquinas antes de teorizar nada."
+    - "Fija el canal y el suelo en el `settings.json` del repositorio, para que el equipo entero converja: `\"autoUpdatesChannel\": \"stable\"` y `\"minimumVersion\": \"2.1.100\"` con el número que os sirva."
+    - "Anota la versión verificada en el CLAUDE.md del repositorio. Así la primera pregunta de cualquier incidencia ya tiene respuesta escrita."
+    - "Si tú vas por detrás: `claude install latest`, o el gestor de la vía por la que instalaste."
+  pasa_si: "`claude --version` devuelve el mismo número en las dos máquinas, o la diferencia está por encima del `minimumVersion` que habéis fijado."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`setup.md`. La comprobación se ejecutó: devuelve `2.1.229 (Claude Code)`"
+  no_aplica_si: >-
+    Las dos máquinas dan la misma versión. Entonces el comando que falta viene de
+    un plugin, de una skill o de un servidor MCP que solo tiene una de las dos, y
+    se busca con `/plugin` y `claude mcp list`.
+  relacionados:
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+    - pase-a-stable-y-me-degrado
+    - comparar-dos-maquinas-sin-mirar-versiones
+
+pase-a-stable-y-me-degrado:
+  diagnostico: >-
+    No debería. Cambiar de `latest` a `stable` desde `/config` pregunta antes si
+    quieres quedarte en la versión actual o permitir la bajada, y si eliges
+    quedarte fija `minimumVersion` en esa versión. Si te degradó, o aceptaste la
+    bajada, o tienes un `minimumVersion` heredado por debajo.
+  comprobar:
+    - comando: "claude doctor"
+      donde: shell
+      busca: "`Auto-update channel` y `Last update attempt`, que dice a qué versión saltó y cuándo"
+    - comando: "grep -r minimumVersion ~/.claude/settings.json .claude/settings.json"
+      donde: shell
+      busca: "un suelo por debajo de donde estabas"
+  solucion:
+    - "Mira `claude doctor`: la línea `Last update attempt` te dice a qué versión fue y si tuvo éxito."
+    - "Fija el suelo explícitamente en tu settings: `\"minimumVersion\": \"2.1.229\"` con la versión en la que quieres quedarte. Las autoactualizaciones y `claude update` se niegan a instalar por debajo."
+    - "Volver a `latest` limpia el `minimumVersion` que puso el cambio de canal."
+    - "En un equipo, el suelo va en los settings gestionados o en los del repositorio, no en la cabeza de cada uno."
+  pasa_si: "`claude --version` está por encima de tu `minimumVersion` y `claude doctor` muestra el canal que querías."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`setup.md`. `claude doctor` se ejecutó y muestra las líneas `Auto-update channel: latest` y `Last update attempt: success → 2.1.229 (2026-08-12)`"
+  no_aplica_si: >-
+    Tu organización impone `minimumVersion` desde settings gestionados. Ahí no lo
+    puedes cambiar tú, y la conversación es con quien administra la flota.
+  relacionados:
+    - a-mi-companero-le-existe-un-comando-que-a-mi-no
+    - homebrew-no-me-actualiza-a-la-ultima
+    - claude-doctor-dice-instalaciones-duplicadas
+
+homebrew-no-me-actualiza-a-la-ultima:
+  diagnostico: >-
+    Con la vía de Homebrew, las actualizaciones las lleva Homebrew y no Claude
+    Code. El mecanismo de autoactualización propio no gobierna esa instalación,
+    así que esperar a que se actualice solo es esperar sentado.
+  comprobar:
+    - comando: "claude doctor"
+      donde: shell
+      busca: "la línea `Config install method`. Si no dice `native`, las actualizaciones no las lleva Claude Code"
+    - comando: "which -a claude"
+      donde: shell
+      busca: "de qué prefijo sale el binario"
+  solucion:
+    - "Actualiza por donde instalaste: `brew upgrade` para la vía de Homebrew."
+    - "Si quieres el mecanismo propio de versiones, migra a la instalación nativa. Y desinstala primero con el procedimiento de Homebrew: cambiar de vía sin desinstalar deja restos que luego aparecen como instalaciones duplicadas."
+    - "La instalación nativa deja `~/.local/bin/claude` como enlace simbólico a una versión concreta bajo `~/.local/share/claude/versions/`. Actualizar es instalar al lado y mover el enlace, y por eso no rompe una sesión en marcha."
+  pasa_si: "`claude doctor` dice `Config install method: native` y `Auto-updates: enabled`, o bien `brew upgrade` deja `claude --version` en el número que esperabas."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`setup.md`. `claude doctor` se ejecutó y devuelve `Config install method: native` en la máquina de esta guía"
+  no_aplica_si: >-
+    Estás en WinGet o en un gestor de Linux. El razonamiento es el mismo pero el
+    comando de actualización es el de esa vía.
+  relacionados:
+    - claude-doctor-dice-instalaciones-duplicadas
+    - pase-a-stable-y-me-degrado
+    - en-mi-contenedor-alpine-falla
+
+claude-doctor-dice-instalaciones-duplicadas:
+  diagnostico: >-
+    Restos de otra vía de instalación. Cada vía tiene su procedimiento de
+    desinstalación y no son intercambiables, así que instalar por una encima de
+    otra deja dos binarios y el `PATH` decide cuál gana, que casi nunca es el que
+    crees.
+  comprobar:
+    - comando: "claude doctor"
+      donde: shell
+      busca: "la sección de problemas de instalación. En una máquina limpia dice `No installation issues found.`"
+    - comando: "which -a claude"
+      donde: shell
+      busca: "más de una ruta significa más de una instalación"
+  solucion:
+    - "Decide con cuál te quedas. La nativa es la recomendada."
+    - "Desinstala la otra **con el procedimiento de su vía**: Homebrew se desinstala con Homebrew, WinGet con WinGet, npm con npm. Borrar el binario a mano deja configuración huérfana."
+    - "Vuelve a lanzar `claude doctor` y comprueba que sale limpio antes de dar el caso por cerrado."
+  pasa_si: "`which -a claude` devuelve una sola ruta y `claude doctor` termina con `No installation issues found.`"
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`setup.md` y `troubleshoot-install.md`. `claude doctor` se ejecutó y devuelve el diagnóstico limpio en la máquina de esta guía"
+  no_aplica_si: >-
+    Tienes dos instalaciones a propósito, por ejemplo una fijada para reproducir
+    un fallo. Entonces el aviso es correcto y lo que quieres es invocar por ruta
+    absoluta, no desinstalar.
+  relacionados:
+    - homebrew-no-me-actualiza-a-la-ultima
+    - a-mi-companero-le-existe-un-comando-que-a-mi-no
+    - pase-a-stable-y-me-degrado
+
+en-wsl-no-encuentra-archivos-que-estan-ahi:
+  diagnostico: >-
+    Hay un problema documentado de búsquedas lentas o incompletas en WSL. No es
+    tu configuración, no son tus permisos y no es el patrón: es el subsistema de
+    archivos. La gente pierde tardes enteras en `settings.json` por esto.
+  comprobar:
+    - comando: "claude doctor"
+      donde: shell
+      busca: "la línea `Search:`. En una instalación sana dice `Search: OK (bundled)`"
+    - comando: "rg --files . | wc -l"
+      donde: shell
+      busca: "compáralo con `find . -type f | wc -l`. Si la búsqueda ve muchos menos archivos, es esto"
+  solucion:
+    - "Empieza por aquí y no por la configuración. Es el orden que ahorra la tarde."
+    - "Mueve el repositorio al sistema de archivos de Linux, no al de Windows montado. Trabajar bajo `/mnt/c/` es la causa habitual."
+    - "Comprueba con `claude doctor` que la búsqueda empaquetada está disponible."
+    - "Si el repositorio tiene que quedarse donde está, nombra las rutas explícitamente en vez de confiar en el descubrimiento."
+  pasa_si: "`claude doctor` dice `Search: OK` y el número de archivos que ve la búsqueda coincide con el que ve `find`."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`troubleshoot-install.md` y el catálogo del M18. `claude doctor` se ejecutó: devuelve `Search: OK (bundled)`"
+  no_aplica_si: >-
+    No estás en WSL. En Linux o macOS nativos, «no encuentra archivos que están
+    ahí» apunta a `.gitignore`, a reglas `deny` o a sintaxis de ripgrep, no a esto.
+  relacionados:
+    - mi-patron-de-grep-no-encuentra-nada
+    - se-le-va-el-contexto-en-leer-dist
+    - en-mi-contenedor-alpine-falla
+
+mi-script-usa-una-clave-que-yo-rechace:
+  diagnostico: >-
+    En modo interactivo se te pregunta una vez si apruebas la `ANTHROPIC_API_KEY`
+    que hay en el entorno, y tu respuesta se recuerda. Pero **en modo no
+    interactivo con `-p`, la clave se usa siempre que esté presente**. Puedes
+    haberla rechazado en tu sesión y estar facturándola en tus scripts.
+  comprobar:
+    - comando: "env | grep -E 'ANTHROPIC_(API_KEY|AUTH_TOKEN)' | sed 's/=.*/=<oculto>/'"
+      donde: shell
+      busca: "qué credenciales hay presentes. Si hay más de una, la precedencia decide y no tú"
+    - comando: "claude auth status"
+      donde: shell
+      busca: "con qué identidad estás autenticado de verdad"
+  solucion:
+    - "Recuerda el orden de precedencia, que es fijo: 1) proveedor cloud si está `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX` o `CLAUDE_CODE_USE_FOUNDRY`; 2) `ANTHROPIC_AUTH_TOKEN`, que viaja como `Authorization: Bearer`; 3) `ANTHROPIC_API_KEY`, que viaja como `X-Api-Key`; 4) `apiKeyHelper`."
+    - "En CI, no heredes el entorno del desarrollador. Limpia las variables que no quieras y pon solo la credencial que toca."
+    - "Para credenciales rotatorias o de vida corta, usa `apiKeyHelper` en vez de una variable fija: es la única de las cuatro que renueva."
+    - "El interruptor «Use custom API key» de `/config` solo aparece mientras la variable esté puesta en tu entorno, así que no lo busques cuando no lo esté."
+  pasa_si: "En el entorno del script hay exactamente una credencial, y es la que tú elegiste."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`authentication.md`. `claude auth status` se ejecutó: el subcomando existe y responde"
+  no_aplica_si: >-
+    Usas un proveedor cloud. Ahí gana el número 1 de la lista y la clave de API ni
+    se mira, esté o no en el entorno.
+  relacionados:
+    - el-token-de-ci-caduco-de-golpe
+    - mi-coste-no-cuadra-con-la-factura
+    - mi-ajuste-no-se-aplica
+
+el-token-de-ci-caduco-de-golpe:
+  diagnostico: >-
+    De golpe para ti, no para el sistema: hay aviso de renovación antes de que un
+    inicio de sesión caduque. Lo que pasa es que el aviso aparece en sesión
+    interactiva y tu CI no tiene a nadie mirando.
+  comprobar:
+    - comando: "claude auth status"
+      donde: shell
+      busca: "el estado de la autenticación y si hay aviso de caducidad"
+  solucion:
+    - "Genera un token de larga duración para automatización con `claude setup-token`. Requiere una suscripción de Claude."
+    - "Guárdalo como secreto del sistema de CI, nunca en el repositorio."
+    - "Ponle recordatorio de renovación en el calendario **antes** de la fecha de caducidad. El aviso del CLI no llega a un runner desatendido."
+    - "Si prefieres no tener un token de vida larga rodando, `apiKeyHelper` obtiene credenciales frescas en cada arranque."
+  pasa_si: "`claude auth status` responde sin avisos y tu trabajo de CI vuelve a autenticar sin intervención."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`authentication.md`. `claude auth status` y el subcomando `setup-token` se comprobaron en `claude --help`; el token no se generó, por no crear credenciales reales"
+  no_aplica_si: >-
+    Estás en Bedrock, Vertex o Foundry. Ahí la credencial la gobierna el
+    proveedor cloud y `setup-token` no pinta nada.
+  relacionados:
+    - mi-script-usa-una-clave-que-yo-rechace
+    - nuestro-bot-no-puede-dispararla
+    - a-un-companero-le-falla-siempre-el-disparo
+
+# ─────────────────────────────────────────── M3 · configuración
+
+mi-ajuste-no-se-aplica:
+  diagnostico: >-
+    Casi siempre es un problema de capas, no de sintaxis. Otro ámbito lo está
+    sobrescribiendo, o una variable de entorno, que es una capa de override más y
+    la que todo el mundo olvida. El orden es fijo: managed, argumentos de línea
+    de comandos, local, proyecto, usuario.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "qué fuentes de settings están activas, incluida cuál managed"
+    - comando: "claude doctor"
+      donde: shell
+      busca: "errores de validación con su origen y su campo"
+    - comando: "env | grep -i claude"
+      donde: shell
+      busca: "la capa que nadie mira"
+  solucion:
+    - "Mira qué se ha cargado en contexto **antes** de tocar nada. Cambiar cosas a ciegas es lo que convierte diez minutos en dos horas."
+    - "`/status` para saber qué fuentes mandan."
+    - "`/doctor` para los errores de validación con su origen."
+    - "Arranca contra una configuración limpia para separar tu culpa de la del programa. Si en limpio no pasa, el problema está en una de tus capas y ya sabes en cuál buscar."
+    - "Recuerda las tres excepciones: los permisos se fusionan en vez de sobrescribirse; `policyHelper` preempta todo lo managed; y dentro de managed las fuentes no se fusionan, se usa la primera que entregue algo no vacío."
+  pasa_si: "`/status` muestra la fuente que tú esperabas como la activa para ese ajuste, y `claude doctor` no reporta ninguna entrada inválida."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`settings.md` y `debug-your-config.md`. `claude doctor` se ejecutó y lee los settings del directorio sin pedir confianza"
+  no_aplica_si: >-
+    El ajuste es `autoMode` o `autoMemoryDirectory`. Esos dos tienen blindaje
+    propio: `autoMode` se ignora en el settings del proyecto y en el local a
+    propósito, y `autoMemoryDirectory` puesto desde el repositorio solo se honra
+    tras aceptar el diálogo de confianza.
+  relacionados:
+    - cambie-el-ajuste-en-los-cuatro-ambitos-y-sigue-igual
+    - mi-settingsjson-entero-dejo-de-aplicarse
+    - mi-allow-local-no-sustituye-al-del-proyecto
+
+mi-allow-local-no-sustituye-al-del-proyecto:
+  diagnostico: >-
+    Es por diseño y es la excepción que más sorpresas da: **las reglas de
+    permisos no sobrescriben, se fusionan**. Tu `allow` local se suma al del
+    proyecto en vez de reemplazarlo, y unos pocos ajustes sensibles a seguridad
+    honran además el valor más restrictivo venga de donde venga.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "las fuentes activas de permisos"
+    - comando: "cat .claude/settings.json .claude/settings.local.json"
+      donde: shell
+      busca: "los dos bloques `permissions`, que están sumándose"
+  solucion:
+    - "Acepta la propiedad, porque es la que quieres: un `deny` puesto en el proyecto no lo puede levantar nadie con su configuración local."
+    - "Si necesitas quitar un permiso, el sitio es el ámbito donde se concedió, no un ámbito más específico."
+    - "Para restringir de verdad, usa `deny` en el proyecto: gana sobre cualquier `allow` local."
+    - "Si lo que quieres es aflojar solo para ti y el proyecto lo prohíbe, la respuesta es hablar con el equipo, no encontrar el archivo correcto."
+  pasa_si: "La acción que esperabas permitir sigue pidiendo permiso o sigue denegada, y sabes decir en qué ámbito está la regla que manda."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`settings.md`, sección de precedencia y sus tres excepciones"
+  no_aplica_si: >-
+    El ajuste que estás peleando no es de permisos. Todo lo demás sí sobrescribe
+    por ámbito, y ahí gana el más cercano.
+  relacionados:
+    - mi-ajuste-no-se-aplica
+    - dar-por-hecho-que-un-allow-de-proyecto-se-aplica
+    - mi-strictallowlist-del-repositorio-no-hace-nada
+
+no-encuentro-mis-servidores-mcp-en-settingsjson:
+  diagnostico: >-
+    Porque no están ahí. Los servidores MCP de ámbito de usuario viven en
+    `~/.claude.json`, que es otro archivo distinto de `~/.claude/settings.json`.
+    Es la fila de la tabla que más despista y buscar ahí es una tarde perdida.
+  comprobar:
+    - comando: "claude mcp list"
+      donde: shell
+      busca: "los servidores configurados y su estado de conexión, sin importar en qué archivo estén"
+    - comando: "claude mcp get <nombre>"
+      donde: shell
+      busca: "los detalles de uno concreto"
+  solucion:
+    - "Usa `claude mcp list` en vez de buscar archivos. Te da la verdad efectiva, que es lo que quieres."
+    - "Si tienes que editar a mano, la tabla es: usuario en `~/.claude.json`, proyecto en `.mcp.json` del repositorio, local en `~/.claude.json` por proyecto."
+    - "Para el equipo, el sitio es `.mcp.json` en el repositorio, con los secretos fuera: `${API_TOKEN}` se expande desde el entorno, y `${VAR:-porDefecto}` admite reserva."
+  pasa_si: "`claude mcp list` enumera tus servidores y dice `✔ Connected` en los que esperas."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`claude-directory.md` y `mcp.md`. `claude mcp list` se ejecutó y devuelve los servidores con su estado de salud"
+  no_aplica_si: >-
+    Los servidores vienen de un plugin o de los conectores de claude.ai. Esos no
+    están en ningún archivo tuyo: se gestionan con `/plugin` y desde tu cuenta.
+  relacionados:
+    - tengo-el-servidor-dos-veces-y-solo-conecta-uno
+    - defini-la-url-en-el-proyecto-y-la-cabecera-en-local
+    - puse-un-mcpjson-en-claude-y-no-lo-lee
+
+mi-settingsjson-entero-dejo-de-aplicarse:
+  diagnostico: >-
+    Usuario, proyecto y local son **estrictos**: un archivo que no valida se
+    rechaza entero, no se aplica «lo que se entienda». Y la causa número uno es
+    un comentario `//` dentro del JSON, porque JSON no admite comentarios.
+  comprobar:
+    - comando: "python3 -m json.tool .claude/settings.json > /dev/null && echo VALIDO"
+      donde: shell
+      busca: "si no imprime `VALIDO`, el error de parseo te dice la línea"
+    - comando: "claude doctor"
+      donde: shell
+      busca: "los settings inválidos con su origen y su campo"
+  solucion:
+    - "Valida el JSON. `python3 -m json.tool` te da la línea exacta."
+    - "Quita los comentarios. Las explicaciones van fuera del archivo, en el README o en el CLAUDE.md."
+    - "Repite con los cuatro archivos posibles: `~/.claude/settings.json`, `.claude/settings.json`, `.claude/settings.local.json` y el que pases con `--settings`."
+    - "Los errores de validación aparecen en tres sitios, y conviene saber los tres: diálogo al arrancar en interactivo, resumen por `stderr` con `-p`, y `claude doctor`."
+  pasa_si: "`python3 -m json.tool` valida los cuatro archivos y `claude doctor` no reporta entradas inválidas."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`settings.md`, tolerancia a errores por ámbito. La comprobación de validez se ejecutó sobre los archivos de esta máquina"
+  no_aplica_si: >-
+    El archivo es de settings gestionados. Managed es tolerante: una entrada
+    inválida se retira o se degrada y el resto se sigue aplicando, así que ahí el
+    síntoma nunca es «dejó de aplicarse entero».
+  relacionados:
+    - mi-ajuste-no-se-aplica
+    - tocar-la-configuracion-a-ciegas
+    - pulso-f-en-doctor-y-no-pasa-nada
+
+puse-los-settings-de-servidor-y-los-del-plist-se-ignoran:
+  diagnostico: >-
+    Correcto, y es por diseño. **Dentro del nivel managed las fuentes no se
+    fusionan**: se usa la primera que entregue una configuración no vacía. Si los
+    settings de servidor entregan cualquier clave, los de endpoint se ignoran
+    enteros.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "qué fuente managed está activa. Úsalo antes de teorizar"
+  solucion:
+    - "No mezcles fuentes managed. Elige una y deja la otra vacía: es la regla práctica para una flota."
+    - "Las dos excepciones por clave, si de verdad las necesitas: las *cross-source lock keys*, como los candados de la lista blanca del sandbox, y el bloque `env`, que sí se fusiona variable a variable. El `env` fusionado requiere v2.1.223 o posterior."
+    - "Ten en cuenta que los settings cacheados persisten hasta el siguiente fetch correcto, así que un cambio en el servidor no llega instantáneamente."
+  pasa_si: "`/status` nombra una sola fuente managed activa, y es la que tú desplegaste."
+  aplica_desde: "cualquiera; la fusión de `env` requiere 2.1.223"
+  evidencia: documentada
+  fuente: "`server-managed-settings.md`, precedencia managed y excepciones por clave"
+  no_aplica_si: >-
+    Estás comparando ámbitos distintos, no dos fuentes managed. Entre managed,
+    usuario, proyecto y local sí hay precedencia normal y sí se aplica el más
+    cercano salvo para permisos.
+  relacionados:
+    - cambie-la-politica-en-el-servidor-y-no-llega
+    - los-settings-del-plist-se-ignoran
+    - no-me-funcionan-los-server-managed-settings
+
+pulso-f-en-doctor-y-no-pasa-nada:
+  diagnostico: >-
+    Eso era anterior a v2.1.205. Antes `/doctor` abría una pantalla de
+    diagnóstico de solo lectura y se pulsaba `f` para mandarle el informe a
+    Claude. Ya no funciona así, y si tu tutorial lo dice, tu tutorial es viejo.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "si estás en 2.1.205 o posterior, el tutorial no aplica"
+  solucion:
+    - "Usa `/doctor` dentro de la sesión: ahora revisa configuración e instalación, reporta settings inválidos, instalaciones duplicadas, extensiones sin usar y contenido del CLAUDE.md que Claude podría deducir solo del código, y **propone arreglos que aplica solo si confirmas**."
+    - "Para diagnóstico de solo lectura sin abrir sesión, `claude doctor` desde la terminal."
+    - "La revisión de recorte del CLAUDE.md requiere v2.1.206 o posterior."
+  pasa_si: "`/doctor` te presenta arreglos y te pide confirmación, en vez de una pantalla estática esperando una tecla."
+  aplica_desde: "2.1.205"
+  evidencia: ejecutada
+  fuente: "`debug-your-config.md`. `claude --version` se ejecutó: 2.1.229, muy por encima del corte"
+  no_aplica_si: >-
+    Estás por debajo de 2.1.205, que a estas alturas es una máquina que lleva
+    meses sin actualizar. Ahí el problema real es la versión.
+  relacionados:
+    - el-tutorial-dice-ultraplan-y-no-existe
+    - mi-ajuste-no-se-aplica
+    - comparar-dos-maquinas-sin-mirar-versiones
+
+# ─────────────────────────────────────────── M4 · memoria y contexto
+
+le-digo-que-siempre-haga-x-y-no-siempre-lo-hace:
+  diagnostico: >-
+    Está en la documentación oficial y contradice lo que casi todo el mundo cree:
+    **Claude trata el CLAUDE.md como contexto, no como configuración impuesta**.
+    Es un texto que se lee, no un archivo de reglas que se cumplen. Para bloquear
+    una acción pase lo que pase hace falta código.
+  comprobar:
+    - comando: "grep -c '' CLAUDE.md"
+      donde: shell
+      busca: "el tamaño. Un CLAUDE.md largo y contradictorio se sigue peor que uno corto"
+    - comando: "/context"
+      donde: sesion
+      busca: "cuánto está costando ese archivo en cada turno"
+  solucion:
+    - "Escribe específico y concreto. «Usa indentación de 2 espacios» se cumple consistentemente; «formatea bien el código» no."
+    - "Busca contradicciones. Si dos reglas se contradicen, Claude puede elegir una arbitrariamente, así que podar es mantenimiento, no perfeccionismo."
+    - "Si de verdad no es negociable, cámbialo de categoría: un hook `PreToolUse` es código, el evento siempre dispara y la decisión siempre se toma. Eso sí es una garantía dura."
+    - "Aplica la regla de decisión por bloque: ¿esto hace falta en todas las tareas del repositorio? Sí, se queda. Solo al tocar cierta zona, regla con `paths`. Solo en cierta tarea, skill. Es una prohibición, hook."
+  pasa_si: "La acción que querías impedir la impide un hook, y lo compruebas intentándola: se rechaza sin que intervenga ningún juicio del modelo."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`memory.md`, que lo dice literalmente, y `hooks.md`"
+  no_aplica_si: >-
+    Lo que quieres es una preferencia de estilo, no una prohibición. Ahí el
+    CLAUDE.md es el sitio correcto y el arreglo es escribirla mejor, no
+    programarla.
+  relacionados:
+    - se-le-olvida-lo-que-le-dije-al-principio
+    - claude-elige-una-de-dos-reglas-al-azar
+    - mi-hook-no-dispara-nunca
+
+se-le-olvido-lo-que-le-dije-al-principio:
+  diagnostico: >-
+    Compactó. Al resumir la conversación, lo que solo vivía en el historial se
+    va. El CLAUDE.md de la raíz del proyecto se vuelve a leer del disco y se
+    reinyecta; los CLAUDE.md anidados y las reglas con `paths`, no.
+  comprobar:
+    - comando: "/context"
+      donde: sesion
+      busca: "qué hay cargado ahora mismo, después de compactar"
+  solucion:
+    - "Lo que tiene que persistir va al CLAUDE.md de la raíz, no al historial. Es la regla que gobierna el módulo entero."
+    - "Si el problema es recurrente y la instrucción es larga, un hook `PostCompact` reinyecta lo que la compactación se llevó. Es la respuesta correcta a esto, mejor que repetir la instrucción cada turno."
+    - "Si la instrucción vivía en una skill, reinvócala: al compactar se conservan los primeros 5.000 tokens de cada skill con un presupuesto conjunto de 25.000, empezando por la más reciente, así que las antiguas pueden desaparecer del todo."
+  pasa_si: "Tras `/compact`, `/context` sigue mostrando el bloque que contiene la instrucción."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`memory.md` y `context-window.md`, sección de qué sobrevive a la compactación"
+  no_aplica_si: >-
+    No hubo compactación. Si el contexto no se llenó, lo que pasa es otra cosa:
+    normalmente que la instrucción era ambigua o entraba en conflicto con otra.
+  relacionados:
+    - se-le-olvida-lo-que-le-dije-al-principio
+    - dejo-de-seguir-el-procedimiento-a-mitad-de-sesion
+    - el-resumen-automatico-se-repite-sin-avanzar
+
+mi-regla-de-la-api-no-se-aplica:
+  diagnostico: >-
+    Tiene frontmatter `paths` y aún no ha leído ningún archivo que case con el
+    patrón. Las reglas por ruta **se disparan al leer un archivo que coincide**,
+    no en cada uso de herramienta y no al arrancar.
+  comprobar:
+    - comando: "head -6 .claude/rules/api.md"
+      donde: shell
+      busca: "el bloque `paths` y si el patrón casa de verdad con tus archivos"
+    - comando: "/context"
+      donde: sesion
+      busca: "si la regla ya entró o no"
+  solucion:
+    - "Comprueba que el patrón casa. `src/api/**/*.ts` no casa con `src/api/handler.js`."
+    - "Haz que Claude lea un archivo de esa zona: la regla entra entonces."
+    - "Si la regla tiene que estar siempre, quítale el `paths`. Pero recuerda el precio: **una regla sin `paths` se carga al arrancar con la misma prioridad que el CLAUDE.md**, o sea que es contexto permanente e igual de caro."
+    - "Desde v2.1.198 la coincidencia también funciona cuando Claude llega al archivo por una ruta con enlace simbólico. Antes, no."
+    - "Ojo en equipos: las reglas de proyecto se saltan si excluyes `project` de `--setting-sources`. Antes de v2.1.211 las reglas bajo demanda se cargaban igualmente aunque lo excluyeras."
+  pasa_si: "Después de que Claude lea un archivo que casa con el patrón, `/context` muestra la regla cargada."
+  aplica_desde: "cualquiera; enlaces simbólicos desde 2.1.198"
+  evidencia: documentada
+  fuente: "`memory.md`, sección de `.claude/rules/`"
+  no_aplica_si: >-
+    Tu regla no tiene frontmatter `paths`. Entonces se carga al arrancar y si no
+    se aplica, el problema es de contenido, no de disparo.
+  relacionados:
+    - el-claudemd-del-subdirectorio-no-aparece
+    - se-le-olvido-lo-que-le-dije-al-principio
+    - le-digo-que-siempre-haga-x-y-no-siempre-lo-hace
+
+el-claudemd-del-subdirectorio-no-aparece:
+  diagnostico: >-
+    Claude Code **sube** por el árbol desde tu directorio de trabajo, no baja.
+    Los CLAUDE.md de subdirectorios por debajo no se cargan al arrancar: entran
+    cuando Claude lee archivos de esos subdirectorios.
+  comprobar:
+    - comando: "pwd && find . -maxdepth 3 -name CLAUDE.md"
+      donde: shell
+      busca: "cuáles están por encima de ti, que se cargan, y cuáles por debajo, que no"
+  solucion:
+    - "Si lo quieres siempre, arranca desde ese directorio, o sube su contenido al CLAUDE.md de la raíz."
+    - "Si lo quieres solo al tocar esa zona, conviértelo en una regla con `paths` dentro de `.claude/rules/`: es exactamente para eso y no cuesta contexto hasta que hace falta."
+    - "Recuerda el orden: todo se concatena y nada se sobrescribe; va de la raíz hacia tu directorio, así que lo más cercano se lee el último; y dentro de cada nivel, `CLAUDE.local.md` va después de `CLAUDE.md`."
+  pasa_si: "`/context` muestra el bloque de ese CLAUDE.md después de que Claude haya leído un archivo de ese subdirectorio."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`memory.md`, cómo se cargan los archivos de memoria"
+  no_aplica_si: >-
+    El archivo está por encima de tu directorio de trabajo y aun así no aparece.
+    Eso ya no es este síntoma: mira `claudeMdExcludes` y los errores de validación.
+  relacionados:
+    - anadi-un-directorio-con---add-dir-y-no-lee-su-claudemd
+    - mi-regla-de-la-api-no-se-aplica
+    - en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo
+
+anadi-un-directorio-con---add-dir-y-no-lee-su-claudemd:
+  diagnostico: >-
+    `--add-dir` amplía qué archivos puede tocar Claude, pero **no carga los
+    archivos de memoria del directorio añadido**. Son dos cosas distintas y la
+    segunda hay que pedirla.
+  comprobar:
+    - comando: "claude --help | grep -A2 'add-dir'"
+      donde: shell
+      busca: "`Additional directories to allow tool access to`. Dice acceso a herramientas, no memoria"
+  solucion:
+    - "Pide la memoria explícitamente con la variable `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` delante de tu `claude --add-dir ../config-compartida`."
+    - "Eso carga `CLAUDE.md`, `.claude/CLAUDE.md`, `.claude/rules/*.md` y `CLAUDE.local.md` del directorio adicional."
+    - "Si solo quieres una parte, importa el archivo concreto desde tu CLAUDE.md con `@../config-compartida/CLAUDE.md`. Las rutas relativas se resuelven respecto al archivo que contiene el import, no respecto a tu directorio de trabajo."
+  pasa_si: "Con la variable puesta, `/context` muestra el contenido del directorio añadido en el bloque de memoria."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`memory.md`. La bandera `--add-dir` y su descripción se comprobaron en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Lo que falla es el acceso a los archivos, no la memoria. Si Claude no puede
+    leer nada de ese directorio, el problema es de permisos y no de CLAUDE.md.
+  relacionados:
+    - el-claudemd-del-subdirectorio-no-aparece
+    - rechace-un-dialogo-de-imports-y-ya-no-me-lo-pide
+    - en-el-monorepo-no-coge-mi-configuracion
+
+rechace-un-dialogo-de-imports-y-ya-no-me-lo-pide:
+  diagnostico: >-
+    Es por diseño. Un import de un archivo de memoria del proyecto es **externo**
+    cuando su ruta resuelve fuera del directorio de trabajo, y la primera vez se
+    te muestra un diálogo listando los archivos. Si lo rechazas, los imports
+    quedan desactivados y el diálogo no vuelve a aparecer.
+  comprobar:
+    - comando: "grep -n '^@' CLAUDE.md"
+      donde: shell
+      busca: "qué imports tienes y cuáles salen del directorio de trabajo"
+  solucion:
+    - "Entiende para qué existe: te protege de lo que **otros** confirmen en un proyecto compartido. No es un fallo, es la puerta funcionando."
+    - "Si quieres ese contenido de todas formas, muévelo dentro del directorio de trabajo, o impórtalo desde un archivo de ámbito de usuario: los imports de tus propios archivos de usuario cargan sin diálogo porque los escribiste tú."
+    - "Para preferencias personales entre worktrees, importa desde tu carpeta: `@~/.claude/mis-notas.md`. Un `CLAUDE.local.md` ignorado por git solo existe en el worktree donde lo creaste."
+    - "Los imports admiten como máximo cuatro saltos anidados."
+  pasa_si: "`/context` muestra el contenido importado, o tú puedes explicar por qué has decidido dejarlo fuera."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`memory.md`, aviso de seguridad de la sección de imports"
+  no_aplica_si: >-
+    El import está dentro del directorio de trabajo. Esos no piden diálogo, y si
+    no cargan es por sintaxis: el análisis se salta el código en línea y los
+    bloques cercados.
+  relacionados:
+    - anadi-un-directorio-con---add-dir-y-no-lee-su-claudemd
+    - el-claudemd-del-subdirectorio-no-aparece
+    - me-sigue-pidiendo-permiso-pese-a-allowed-tools
+
+en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo:
+  diagnostico: >-
+    Estás por debajo de un directorio que tiene su propio CLAUDE.md, y como la
+    carga sube por el árbol, te lo comes entero en cada turno aunque no tenga
+    nada que ver con tu zona.
+  comprobar:
+    - comando: "find . -maxdepth 4 -name CLAUDE.md | head"
+      donde: shell
+      busca: "cuántos hay por encima de tu directorio de trabajo"
+    - comando: "/context"
+      donde: sesion
+      busca: "cuánto pesa el bloque de memoria del proyecto"
+  solucion:
+    - "Usa `claudeMdExcludes` en tu settings para saltarte los CLAUDE.md de otros equipos."
+    - "Para el contenido que sí necesitas de esas zonas, reglas con `paths` en vez de contexto permanente."
+    - "Si además el problema es el disco y no solo el contexto, mira `worktree.sparsePaths`: escribe solo los directorios que nombres, y es lo que hace viable un monorepo grande."
+  pasa_si: "`/context` muestra el bloque de memoria del proyecto más pequeño que antes, y las instrucciones ajenas ya no están."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`settings.md` (`claudeMdExcludes`) y `memory.md`"
+  no_aplica_si: >-
+    El CLAUDE.md ajeno viene de settings gestionados o de la máquina. Ese no lo
+    puede excluir la configuración individual: es deliberado.
+  relacionados:
+    - en-el-monorepo-se-cuela-el-contexto-de-otros-equipos
+    - el-claudemd-del-subdirectorio-no-aparece
+    - en-el-monorepo-no-coge-mi-configuracion
+
+claude-elige-una-de-dos-reglas-al-azar:
+  diagnostico: >-
+    Se contradicen. El CLAUDE.md es contexto, no un sistema de reglas con
+    resolución de conflictos, así que ante dos instrucciones opuestas puede
+    elegir una arbitrariamente. Y como todo se concatena de la raíz hacia abajo,
+    las contradicciones suelen estar entre archivos distintos, no dentro de uno.
+  comprobar:
+    - comando: "find . -maxdepth 3 -name 'CLAUDE*.md' -exec grep -Hn 'la palabra del conflicto' {} +"
+      donde: shell
+      busca: "las dos instrucciones opuestas, y en qué archivo está cada una"
+  solucion:
+    - "Poda. Revisar y quitar es trabajo de mantenimiento, no de perfeccionismo."
+    - "Cuando dos niveles se contradicen a propósito, no lo dejes implícito: escribe la excepción de forma explícita en el archivo más cercano, con la condición que la activa."
+    - "`/doctor` te reporta contenido del CLAUDE.md que Claude podría deducir solo del código. Esa es la primera poda, y es gratis. Requiere v2.1.206 o posterior."
+    - "Si una de las dos reglas no es negociable, sácala del CLAUDE.md y hazla un hook."
+  pasa_si: "Ninguna búsqueda encuentra dos instrucciones opuestas sobre lo mismo en los archivos que se cargan."
+  aplica_desde: "cualquiera; la revisión de recorte de `/doctor` desde 2.1.206"
+  evidencia: documentada
+  fuente: "`memory.md` y `debug-your-config.md`"
+  no_aplica_si: >-
+    Solo hay una instrucción y aun así no se cumple. Eso no es contradicción, es
+    que es demasiado vaga o que hace falta un hook.
+  relacionados:
+    - le-digo-que-siempre-haga-x-y-no-siempre-lo-hace
+    - en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo
+    - suponer-que-memorymd-entero-se-carga
+
+# ─────────────────────────────────────────── M5 · permisos y seguridad
+
+solo-hay-cinco-modos:
+  diagnostico: >-
+    Hay **seis**. El que se olvida siempre es el primero, y es el modo por
+    defecto de toda la vida: `default`, que en la interfaz se llama **Manual**.
+    Los inventarios que listan cinco han contado los que se ven en el menú y se
+    han dejado el que ya estaba puesto.
+  comprobar:
+    - comando: "claude --help | grep -A4 'permission-mode'"
+      donde: shell
+      busca: "la lista literal de valores admitidos por el binario"
+  solucion:
+    - "Los seis, con lo que aprueba cada uno: `default` (Manual), solo lecturas; `acceptEdits`, lecturas más ediciones y comandos de sistema de archivos comunes; `plan`, lecturas más lo que apruebe el clasificador; `auto`, todo con comprobaciones en segundo plano; `dontAsk`, solo herramientas pre-aprobadas; `bypassPermissions`, todo sin comprobación ninguna."
+    - "Elige por tarea, no por comodidad: `default` para trabajo sensible y contra sistemas remotos, `acceptEdits` para iterar sobre código que estás revisando, `dontAsk` para CI bien acotado, `bypassPermissions` solo en contenedores y máquinas virtuales aisladas."
+    - "Fíjalo donde toque: `claude --permission-mode <modo>` para una sesión, `\"permissions\": {\"defaultMode\": \"...\"}` en settings para siempre."
+  pasa_si: "`claude --help` lista los seis valores, y tú sabes decir cuál tienes puesto y por qué."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`iam.md`. Ejecutado contra 2.1.229: el binario admite `acceptEdits`, `auto`, `bypassPermissions`, `manual`, `dontAsk` y `plan`"
+  no_aplica_si: >-
+    Estás contando los modos que **te deja usar tu organización**. Los settings
+    gestionados pueden restringir la lista, y entonces cinco es tu realidad
+    aunque el binario admita seis.
+  relacionados:
+    - puse-manual-y-no-lo-reconoce
+    - de-pronto-ya-no-me-pregunta-por-los-permisos
+    - cambie-el-output-style-y-sigue-pidiendo-permisos
+
+puse-manual-y-no-lo-reconoce:
+  diagnostico: >-
+    El modo que revisa cada acción se llama **Manual** en la interfaz, pero su
+    valor de configuración de siempre es `default`. El CLI acepta `manual` como
+    alias, pero **la etiqueta y el alias requieren v2.1.200 o posterior**. En una
+    máquina más vieja, `manual` no es nada.
+  comprobar:
+    - comando: "claude --help | grep -A4 'permission-mode'"
+      donde: shell
+      busca: "si `manual` aparece entre los valores admitidos, tu binario lo entiende"
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.200 o posterior"
+  solucion:
+    - "Si estás por debajo de 2.1.200, escribe `default`. Funciona en todas las versiones."
+    - "Si escribes configuración que va a viajar a máquinas de terceros, usa `default`: es el valor que entienden también los hooks y el SDK."
+    - "Si estás en 2.1.200 o posterior y quieres el nombre legible, `claude --permission-mode manual` y `\"defaultMode\": \"manual\"` son válidos."
+  pasa_si: "El comando arranca sin quejarse del valor, y la sesión muestra el modo que pediste."
+  aplica_desde: "2.1.200"
+  evidencia: ejecutada
+  fuente: "`iam.md`. Ejecutado contra 2.1.229: `manual` aparece en la lista de valores admitidos de `--permission-mode`"
+  no_aplica_si: >-
+    Lo que escribiste fue `Manual` con mayúscula o `default (Manual)`. El valor va
+    en minúscula y sin adornos.
+  relacionados:
+    - solo-hay-cinco-modos
+    - de-pronto-ya-no-me-pregunta-por-los-permisos
+    - el-tutorial-dice-ultraplan-y-no-existe
+
+el-sandbox-no-protege-de-mi-servidor-mcp:
+  diagnostico: >-
+    La **herramienta Bash en sandbox solo restringe Bash**. Las herramientas de
+    archivo integradas, los servidores MCP y los hooks corren fuera de ese
+    aislamiento. Si tu superficie de riesgo incluye un MCP de terceros o un hook,
+    esa capa no te sirve.
+  comprobar:
+    - comando: "claude mcp list"
+      donde: shell
+      busca: "qué servidores hay conectados. Cada uno es superficie que Bash-en-sandbox no cubre"
+  solucion:
+    - "Si lo que te preocupa son los servidores MCP o los hooks, necesitas el **sandbox runtime**, que envuelve todo el proceso: herramientas de archivo, servidores MCP y hooks incluidos."
+    - "Si te basta con acotar comandos de shell, la herramienta Bash en sandbox es más ligera y suficiente."
+    - "Y sea cual sea la capa, restringe los scopes del servidor MCP: uno con más permisos de los que necesita es una escalada de privilegios esperando su turno."
+    - "Ten claro qué **no** aísla lo que has puesto. Es la pregunta del checklist del módulo y casi nadie sabe contestarla."
+  pasa_si: "Sabes nombrar, para cada superficie que te preocupa, qué capa la cubre. Si alguna se queda sin capa, no está resuelto."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`sandboxing.md` y `sandbox-environments.md`. `claude mcp list` se ejecutó y enumera los servidores conectados"
+  no_aplica_si: >-
+    No tienes servidores MCP ni hooks. Con solo Bash y herramientas integradas, la
+    primera capa cubre lo que ejecuta comandos.
+  relacionados:
+    - detecto-la-inyeccion-ya-estamos-seguros
+    - los-mcp-estan-dentro-de-nuestro-perimetro
+    - mi-strictallowlist-del-repositorio-no-hace-nada
+
+detecto-la-inyeccion-ya-estamos-seguros:
+  diagnostico: >-
+    Detectar no es impedir. Que el modelo reconozca una inyección y la reporte es
+    una buena señal, pero **no es un control**: depende de que el modelo se porte
+    bien, y un control es algo que se cumple aunque no lo haga.
+  comprobar:
+    - comando: "grep -rn 'deny' .claude/settings.json"
+      donde: shell
+      busca: "si tienes controles duros o solo confianza"
+  solucion:
+    - "Pon controles que no dependan del juicio del modelo: reglas `deny` sobre lo que no se toca, sandbox con lista blanca de dominios, y revisión humana en la frontera."
+    - "Un hook `PreToolUse` es el veto real: el evento siempre dispara y la decisión siempre se toma."
+    - "Usa la detección como lo que es: telemetría. Regístrala, cuéntala, y que te avise de que alguien lo está intentando."
+    - "Recuerda de dónde entra el texto no confiable: el contenido de páginas web, lo que devuelve un servidor MCP, y los tickets o incidencias que cualquiera puede abrir."
+  pasa_si: "Puedes describir, sin mencionar al modelo ni una vez, qué impide la acción que te preocupa."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`security.md` y el experimento propio `evidencias/EXP-001`, donde la inyección se detectó las dos veces y aun así se concluyó que eso no es un control"
+  no_aplica_si: >-
+    Tu modelo de amenaza es un error honesto y no un adversario. Contra un
+    despiste, la detección ayuda de verdad.
+  relacionados:
+    - el-sandbox-no-protege-de-mi-servidor-mcp
+    - claude-entro-en-un-panel-donde-yo-estaba-logueado
+    - le-digo-que-siempre-haga-x-y-no-siempre-lo-hace
+
+# ─────────────────────────────────────────── M6 · flujo de trabajo
+
+rebobine-y-el-archivo-seguia-borrado:
+  diagnostico: >-
+    El rebobinado registra las ediciones que pasaron por las herramientas de
+    edición. **Si el archivo lo borró un comando de Bash** con `rm`, `mv` o `cp`,
+    eso no se puede deshacer rebobinando: nunca hubo instantánea.
+  comprobar:
+    - comando: "git status && git stash list"
+      donde: shell
+      busca: "si el archivo está en git, ahí sí hay red de seguridad"
+  solucion:
+    - "Recupera por git: `git checkout -- <archivo>` si estaba confirmado, o `git fsck --lost-found` si el commit existió alguna vez."
+    - "Interioriza los límites del rebobinado: no deshace lo que hizo Bash, no deshace lo que hizo un subagente en segundo plano, y no deshace nada que haya tocado un sistema remoto."
+    - "Para que no se repita, un hook `PreToolUse` con `if` sobre `Bash(rm *)` es literalmente el ejemplo de la documentación."
+    - "Y confirma antes de trabajar. La red de seguridad más barata sigue siendo un commit."
+  pasa_si: "El archivo vuelve a existir con el contenido que esperabas, y sabes por cuál de las dos vías se recuperó."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`checkpointing.md`, los cinco límites del rebobinado"
+  no_aplica_si: >-
+    El archivo lo borró una herramienta de edición y aun así no vuelve. Eso sería
+    un fallo del rebobinado y merece reportarse, no un límite conocido.
+  relacionados:
+    - deshice-con-esc-esc-y-la-base-de-datos-seguia-modificada
+    - rebobine-y-los-cambios-del-subagente-siguen-ahi
+    - le-dije-que-limpiara-el-repo-y-no-hizo-force-push
+
+rebobine-y-los-cambios-del-subagente-siguen-ahi:
+  diagnostico: >-
+    Los subagentes corren en segundo plano y con su propio contexto. Rebobinar tu
+    conversación no deshace lo que ellos escribieron: son dos líneas de trabajo
+    distintas y solo una tiene instantáneas tuyas.
+  comprobar:
+    - comando: "git diff --stat"
+      donde: shell
+      busca: "qué quedó tocado después del rebobinado"
+    - comando: "/tasks"
+      donde: sesion
+      busca: "qué subagentes corrieron y cuáles siguen corriendo"
+  solucion:
+    - "Revierte con git lo que dejó el subagente. Es la única vía."
+    - "Para trabajo de subagentes sobre código que te importa, usa worktrees: `worktree.bgIsolation` en `\"worktree\"`, que es el valor por defecto, bloquea `Edit` y `Write` en el checkout principal hasta que llames a `EnterWorktree`. Requiere v2.1.143 o posterior."
+    - "Pon una puerta de calidad antes de que devuelvan: un hook `SubagentStop` revisa lo que trae cada uno."
+  pasa_si: "`git diff` está limpio o contiene solo lo que tú querías conservar."
+  aplica_desde: "cualquiera; `worktree.bgIsolation` desde 2.1.143"
+  evidencia: documentada
+  fuente: "`checkpointing.md`, `sub-agents.md` y `settings.md`"
+  no_aplica_si: >-
+    El subagente sigue corriendo. Entonces primero páralo desde `/tasks`, porque
+    si no vas a revertir contra algo que se sigue moviendo.
+  relacionados:
+    - rebobine-y-el-archivo-seguia-borrado
+    - mi-subagente-no-bloquea-como-esperaba
+    - dos-sesiones-se-pisan-los-archivos
+
+se-le-va-el-contexto-en-leer-dist:
+  diagnostico: >-
+    Las herramientas de búsqueda de contenido **respetan `.gitignore` por
+    defecto**, así que si `dist/` está ignorado ya se excluye. Si aun así lo lee,
+    es que está confirmado en git, y entonces `.gitignore` no pinta nada.
+  comprobar:
+    - comando: "git check-ignore -v dist/ && echo IGNORADO"
+      donde: shell
+      busca: "si no imprime `IGNORADO`, está confirmado y por eso lo lee"
+    - comando: "git ls-files dist/ | head"
+      donde: shell
+      busca: "los archivos confirmados que sí se van a leer"
+  solucion:
+    - "Si `git check-ignore` dice que está ignorado, el problema es otro y no es este."
+    - "Si está confirmado en git, la exclusión se hace con reglas `deny` en los permisos: `\"deny\": [\"Read(./dist/**)\"]` en el `settings.json` del **proyecto**, para que valga para todo el equipo."
+    - "Desde v2.1.228, una regla `deny` de lectura bloquea también `Write`, no solo `Edit`."
+    - "Aprovecha para poner ahí lo demás que nunca debe leerse: `Read(./.env)`, `Read(./.env.*)`, `Read(./secrets/**)`. Es la configuración más rentable del repositorio entero."
+  pasa_si: "`/context` deja de mostrar esos archivos, o `git check-ignore -v dist/` confirma que están ignorados."
+  aplica_desde: "cualquiera; `deny` de lectura cubriendo `Write` desde 2.1.228"
+  evidencia: ejecutada
+  fuente: "`settings.md` y `M6`. `git check-ignore` se ejecutó como comprobación válida del estado de ignorado"
+  no_aplica_si: >-
+    Lo que se come el contexto no es `dist/`, sino el CLAUDE.md o las
+    herramientas MCP. Míralo con `/context` antes de decidir a qué disparas.
+  relacionados:
+    - en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo
+    - desconecto-los-mcp-para-ahorrar-contexto
+    - mi-patron-de-grep-no-encuentra-nada
+
+# ─────────────────────────────────────────── M7 · extensión
+
+mi-skill-funciona-pero-nunca-se-activa-sola:
+  diagnostico: >-
+    Si el YAML del frontmatter está mal formado, **Claude Code carga el cuerpo de
+    la skill con los metadatos vacíos**. Por eso `/mi-skill` sigue funcionando
+    perfectamente a mano, y por eso juras que la skill está bien: pero Claude no
+    tiene ninguna `description` contra la que casar y no se activa nunca sola.
+  comprobar:
+    - comando: "claude --debug"
+      donde: shell
+      busca: "el error de análisis del frontmatter, que es lo que confirma el diagnóstico"
+    - comando: "python3 -c \"import sys,yaml;t=open(sys.argv[1]).read().split('---')[1];print(yaml.safe_load(t))\" .claude/skills/mi-skill/SKILL.md"
+      donde: shell
+      busca: "si no imprime un diccionario con tu `description`, ahí está el fallo"
+  solucion:
+    - "Valida el frontmatter. Un `:` sin espacio detrás o unas comillas sin cerrar bastan para vaciarlo entero."
+    - "Con el YAML sano, comprueba que la descripción lleva **las palabras que diría quien pide el trabajo**, no las que usarías para catalogarlo. La descripción no es documentación: es el texto contra el que Claude decide."
+    - "Verifica que aparece preguntando en sesión: «¿Qué skills hay disponibles?»."
+    - "Reformula tu petición acercándola a la descripción y observa qué palabra la activa. Esa palabra es la que le falta a la descripción."
+  pasa_si: "El frontmatter parsea a un diccionario con `description`, la skill sale al preguntar qué skills hay, y se activa con una petición formulada en lenguaje natural sin nombrarla."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`skills.md`, procedimiento oficial de diagnóstico. La bandera `--debug` con filtro por categoría se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Tiene `disable-model-invocation: true`. Entonces no activarse sola es
+    exactamente lo que pediste.
+  relacionados:
+    - se-activa-cuando-no-toca
+    - puse-yes-en-un-booleano-y-no-funciona
+    - dejo-de-seguir-el-procedimiento-a-mitad-de-sesion
+
+se-activa-cuando-no-toca:
+  diagnostico: >-
+    El problema simétrico del anterior y se resuelve por el mismo sitio: la
+    descripción es demasiado genérica y casa con tareas que no le tocan.
+  comprobar:
+    - comando: "grep -A2 '^description' .claude/skills/*/SKILL.md"
+      donde: shell
+      busca: "descripciones vagas del tipo «ayuda con el código»"
+  solucion:
+    - "Estrecha la descripción nombrando el dominio y el disparador concreto. «Audita dependencias de Python contra el CVE feed» no casa con cualquier cosa; «revisa código» sí."
+    - "Si solo quieres invocarla a mano, `disable-model-invocation: true`. Y de propina, eso mantiene su descripción fuera del contexto hasta que la necesites."
+    - "Los booleanos aceptan `yes`, `no`, `on`, `off`, `1` y `0` además de `true`/`false`, pero solo desde v2.1.218."
+  pasa_si: "Formulas dos o tres peticiones vecinas que no le tocan y la skill no se dispara en ninguna."
+  aplica_desde: "cualquiera; los booleanos flexibles desde 2.1.218"
+  evidencia: documentada
+  fuente: "`skills.md`"
+  no_aplica_si: >-
+    Se activa porque la invocas tú sin darte cuenta, por ejemplo desde otra skill
+    o desde un comando. Eso no es la descripción, es la cadena de llamadas.
+  relacionados:
+    - mi-skill-funciona-pero-nunca-se-activa-sola
+    - puse-yes-en-un-booleano-y-no-funciona
+    - me-sigue-pidiendo-permiso-pese-a-allowed-tools
+
+dejo-de-seguir-el-procedimiento-a-mitad-de-sesion:
+  diagnostico: >-
+    No se le olvidó: se quedó fuera del presupuesto. Al compactar, Claude Code
+    reengancha la invocación más reciente de cada skill después del resumen,
+    conservando **los primeros 5.000 tokens de cada una** con un **presupuesto
+    conjunto de 25.000**. Se llena empezando por la más reciente, así que las
+    skills antiguas pueden desaparecer del todo.
+  comprobar:
+    - comando: "/context"
+      donde: sesion
+      busca: "si la skill sigue estando después del resumen"
+  solucion:
+    - "Vuelve a invocar la skill. Es la cura directa y cuesta un turno."
+    - "Si el procedimiento es realmente permanente, muévelo al CLAUDE.md de la raíz: eso sí se reinyecta tras compactar."
+    - "Escribe las skills como **instrucciones permanentes** y no como pasos puntuales. «Ahora haz X» envejece mal; «durante esta tarea, siempre X» es lo correcto, porque el contenido entra una vez y se queda: Claude Code no vuelve a leer el archivo en turnos posteriores."
+    - "Si tienes seis skills invocadas en una sesión larga, asume que las primeras ya no están. No es un fallo, es aritmética."
+  pasa_si: "Tras compactar, `/context` sigue mostrando la skill, o la has reinvocado y el procedimiento vuelve a aplicarse."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`skills.md`, ciclo de vida del contenido"
+  no_aplica_si: >-
+    No hubo compactación. Si la sesión es corta, lo que falla es la redacción de
+    la skill, no el presupuesto.
+  relacionados:
+    - se-le-olvido-lo-que-le-dije-al-principio
+    - mi-skill-funciona-pero-nunca-se-activa-sola
+    - el-resumen-automatico-se-repite-sin-avanzar
+
+me-sigue-pidiendo-permiso-pese-a-allowed-tools:
+  diagnostico: >-
+    `allowed-tools` concede permiso **durante el turno que invoca la skill**, y
+    caduca en cuanto envías tu siguiente mensaje. El texto de la skill sigue en
+    contexto, pero el permiso no: la persistencia es del contenido, no de los
+    permisos.
+  comprobar:
+    - comando: "head -8 .claude/skills/mi-skill/SKILL.md"
+      donde: shell
+      busca: "el campo `allowed-tools` y qué herramientas lista exactamente"
+  solucion:
+    - "Reinvoca la skill: vuelve a aplicar el permiso para ese turno."
+    - "Si lo quieres para toda la sesión, lo correcto son reglas `allow` en los permisos, no `allowed-tools`."
+    - "Ten claro que `allowed-tools` **no restringe nada**. Es una lista de pre-aprobación, no una jaula: todas las herramientas siguen siendo invocables y tus ajustes de permisos gobiernan las que no estén listadas."
+    - "Si la skill está confirmada en el `.claude/skills/` de un proyecto, `allowed-tools` solo surte efecto tras aceptar el diálogo de confianza del espacio de trabajo. Y revisa esas skills antes de aceptarlo: una skill puede concederse a sí misma acceso amplio a herramientas."
+  pasa_si: "En el mismo turno de la invocación, las herramientas listadas corren sin preguntar."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`skills.md`, sección de pre-aprobación de herramientas"
+  no_aplica_si: >-
+    La herramienta que pide permiso no está en tu lista. Entonces el
+    comportamiento es correcto y lo que falta es añadirla.
+  relacionados:
+    - cambie-el-output-style-y-sigue-pidiendo-permisos
+    - mi-allow-local-no-sustituye-al-del-proyecto
+    - se-activa-cuando-no-toca
+
+el-subagente-de-la-skill-no-sabe-de-que-hablamos:
+  diagnostico: >-
+    Es por diseño. Con `context: fork` en el frontmatter, el contenido de la
+    skill **pasa a ser el prompt que dirige al subagente**, y ese subagente **no
+    tiene acceso a tu historial de conversación**. Empieza limpio a propósito.
+  comprobar:
+    - comando: "grep -n 'context:' .claude/skills/mi-skill/SKILL.md"
+      donde: shell
+      busca: "si dice `context: fork`, el aislamiento es esperado"
+  solucion:
+    - "Mete el contexto en la propia skill. La sintaxis `` !`comando` `` ejecuta shell **antes** de enviar el contenido y sustituye el marcador por la salida, así que el subagente llega con el dato dentro en vez de tener que ir a buscarlo."
+    - "Si necesitas tu historial, quita el `context: fork`: la skill corre en tu conversación."
+    - "Recuerda que por defecto el subagente bifurcado corre en segundo plano desde v2.1.218. Con `background: false` esperas el resultado en el mismo turno."
+    - "Claude Code espera igualmente, pongas lo que pongas, con `-p`, con el SDK, con `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`, si ya hay otra invocación de la misma skill corriendo, y cuando la dispara una tarea programada."
+  pasa_si: "El subagente devuelve un resultado que usa los datos que le pasaste, sin que hayas tenido que repetírselos."
+  aplica_desde: "cualquiera; segundo plano por defecto desde 2.1.218"
+  evidencia: documentada
+  fuente: "`skills.md`, ejecución en subagente"
+  no_aplica_si: >-
+    La skill no tiene `context: fork`. Entonces sí comparte tu conversación y el
+    problema es otro.
+  relacionados:
+    - un-subagente-no-hereda-mi-directorio-de-trabajo
+    - mis-subagentes-no-se-coordinan-entre-si
+    - mis-subagentes-no-aprovechan-la-cache
+
+puse-yes-en-un-booleano-y-no-funciona:
+  diagnostico: >-
+    Los campos booleanos del frontmatter aceptan `yes`, `no`, `on`, `off`, `1` y
+    `0` en cualquier combinación de mayúsculas, además de `true` y `false`. Pero
+    **antes de v2.1.218 solo se reconocían `true` y `false`**.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.218 o posterior"
+  solucion:
+    - "Si estás por debajo de 2.1.218, escribe `true` o `false`."
+    - "Si la skill va a viajar a máquinas de otros, escribe `true`/`false` de todas formas: funciona en todas las versiones y te ahorra este diagnóstico a quien la reciba."
+    - "Actualiza si puedes: `claude install latest`."
+  pasa_si: "`claude --version` devuelve 2.1.218 o posterior, o el frontmatter usa `true`/`false`."
+  aplica_desde: "2.1.218"
+  evidencia: ejecutada
+  fuente: "`skills.md`. `claude --version` se ejecutó: 2.1.229, por encima del corte"
+  no_aplica_si: >-
+    El campo que has puesto no es booleano. `name`, `description`, `allowed-tools`
+    y `context` son texto y esto no les aplica.
+  relacionados:
+    - mi-skill-funciona-pero-nunca-se-activa-sola
+    - se-activa-cuando-no-toca
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+
+cambie-el-output-style-y-sigue-pidiendo-permisos:
+  diagnostico: >-
+    Correcto: son ejes independientes. Un output style **cambia cómo responde
+    Claude, no lo que puede hacer**. Modifica el system prompt para fijar rol,
+    tono y formato; los permisos son otra cosa y no los toca.
+  comprobar:
+    - comando: "grep -n outputStyle .claude/settings.local.json"
+      donde: shell
+      busca: "el estilo activo, que se guarda ahí"
+  solucion:
+    - "Si querías menos confirmaciones, lo que se cambia es el modo de permisos, no el estilo."
+    - "Ojo con **Proactive**, que es el que más se malinterpreta: es una guía de ejecución autónoma más fuerte que la de auto mode, pero funciona **sin cambiar tu modo de permisos**. Sigues viendo las confirmaciones antes de que corran las herramientas."
+    - "Para instrucciones sobre tu proyecto, tus convenciones o tu código, el sitio es el CLAUDE.md, no un output style. Es literal de la documentación."
+  pasa_si: "Sabes decir qué eje controla cada cosa: estilo para la voz, modo de permisos para las confirmaciones, CLAUDE.md para el conocimiento del proyecto."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`output-styles.md`"
+  no_aplica_si: >-
+    Lo que has cambiado es un system prompt propio con las banderas del CLI o del
+    SDK. Eso sí altera el comportamiento base entero.
+  relacionados:
+    - solo-hay-cinco-modos
+    - me-sigue-pidiendo-permiso-pese-a-allowed-tools
+    - de-pronto-ya-no-me-pregunta-por-los-permisos
+
+han-desaparecido-las-pistas-de-teclado-del-pie:
+  diagnostico: >-
+    Tienes barra de estado configurada. Se dibuja en su propia fila encima de las
+    insignias del pie, y **con una barra de estado configurada Claude Code deja de
+    mostrar la mayoría de las pistas de teclado**, incluidas `esc to interrupt`,
+    el `? for shortcuts` y la de mantener espacio para dictar.
+  comprobar:
+    - comando: "grep -rn statusLine ~/.claude/settings.json .claude/settings.json"
+      donde: shell
+      busca: "la barra de estado configurada, que es la causa"
+  solucion:
+    - "Decide si el peaje te compensa: ganas métricas, pierdes descubribilidad. Con gente que empieza, es un peaje real."
+    - "Si lo único que querías eran insignias con enlace cuando aparece un identificador en la conversación, existe `footerLinksRegexes` y no requiere script ninguno."
+    - "Si te quedas la barra, escribe los atajos en el CLAUDE.md o en el onboarding del equipo, porque ya no los va a descubrir nadie solo."
+  pasa_si: "O ves las pistas del pie, o tu equipo tiene los atajos escritos en algún sitio que lee."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`statusline.md`"
+  no_aplica_si: >-
+    No tienes `statusLine` en ningún settings. Entonces la ausencia de pistas es
+    otra cosa: mira el modo de renderizado y el modo lector de pantalla.
+  relacionados:
+    - no-puedo-interrumpir-al-agente
+    - mi-ajuste-no-se-aplica
+    - cambie-el-output-style-y-sigue-pidiendo-permisos
+
+# ─────────────────────────────────────────── M8 · MCP
+
+defini-la-url-en-el-proyecto-y-la-cabecera-en-local:
+  diagnostico: >-
+    **Se usa la entrada entera de la fuente que gana. Los campos no se fusionan
+    entre ámbitos.** No puedes repartir un mismo servidor entre dos archivos: o
+    una definición o la otra.
+  comprobar:
+    - comando: "claude mcp get <nombre>"
+      donde: shell
+      busca: "la definición efectiva, que es la de un solo ámbito"
+  solucion:
+    - "Pon la entrada completa en un solo ámbito. La precedencia es: local, proyecto, usuario, de plugin, conectores de claude.ai."
+    - "Para no meter secretos en git, la vía correcta no es partir la entrada, son las variables: `${API_TOKEN}` se expande desde el entorno y `${VAR:-porDefecto}` admite reserva. Se expanden en `command`, `args`, `env`, `url` y `headers`."
+    - "Con eso, la estructura va al `.mcp.json` del repositorio y los valores viven en el entorno de cada uno."
+  pasa_si: "`claude mcp get <nombre>` muestra la URL y la cabecera que esperabas, las dos, en la misma entrada."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`mcp.md`, ámbitos y precedencia. El subcomando `claude mcp get` se comprobó en `claude mcp --help` de 2.1.229"
+  no_aplica_si: >-
+    Los dos ámbitos definen servidores con nombres distintos. Entonces no hay
+    conflicto y son dos servidores, no uno partido.
+  relacionados:
+    - tengo-el-servidor-dos-veces-y-solo-conecta-uno
+    - no-encuentro-mis-servidores-mcp-en-settingsjson
+    - mi-ajuste-no-se-aplica
+
+tengo-el-servidor-dos-veces-y-solo-conecta-uno:
+  diagnostico: >-
+    Es la precedencia haciendo su trabajo, con un matiz que se paga caro: **los
+    tres primeros ámbitos detectan duplicados por nombre; los plugins y los
+    conectores, por endpoint**. Un plugin que apunte a la misma URL que un
+    servidor tuyo se trata como duplicado aunque se llame distinto.
+  comprobar:
+    - comando: "claude mcp list"
+      donde: shell
+      busca: "qué servidores hay y cuáles conectan de verdad"
+    - comando: "claude mcp get <nombre>"
+      donde: shell
+      busca: "de qué ámbito sale la definición que gana"
+  solucion:
+    - "Aplica la precedencia: local, proyecto, usuario, de plugin, conectores de claude.ai. Gana el primero que lo defina."
+    - "Si el duplicado viene de un plugin y no lo esperabas, mira la URL, no el nombre."
+    - "Para depurar, desactiva un servidor sin borrarlo: es lo que quieres en vez de andar recortando el archivo."
+  pasa_si: "`claude mcp list` muestra una sola entrada para ese servicio y dice `✔ Connected`."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`mcp.md`. `claude mcp list` se ejecutó y muestra los servidores con su estado de salud"
+  no_aplica_si: >-
+    Los dos servidores son distintos a propósito, por ejemplo producción y
+    pruebas. Ahí lo que quieres es que se llamen distinto y apunten distinto.
+  relacionados:
+    - defini-la-url-en-el-proyecto-y-la-cabecera-en-local
+    - no-encuentro-mis-servidores-mcp-en-settingsjson
+    - puse-un-mcpjson-en-claude-y-no-lo-lee
+
+puse-enable-tool-search-y-sigue-cargando-todo:
+  diagnostico: >-
+    Hay tres situaciones donde `ENABLE_TOOL_SEARCH` **no puede** con el
+    comportamiento de reserva, y conviene saber cuál es la tuya antes de seguir
+    peleándote con la variable.
+  comprobar:
+    - comando: "env | grep -E 'ANTHROPIC_BASE_URL|CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS|ENABLE_TOOL_SEARCH'"
+      donde: shell
+      busca: "cuál de las tres situaciones te aplica"
+  solucion:
+    - "Con `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS` puesto, tool search queda apagado y **no puedes forzarlo**. Quita esa variable o asume el coste."
+    - "En despliegues de Microsoft Foundry en Azure, lo rechazan en el servidor: Claude Code lo detecta y carga todo por adelantado. La variable **no puede** con esto."
+    - "En Agent Platform de Google con modelos anteriores a la generación 4.5, se carga todo por adelantado. La salida es cambiar de modelo."
+    - "Si es un gateway propio, la variable **sí** funciona, pero antes comprueba que reenvía los bloques `tool_reference`. Si no los reenvía, forzarlo te da fallos y no tool search."
+    - "El punto medio es `ENABLE_TOOL_SEARCH=auto`: carga por adelantado cuando cabe en el 10 % de la ventana, difiere lo demás."
+  pasa_si: "`/context` muestra un peso de herramientas MCP proporcional a los nombres y no a los esquemas completos."
+  aplica_desde: "cualquiera; fijarlo desde settings gestionados requiere 2.1.227"
+  evidencia: documentada
+  fuente: "`mcp.md`, tabla de cuándo tool search deja de estar activado"
+  no_aplica_si: >-
+    Tu modelo no admite `tool_reference`. Hace falta Sonnet 4.5, Haiku 4.5, Opus
+    4.5 o posteriores, y sin eso no hay tool search que valga.
+  relacionados:
+    - desconecto-los-mcp-para-ahorrar-contexto
+    - con-el-gateway-me-como-el-contexto
+    - con-el-gateway-se-nos-come-el-contexto
+
+la-herramienta-devuelve-menos-de-lo-que-deberia:
+  diagnostico: >-
+    La está truncando un límite de salida. Hay tres números: **10.000 tokens** es
+    el umbral en el que Claude Code avisa, **25.000** el límite por defecto, y
+    `MAX_MCP_OUTPUT_TOKENS` la variable para cambiarlo.
+  comprobar:
+    - comando: "env | grep MAX_MCP_OUTPUT_TOKENS"
+      donde: shell
+      busca: "si ya tienes un límite puesto, y cuál"
+  solucion:
+    - "Sube `MAX_MCP_OUTPUT_TOKENS` si de verdad necesitas esa salida entera. Pero piensa antes: una herramienta MCP que devuelve mucho es de las formas más rápidas de arruinar una sesión."
+    - "Mejor que subir el límite suele ser pedir menos: filtrar en el servidor, paginar, o devolver un resumen y un identificador para pedir el detalle."
+    - "Matiz que importa a quien escribe servidores: la variable **solo aplica a las herramientas que no declaran su propio límite**. Una que fije `anthropic/maxResultSizeChars` en su respuesta de `tools/list` usa ese valor pase lo que pase con la variable. Las que devuelven imágenes sí siguen sujetas a ella."
+  pasa_si: "La salida llega completa, o has comprobado que el recorte lo impone la propia herramienta con `anthropic/maxResultSizeChars` y no tu configuración."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`mcp.md`, límites de salida"
+  no_aplica_si: >-
+    La herramienta declara su propio `anthropic/maxResultSizeChars`. Ahí tu
+    variable no pinta nada y el arreglo es del lado del servidor.
+  relacionados:
+    - la-sesion-se-congela-con-una-consulta-larga
+    - desconecto-los-mcp-para-ahorrar-contexto
+    - con-el-gateway-me-como-el-contexto
+
+claude-mcp-serve-no-imprime-nada:
+  diagnostico: >-
+    Es lo correcto. Un servidor stdio se comunica por entrada y salida estándar,
+    así que **un terminal silencioso y bloqueado significa que está funcionando**
+    y esperando cliente. No está colgado.
+  comprobar:
+    - comando: "claude mcp serve --help"
+      donde: shell
+      busca: "las opciones `-d, --debug` y `--verbose`, que son la vía para ver algo"
+  solucion:
+    - "Déjalo corriendo y conecta el cliente. El silencio es la señal de que va bien."
+    - "Si quieres verlo trabajar, `claude mcp serve --debug` o `--verbose`."
+    - "Comprueba desde el otro lado: si el cliente lista las herramientas, el servidor está sirviendo."
+  pasa_si: "El cliente que conectas enumera las herramientas de Claude Code."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`mcp.md`. `claude mcp serve --help` se ejecutó contra 2.1.229 y devuelve las opciones `-d, --debug` y `--verbose`"
+  no_aplica_si: >-
+    El comando termina y te devuelve el prompt. Eso sí es un fallo: un servidor
+    stdio que arranca bien se queda esperando.
+  relacionados:
+    - la-sesion-se-congela-con-una-consulta-larga
+    - no-encuentro-mis-servidores-mcp-en-settingsjson
+    - tengo-el-servidor-dos-veces-y-solo-conecta-uno
+
+la-sesion-se-congela-con-una-consulta-larga:
+  diagnostico: >-
+    En versiones recientes no debería: **una llamada a una herramienta MCP que
+    sigue corriendo a los dos minutos pasa a tarea en segundo plano** en lugar de
+    bloquear la sesión. Requiere v2.1.212 o posterior.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.212 o posterior"
+    - comando: "/tasks"
+      donde: sesion
+      busca: "si la llamada pasó a segundo plano, aparece ahí y desde ahí se para"
+  solucion:
+    - "Actualiza si estás por debajo de 2.1.212."
+    - "Si dos minutos es demasiado para tu caso, cambia el umbral con `CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS`, en milisegundos."
+    - "Ten presente que los límites por llamada siguen aplicando mientras corre en segundo plano: el de reloj por el `timeout` del servidor o `MCP_TOOL_TIMEOUT`, y el de inactividad por `CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT`."
+    - "Y que **no sobrevive a salir de la sesión**. Si el trabajo tiene que durar más que tu sesión, esto no es la herramienta."
+  pasa_si: "La llamada aparece en `/tasks` y tú sigues escribiendo mientras corre."
+  aplica_desde: "2.1.212"
+  evidencia: ejecutada
+  fuente: "`mcp.md`. `claude --version` se ejecutó: 2.1.229, por encima del corte"
+  no_aplica_si: >-
+    Lo que se congela no es una llamada MCP sino un comando de Bash. Eso tiene
+    otros límites y otra salida.
+  relacionados:
+    - claude-mcp-serve-no-imprime-nada
+    - la-herramienta-devuelve-menos-de-lo-que-deberia
+    - mi-tarea-en-segundo-plano-desaparecio
+
+# ─────────────────────────────────────────── M9 · paralelismo
+
+concurrent-subagent-limit-reached:
+  diagnostico: >-
+    Tienes **20 subagentes corriendo** en la sesión y el vigésimo primero falla.
+    El error le dice a Claude que no reintente, así que no vas a ver un bucle:
+    vuelve a funcionar solo cuando bajen.
+  comprobar:
+    - comando: "/tasks"
+      donde: sesion
+      busca: "cuántos hay corriendo ahora mismo"
+    - comando: "env | grep CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS"
+      donde: shell
+      busca: "si ya has cambiado el límite"
+  solucion:
+    - "Espera: es lo correcto casi siempre, y el error se resuelve solo."
+    - "Si de verdad necesitas más, sube `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`. Requiere v2.1.217 o posterior."
+    - "Antes de subirlo, pregúntate si 20 en paralelo es la forma correcta del trabajo. Casi siempre no lo es, y lo que hace falta es una cola, no más concurrencia."
+    - "Detalle que despista al medir: un fork iniciado con `/subtask` **ocupa una plaza** mientras corre."
+    - "Hay dos límites distintos, no los mezcles: el de **concurrencia**, que es este, y el de **profundidad**, que limita cuánto pueden anidarse."
+  pasa_si: "`/tasks` muestra menos de tu límite corriendo y los nuevos subagentes arrancan."
+  aplica_desde: "2.1.217 para cambiar el límite"
+  evidencia: documentada
+  fuente: "`sub-agents.md`, límites de concurrencia y profundidad"
+  no_aplica_si: >-
+    Tienes **ultracode** activo. Esas sesiones están exentas del límite de
+    concurrencia y el error tiene otra causa.
+  relacionados:
+    - lei-que-hay-un-tope-de-200-por-sesion
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+    - mis-subagentes-no-se-coordinan-entre-si
+
+lei-que-hay-un-tope-de-200-por-sesion:
+  diagnostico: >-
+    Ya no. Existía un tope de 200 subagentes por sesión y **se eliminó en la
+    semana 32**. Si tu fuente dice que las sesiones largas dejan de aceptar
+    subagentes, tu fuente es de antes de agosto.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "cualquier versión de agosto de 2026 en adelante ya no tiene el tope"
+  solucion:
+    - "**No hay límite del total** de subagentes que Claude puede lanzar a lo largo de una sesión. Los que siguen aplicando son la concurrencia y la profundidad."
+    - "Si tenías lógica que contaba hasta 200 para reiniciar sesiones, quítala: estás pagando un arranque en frío por nada."
+    - "Y actualiza la fuente de donde lo leíste. «Dice que hay un tope de 200 subagentes» es una de las cuatro señales de que un tutorial está caducado."
+  pasa_si: "La sesión sigue aceptando subagentes por encima de 200, con el límite de concurrencia como único techo."
+  aplica_desde: "semana 32 de 2026"
+  evidencia: ejecutada
+  fuente: "`sub-agents.md` y `whats-new/2026-w32.md`. `claude --version` se ejecutó: 2.1.229, posterior al cambio"
+  no_aplica_si: >-
+    Lo que te frena es `Concurrent subagent limit reached`. Ese sí existe, son 20
+    a la vez, y tiene página propia.
+  relacionados:
+    - concurrent-subagent-limit-reached
+    - el-tutorial-dice-ultraplan-y-no-existe
+    - mi-subagente-no-bloquea-como-esperaba
+
+# ─────────────────────────────────────────── M10 · automatización
+
+mi-hook-no-dispara-nunca:
+  diagnostico: >-
+    Lo más probable es que **el evento no admita ese tipo de manejador**. No
+    todos los eventos aceptan los cinco tipos, y eso no está en ningún tutorial:
+    13 eventos admiten los cinco, 15 admiten solo `command`, `http` y `mcp_tool`,
+    y `SessionStart` y `Setup` admiten solo `command` y `mcp_tool`.
+  comprobar:
+    - comando: "claude --debug hooks"
+      donde: shell
+      busca: "el registro de qué hooks se cargan y cuáles disparan"
+    - comando: "python3 -m json.tool .claude/settings.json | grep -A6 hooks"
+      donde: shell
+      busca: "los tres niveles de anidamiento: evento, grupo de coincidencia, manejadores"
+  solucion:
+    - "Comprueba el tipo contra el evento. Si tu hook es `http` y el evento es `SessionStart`, no va a disparar nunca por mucho que lo mires."
+    - "Revisa los tres niveles de anidamiento, de donde viene la mitad de los errores: el **evento**, el **grupo de coincidencia** con su `matcher`, y los **manejadores** dentro."
+    - "Distingue `matcher` de `if`: el `matcher` dice «solo para la herramienta Bash»; el `if` dice «y solo cuando el comando case con `rm *`». Sin `if` acabas ejecutando tu script en cada llamada a Bash."
+    - "Si el hook es de proyecto, hace falta haber aceptado el **diálogo de confianza del espacio de trabajo**. Es la primera de las cuatro puertas que cuelgan de ese diálogo."
+  pasa_si: "`claude --debug hooks` muestra tu hook cargado y registra la ejecución cuando provocas el evento."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`hooks.md`. El filtro por categoría de `--debug` se comprobó en `claude --help` de 2.1.229: admite `\"api,hooks\"`"
+  no_aplica_si: >-
+    El hook dispara pero no hace lo que esperas. Eso no es esto: mira si es
+    `async`, porque entonces no puede vetar nada.
+  relacionados:
+    - mi-hook-async-no-bloquea-nada
+    - puse-async-en-un-hook-http
+    - las-sesiones-van-lentas-desde-que-puse-hooks
+
+mi-hook-async-no-bloquea-nada:
+  diagnostico: >-
+    Por diseño. Un hook asíncrono corre en segundo plano mientras Claude sigue
+    trabajando, así que **los campos `decision`, `permissionDecision` y
+    `continue` no tienen efecto**: la acción que habrían controlado ya ocurrió.
+  comprobar:
+    - comando: "grep -n '\"async\"' .claude/settings.json"
+      donde: shell
+      busca: "qué hooks tienes en async"
+  solucion:
+    - "Quita `async` del hook que tiene que vetar. Un hook que bloquea es el único que puede impedir algo."
+    - "Deja `async` para lo que solo observa: suite de tests, despliegue, llamada a una API externa. Su salida se entrega en el turno siguiente."
+    - "Si el hook es lento **y** tiene que vetar, el arreglo es hacerlo rápido, no hacerlo asíncrono. Un `PreToolUse` en la cadencia de cada herramienta es el sitio donde se nota."
+  pasa_si: "El hook que veta corre sin `async` y la acción prohibida se rechaza cuando la provocas."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`hooks.md`, hooks asíncronos"
+  no_aplica_si: >-
+    Tu hook no es `async` y aun así no bloquea. Entonces mira el código de salida
+    y el formato de la respuesta JSON.
+  relacionados:
+    - puse-async-en-un-hook-http
+    - mi-hook-no-dispara-nunca
+    - mi-stopfailure-no-cambia-nada
+
+puse-async-en-un-hook-http:
+  diagnostico: >-
+    `async` **solo existe en hooks de tipo `command`**. En un `http` no es que se
+    comporte raro: es que no está.
+  comprobar:
+    - comando: "python3 -m json.tool .claude/settings.json | grep -B3 '\"async\"'"
+      donde: shell
+      busca: "el `type` del manejador que lleva el `async`"
+  solucion:
+    - "Si necesitas asincronía, envuelve la llamada en un hook `command` que haga el POST y márcalo `async`."
+    - "O acepta que el `http` bloquee, y hazlo rápido: que el endpoint responda de inmediato y encole el trabajo por su cuenta."
+    - "Aprovecha para revisar los cinco tipos y elegir bien: `command` ejecuta un comando; `http` hace POST del JSON del evento; `mcp_tool` llama a una herramienta de un servidor ya conectado; `prompt` manda una evaluación de un turno a un modelo; `agent` lanza un subagente con herramientas que investiga antes de decidir."
+    - "Y recuerda que los dos últimos **no son deterministas**. Si buscas garantía dura, el tipo correcto es `command`."
+  pasa_si: "El manejador que lleva `async` tiene `\"type\": \"command\"`."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`hooks.md`, los cinco tipos de manejador"
+  no_aplica_si: >-
+    Lo que quieres es no bloquear la sesión mientras un servicio externo trabaja.
+    Para eso, el patrón correcto es que el endpoint acuse recibo rápido.
+  relacionados:
+    - mi-hook-async-no-bloquea-nada
+    - mi-hook-no-dispara-nunca
+    - las-sesiones-van-lentas-desde-que-puse-hooks
+
+las-sesiones-van-lentas-desde-que-puse-hooks:
+  diagnostico: >-
+    Casi seguro tienes un hook pesado en la tercera cadencia. `PreToolUse` y
+    `PostToolUse` disparan **en cada llamada a herramienta**, dentro del bucle
+    agéntico. Un script de dos segundos ahí son dos segundos por cada lectura de
+    archivo.
+  comprobar:
+    - comando: "claude --debug hooks"
+      donde: shell
+      busca: "cuántas veces dispara cada hook en una tarea normal"
+    - comando: "python3 -m json.tool .claude/settings.json | grep -E 'PreToolUse|PostToolUse'"
+      donde: shell
+      busca: "qué tienes colgado de la cadencia cara"
+  solucion:
+    - "Clasifica tus hooks por cadencia: una vez por sesión (`SessionStart`, `SessionEnd`), una vez por turno (`UserPromptSubmit`, `Stop`, `StopFailure`), y en cada llamada a herramienta (`PreToolUse`, `PostToolUse`)."
+    - "Sube lo que puedas a una cadencia más barata. Un formateador que corre en `Stop` en vez de en cada `PostToolUse` hace el mismo trabajo una vez."
+    - "Estrecha el disparo con el campo `if`, que filtra más fino que el `matcher`: ejecutar tu script solo cuando el comando case, en vez de siempre y filtrar dentro."
+    - "Si el hook solo observa, márcalo `async` y deja de pagar su latencia."
+    - "Si necesitas ver el conjunto y no cada pieza, `PostToolBatch` dispara una vez cuando se resuelve todo el lote."
+  pasa_si: "Ningún hook de `PreToolUse` o `PostToolUse` tarda lo bastante como para que lo notes, y los lentos están en `Stop` o en `async`."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`hooks.md`, las tres cadencias. El filtro `--debug hooks` se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    La lentitud es del primer turno tras una pausa. Eso es la caché caducando, no
+    tus hooks, y tiene página propia.
+  relacionados:
+    - mi-hook-no-dispara-nunca
+    - el-primer-turno-tras-el-cafe-va-lentisimo
+    - mi-hook-async-no-bloquea-nada
+
+mis-tareas-de-loop-desaparecieron:
+  diagnostico: >-
+    Las tareas de `/loop` y los recordatorios son **de ámbito de sesión**: viven
+    en la conversación actual y mueren al empezar otra. `--resume` o `--continue`
+    recuperan las que no hayan **caducado a los siete días**.
+  comprobar:
+    - comando: "claude --resume"
+      donde: shell
+      busca: "si la sesión se recupera, las tareas vivas vuelven con ella"
+    - comando: "/tasks"
+      donde: sesion
+      busca: "qué queda vivo tras reanudar"
+  solucion:
+    - "Reanuda la sesión con `--resume` o `--continue` en vez de empezar una nueva."
+    - "Si la tarea tiene que sobrevivir a la sesión y a la máquina apagada, `/loop` no es la herramienta: las **Routines** en la nube corren sin tu máquina encendida y persisten al reiniciar. A cambio no ven tus archivos locales y su intervalo mínimo es de una hora."
+    - "Si lo que quieres es reaccionar a un evento en vez de sondear, usa **channels**: tu CI empuja el fallo dentro de la sesión."
+    - "Si tienes una condición verificable de terminación, `/goal` es mejor que `/loop`: tras cada turno un modelo pequeño comprueba si se cumple, y se limpia solo al cumplirse."
+  pasa_si: "Tras `--resume`, `/tasks` lista las tareas que esperabas."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`scheduled-tasks.md` y `goal.md`. Las banderas `--resume` y `--continue` se comprobaron en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Han pasado más de siete días. Ahí caducaron y no hay nada que recuperar: la
+    tarea hay que volver a crearla.
+  relacionados:
+    - quiero-sondear-cada-minuto-en-la-nube
+    - la-tarea-en-la-nube-no-ve-mis-archivos
+    - mi-tarea-en-segundo-plano-desaparecio
+
+quiero-sondear-cada-minuto-en-la-nube:
+  diagnostico: >-
+    El intervalo mínimo de las tareas en la nube es de **una hora**. En tu
+    máquina, escritorio y `/loop` bajan a un minuto. Pero antes de pelearte con
+    el intervalo, casi siempre el problema es que estás sondeando algo que
+    debería avisarte.
+  comprobar:
+    - comando: "/tasks"
+      donde: sesion
+      busca: "qué tareas tienes y con qué cadencia"
+  solucion:
+    - "Si puedes reaccionar a un evento, usa **channels**: en lugar de sondear, tu CI empuja el fallo dentro de la sesión."
+    - "Si tienes una condición verificable, usa **`/goal`**: el siguiente turno arranca al terminar el anterior y para cuando un modelo confirma que la condición se cumple."
+    - "Si de verdad hay que sondear algo externo, usa `/loop` con un intervalo acorde a lo que tarda en cambiar. Sondear cada minuto un despliegue que tarda ocho es pagar ocho veces por la misma respuesta."
+    - "Si necesitas que corra con la máquina apagada, la nube es la única opción y su suelo de una hora es parte del trato."
+  pasa_si: "Tu cadencia es igual o mayor que el tiempo que tarda en cambiar lo que vigilas, o has cambiado el sondeo por un evento."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`scheduled-tasks.md`, tabla 13 de la guía"
+  no_aplica_si: >-
+    Necesitas acceso a archivos locales. Las tareas en la nube arrancan de un
+    clon nuevo y no ven tu máquina, así que el intervalo es el menor de tus
+    problemas.
+  relacionados:
+    - mis-tareas-de-loop-desaparecieron
+    - la-tarea-en-la-nube-no-ve-mis-archivos
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+
+# ─────────────────────────────────────────── M11 · plugins
+
+mi-plugin-no-encuentra-las-skills:
+  diagnostico: >-
+    El fallo número uno, y está marcado como aviso en la propia documentación:
+    **dentro de `.claude-plugin/` solo va `plugin.json`**. Si has metido ahí
+    `skills/`, `agents/`, `commands/` o `hooks/`, no los ve nadie. Van en la raíz
+    del plugin.
+  comprobar:
+    - comando: "find mi-plugin -maxdepth 2 -type d"
+      donde: shell
+      busca: "si `skills/` cuelga de `.claude-plugin/`, ahí está el fallo"
+  solucion:
+    - "Mueve todo menos `plugin.json` a la raíz del plugin. La estructura correcta es: `.claude-plugin/plugin.json`, y al lado `skills/`, `agents/`, `hooks/hooks.json` y `.mcp.json`."
+    - "Recuerda qué es la raíz del plugin: el directorio propio de ese plugin, el que pasas a `--plugin-dir` o el que contiene `.claude-plugin/plugin.json`. **Nunca es `~/.claude/`.**"
+    - "Para plugins nuevos usa `skills/` y no `commands/`: `commands/` son skills en archivos markdown planos y la documentación dice explícitamente que se use `skills/`."
+  pasa_si: "`--plugin-dir` carga el plugin y sus skills aparecen al preguntar en sesión qué skills hay disponibles."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`plugins.md`. La bandera `--plugin-dir` se comprobó en `claude --help` de 2.1.229: acepta un directorio o un .zip"
+  no_aplica_si: >-
+    La estructura ya es correcta y aun así no carga. Entonces mira el
+    `plugin.json`: si le falta un campo obligatorio, el plugin entero se descarta.
+  relacionados:
+    - puse-un-mcpjson-en-claude-y-no-lo-lee
+    - mi-ruta-relativa-no-resuelve
+    - mi-plugin-no-le-funciona-a-nadie-mas
+
+puse-un-mcpjson-en-claude-y-no-lo-lee:
+  diagnostico: >-
+    Porque **la raíz del plugin nunca es `~/.claude/`**. Un `.mcp.json` colocado
+    en `~/.claude/.mcp.json` no lo lee nadie: ni el plugin, que tiene su propia
+    raíz, ni la configuración de usuario, que guarda los servidores MCP en
+    `~/.claude.json`.
+  comprobar:
+    - comando: "claude mcp list"
+      donde: shell
+      busca: "si tu servidor no sale, no se está leyendo de donde crees"
+  solucion:
+    - "Para un servidor **de plugin**: `.mcp.json` en la raíz del plugin, al lado de `.claude-plugin/`."
+    - "Para un servidor **de usuario**: no edites archivos, usa `claude mcp add`. Se guarda en `~/.claude.json`, que es otro archivo distinto de `~/.claude/settings.json`."
+    - "Para un servidor **de proyecto**: `.mcp.json` en la raíz del repositorio."
+  pasa_si: "`claude mcp list` enumera el servidor y dice `✔ Connected`."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`plugins.md` y `claude-directory.md`. `claude mcp list` se ejecutó y enumera los servidores efectivos"
+  no_aplica_si: >-
+    El servidor sí aparece en `claude mcp list` pero no conecta. Eso es
+    autenticación o red, no ubicación del archivo.
+  relacionados:
+    - mi-plugin-no-encuentra-las-skills
+    - no-encuentro-mis-servidores-mcp-en-settingsjson
+    - tengo-el-servidor-dos-veces-y-solo-conecta-uno
+
+quise-anclar-el-catalogo-a-un-commit-y-no-me-deja:
+  diagnostico: >-
+    Correcto, y es deliberado. Las **fuentes de marketplace** admiten `ref`, o sea
+    rama o etiqueta, **pero no `sha`**. Las **fuentes de plugin** admiten `ref` y
+    `sha`. Se anclan de forma independiente porque son dos repositorios distintos.
+  comprobar:
+    - comando: "grep -rn 'extraKnownMarketplaces' ~/.claude/settings.json .claude/settings.json"
+      donde: shell
+      busca: "cómo tienes fijado el catálogo"
+  solucion:
+    - "Ancla donde sí se puede y donde de verdad importa: el `source` de cada entrada del catálogo admite `sha`, así que **lo que se ejecuta en la máquina de tu gente sí se clava a un commit exacto**."
+    - "Deja el catálogo con `ref`: debe poder moverse para añadir entradas."
+    - "Si tu política de seguridad exige reproducibilidad, esto la cumple: lo reproducible es el código que corre, no el índice que lo lista."
+  pasa_si: "La entrada del plugin en `marketplace.json` lleva `sha` con el commit exacto, y ese es el que se instala."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`plugin-marketplaces.md`, las dos fuentes y sus anclajes"
+  no_aplica_si: >-
+    Controlas los dos repositorios y te vale con etiquetas inmutables. Entonces
+    `ref` sobre una etiqueta que no se mueve es equivalente en la práctica.
+  relacionados:
+    - una-actualizacion-de-otro-equipo-me-rompio-el-plugin
+    - mi-plugin-no-encuentra-las-skills
+    - seguridad-nos-ha-parado-la-instalacion
+
+# ─────────────────────────────────────────── M15 · modelos y coste
+
+a-mi-companero-le-sale-otro-modelo-con-default:
+  diagnostico: >-
+    `default` no es un modelo: es un valor especial que limpia cualquier
+    anulación y vuelve al recomendado **para tu tipo de cuenta**. Y ahí está la
+    trampa: «default» significa cosas distintas según quién pague.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "el modelo efectivo de esta sesión, que es el dato que zanja la discusión"
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.219 o posterior; por debajo, `default` resolvía a otra cosa"
+  solucion:
+    - "Mira la tabla y localiza vuestras cuentas: Max, Team Premium, Enterprise de pago por uso y API de Anthropic resuelven a **Opus 5**; Claude Platform on AWS, Amazon Bedrock y Agent Platform de Google, a **Opus 5**; Pro, Team Standard y plazas de suscripción Enterprise, a **Sonnet 5**; Microsoft Foundry, a **Sonnet 4.5**."
+    - "Si queréis comparar de verdad, fijad el modelo explícitamente con `--model` en las dos máquinas en vez de confiar en `default`."
+    - "Y comprobad la versión: **antes de v2.1.219, `default` resolvía a Opus 4.8 en varias de esas filas**. Si una máquina no está actualizada, no estáis comparando lo mismo."
+  pasa_si: "`/status` muestra el mismo modelo en las dos máquinas, o sabéis nombrar por qué son distintos."
+  aplica_desde: "2.1.219 para la resolución actual de `default`"
+  evidencia: ejecutada
+  fuente: "`model-config.md`. `claude --version` se ejecutó: 2.1.229, por encima del corte"
+  no_aplica_si: >-
+    Vuestra organización fija un modelo por defecto desde settings gestionados.
+    Entonces `default` resuelve a ese, no al de la tabla.
+  relacionados:
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+    - puse-xhigh-y-corre-como-high
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+
+puse-xhigh-y-corre-como-high:
+  diagnostico: >-
+    El modelo activo no admite ese nivel. Si fijas un esfuerzo que el modelo no
+    soporta, **baja al más alto admitido por debajo del que pediste**. `xhigh`
+    corre como `high` en Opus 4.6 y en Sonnet 4.6, que solo tienen `low`,
+    `medium`, `high` y `max`.
+  comprobar:
+    - comando: "claude --help | grep -A2 'effort <level>'"
+      donde: shell
+      busca: "los niveles que admite el binario"
+    - comando: "/status"
+      donde: sesion
+      busca: "qué modelo está activo de verdad"
+  solucion:
+    - "Comprueba el modelo antes que el nivel. Fable 5, Opus 5, Sonnet 5, Opus 4.8 y Opus 4.7 admiten los cinco niveles; Opus 4.6 y Sonnet 4.6 no tienen `xhigh`."
+    - "Cambia de modelo si necesitas ese nivel, o acepta `high`, que es lo que estás teniendo."
+    - "El esfuerzo por defecto es `high` en todos los que lo admiten, **salvo Opus 4.7, que va a `xhigh`**."
+    - "Tu organización puede limitar qué niveles están disponibles, así que si el menú te sale corto puede no ser el modelo."
+  pasa_si: "`claude --help` lista `xhigh` y `/status` muestra un modelo de los que lo admiten."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`model-config.md`. Ejecutado contra 2.1.229: `--effort` admite `low, medium, high, xhigh, max`"
+  no_aplica_si: >-
+    Tu modelo no admite esfuerzo en absoluto. Los que no están en la tabla no
+    tienen niveles y la bandera no hace nada.
+  relacionados:
+    - estrene-modelo-y-se-me-cambio-el-esfuerzo
+    - a-mi-companero-le-sale-otro-modelo-con-default
+    - active-fast-mode-para-ahorrar
+
+estrene-modelo-y-se-me-cambio-el-esfuerzo:
+  diagnostico: >-
+    Es un comportamiento deliberado: al estrenar **Fable 5, Opus 4.8 u Opus
+    4.7**, Claude Code aplica el esfuerzo por defecto de ese modelo aunque
+    tuvieras otro puesto, y lo mantiene entre sesiones hasta que elijas
+    explícitamente. **Opus 5 no hace esa retención**: el nivel que tuvieras se
+    arrastra.
+  comprobar:
+    - comando: "claude --help | grep -A2 'effort <level>'"
+      donde: shell
+      busca: "los niveles admitidos, para saber a cuál puedes volver"
+  solucion:
+    - "Elige explícitamente con `/effort` en sesión o `--effort` al arrancar. La elección explícita gana y se mantiene."
+    - "Si te importa el coste y la latencia, fija el nivel en tu configuración en vez de dejarlo al comportamiento de estreno."
+    - "Y ten presente el efecto colateral: **cambiar el nivel de esfuerzo invalida la caché**. Cambiarlo a mitad de sesión se paga."
+  pasa_si: "`/effort` muestra el nivel que tú elegiste y sigue ahí en la siguiente sesión."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`model-config.md`. La bandera `--effort` y sus valores se comprobaron en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Estrenaste Opus 5. Ese no retiene el esfuerzo por defecto, así que si te
+    cambió, te lo cambió otra cosa.
+  relacionados:
+    - puse-xhigh-y-corre-como-high
+    - la-cache-no-me-aprovecha-nada
+    - active-fast-mode-para-ahorrar
+
+active-fast-mode-para-ahorrar:
+  diagnostico: >-
+    Fast mode no ahorra: **compra tiempo con dinero**. Misma calidad de modelo,
+    menos latencia, **más coste**. Lo que compra tiempo con calidad es bajar el
+    esfuerzo. Confundirlas es cómo se acaba pagando más por respuestas peores.
+  comprobar:
+    - comando: "/cost"
+      donde: sesion
+      busca: "el gasto de la sesión antes y después del cambio"
+  solucion:
+    - "Si lo que quieres es gastar menos, baja el **esfuerzo**, no actives fast mode."
+    - "Si lo que quieres es ir más rápido y el presupuesto da, fast mode es la palanca correcta."
+    - "Se pueden combinar para velocidad máxima en tareas sencillas, pero decídelo a sabiendas."
+    - "Y cuenta el efecto oculto: **activar fast mode invalida la caché**, así que el cambio a mitad de sesión tiene un coste extra de una vez."
+  pasa_si: "Puedes decir con cuál de las dos palancas estás pagando y qué estás comprando con ella."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`model-config.md` y `costs.md`, más la tabla 10 de la guía"
+  no_aplica_si: >-
+    Estás en un plan de suscripción con límites de uso en vez de facturación por
+    token. Ahí el «coste» se paga en límite consumido, no en euros, pero la
+    dirección es la misma.
+  relacionados:
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+    - la-cache-no-me-aprovecha-nada
+    - puse-xhigh-y-corre-como-high
+
+la-cache-no-me-aprovecha-nada:
+  diagnostico: >-
+    Estás tocando configuración a mitad de sesión. Lo que rompe la caché es
+    cambiar **la configuración**, no el trabajo: cambiar de modelo, cambiar el
+    nivel de esfuerzo, activar fast mode, conectar o desconectar un servidor MCP,
+    activar o desactivar un plugin, denegar una herramienta entera, compactar, o
+    actualizar Claude Code.
+  comprobar:
+    - comando: "/cost"
+      donde: sesion
+      busca: "la proporción de lectura de caché frente a escritura"
+  solucion:
+    - "Aprovecha la buena noticia, que casi nadie usa: **editar tu código no invalida nada**. Puedes trabajar todo el día tocando archivos sin recalcular el prefijo. Editar el CLAUDE.md en caliente tampoco lo invalida."
+    - "Agrupa los cambios de configuración al principio de la sesión en vez de ir tocando sobre la marcha."
+    - "Cuidado con el sutil: añadir un nombre de herramienta pelado como `Bash` o `WebFetch` en una regla `deny` **la quita del contexto por completo**, y como las definiciones de herramientas viven en la capa del system prompt, eso invalida la caché. Solo pasa con reglas que casan en la posición del nombre: el nombre pelado, `Bash(*)`, o un comodín de nombre de herramienta."
+    - "Lo que **no** la invalida y puedes hacer libremente: cambiar el output style, cambiar el modo de permisos, invocar skills y comandos, ejecutar `/recap`, rebobinar la conversación."
+  pasa_si: "`/cost` muestra lecturas de caché en la mayoría de los turnos y no una escritura nueva en cada uno."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`costs.md` y `context-window.md`, más la tabla 10 de la guía, que corrigió el inventario de partida"
+  no_aplica_si: >-
+    Estás midiendo subagentes. Esos tienen su propio TTL de cinco minutos y
+    empiezan sin ningún acierto de caché, así que ahí lo que ves es normal.
+  relacionados:
+    - mis-subagentes-no-aprovechan-la-cache
+    - el-primer-turno-tras-el-cafe-va-lentisimo
+    - cambie-de-modelo-para-ahorrar-y-gasto-igual
+
+el-primer-turno-tras-el-cafe-va-lentisimo:
+  diagnostico: >-
+    Los prefijos cacheados caducan por **inactividad**, y cada petición que
+    acierta reinicia el reloj. Tras un hueco suficiente, la siguiente petición
+    recalcula la entrada entera. No es tu máquina ni tu red: es la caché fría.
+  comprobar:
+    - comando: "/cost"
+      donde: sesion
+      busca: "una escritura de caché grande en el primer turno tras la pausa"
+  solucion:
+    - "Acepta el primer turno lento: es el precio de la pausa, y se amortiza en los siguientes."
+    - "Conoce tus dos tiempos de vida: **cinco minutos** y **una hora**. Con suscripción de Claude, el de una hora se solicita automáticamente para la conversación principal."
+    - "Con clave de API o proveedor externo, el TTL se elige según cómo autentiques y es anulable por variables de entorno."
+    - "Cuidado si te pasas del límite del plan y Claude Code tira de créditos de uso: **las escrituras de caché cuestan más con el TTL de una hora que con el de cinco minutos**."
+  pasa_si: "El segundo turno tras la pausa vuelve a la velocidad normal."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`costs.md`, duración de la caché"
+  no_aplica_si: >-
+    Todos los turnos van lentos, no solo el primero. Eso no es la caché: mira los
+    hooks en la cadencia de cada herramienta.
+  relacionados:
+    - la-cache-no-me-aprovecha-nada
+    - mis-subagentes-no-aprovechan-la-cache
+    - las-sesiones-van-lentas-desde-que-puse-hooks
+
+mis-subagentes-no-aprovechan-la-cache:
+  diagnostico: >-
+    Es la fila que nadie espera: **el TTL automático de una hora aplica a la
+    conversación principal, no a los subagentes**. Un subagente arranca su propia
+    conversación, con su propio system prompt y sus propias herramientas, empieza
+    **sin ningún acierto de caché** y se va calentando en sus propios turnos. Su
+    TTL son cinco minutos, incluso con suscripción.
+  comprobar:
+    - comando: "/cost"
+      donde: sesion
+      busca: "el coste de las tareas de subagente frente al de la conversación principal"
+  solucion:
+    - "Cuando el trabajo es repetido sobre el mismo contexto, usa un **fork** en vez de un subagente: un fork hereda el system prompt, las herramientas y el historial del padre **exactamente**, así que su primera petición lee la caché del padre."
+    - "Un subagente empieza de cero; un fork llega caliente. En trabajo repetido esa diferencia es dinero real."
+    - "Usa subagentes cuando lo que quieres es **aislamiento de contexto**: su system prompt, su copia del CLAUDE.md, sus herramientas y todas sus lecturas computan cero en tu sesión, y solo vuelve el resumen. Eso también es dinero, pero de otra columna."
+  pasa_si: "Sabes decir, para cada tarea que lanzas, si la elegiste por aislamiento (subagente) o por caché caliente (fork)."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`costs.md` y `sub-agents.md`"
+  no_aplica_si: >-
+    Lo que lanzas ya son forks. Entonces la caché del padre sí se aprovecha y lo
+    que ves es otra cosa.
+  relacionados:
+    - la-cache-no-me-aprovecha-nada
+    - el-subagente-de-la-skill-no-sabe-de-que-hablamos
+    - el-equipo-de-agentes-se-ha-comido-el-presupuesto
+
+# ─────────────────────────────────────────── M19 · referencia rápida
+
+webfetch-dice-que-la-pagina-no-menciona-eso:
+  diagnostico: >-
+    `WebFetch` es **lossy por diseño**. Descarga, convierte a Markdown y
+    **ejecuta tu prompt contra el contenido con un modelo pequeño y rápido**.
+    Claude recibe **la respuesta de ese modelo, no la página**. Así que puede que
+    la página sí lo mencione y lo que falló fuera tu pregunta.
+  comprobar:
+    - comando: "curl -sL '<url>' | grep -i 'el término'"
+      donde: shell
+      busca: "si el término está en la página cruda, el problema era el prompt"
+  solucion:
+    - "Para verificar si algo aparece en una página, usa `curl` y busca en el crudo. Es la diferencia entre «no lo dice» y «no se lo pregunté bien»."
+    - "Si usas `WebFetch`, formula el prompt como una extracción explícita y no como una pregunta de sí o no."
+    - "La conversión a Markdown **no es configurable**, así que no hay ajuste que salve una tabla compleja o un contenido cargado por JavaScript."
+    - "Esta distinción produce diagnósticos falsos con una facilidad notable, y merece el cartel que le pone el módulo."
+  pasa_si: "`curl` confirma si el término está o no en la página, y tu conclusión se basa en eso y no en el resumen."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`cli-reference.md` y las páginas de herramientas integradas"
+  no_aplica_si: >-
+    La página está detrás de autenticación o la sirve JavaScript. Ahí ni `curl`
+    ni `WebFetch` ven lo que ves tú en el navegador.
+  relacionados:
+    - webfetch-falla-en-toda-la-red-corporativa
+    - puse-allowed-domains-y-blocked-domains-a-la-vez
+    - buscar-en-google-la-parafrasis-del-error
+
+mi-patron-de-grep-no-encuentra-nada:
+  diagnostico: >-
+    La herramienta Grep está construida sobre **ripgrep** y usa **su sintaxis de
+    expresiones regulares, no la de grep POSIX**. Los metacaracteres que en POSIX
+    pasan sin más, en ripgrep hay que escaparlos.
+  comprobar:
+    - comando: "rg 'interface{}' archivo.go"
+      donde: shell
+      busca: "el error `regex parse error: repetition quantifier expects a valid decimal`"
+    - comando: "rg 'interface\\{\\}' archivo.go"
+      donde: shell
+      busca: "con las llaves escapadas, sí encuentra"
+  solucion:
+    - "Escapa los metacaracteres. `interface{}` en Go se busca como `interface\\{\\}`."
+    - "Si no quieres pelearte con la sintaxis, busca literal con `rg -F`."
+    - "Ojo con la trampa de versión: **antes de v2.1.208, una entrada rechazada se reportaba como `No files found`** aunque el texto existiera. Es decir, el mismo síntoma con dos causas opuestas. Desde 2.1.208 devuelve el error real de ripgrep, que es mucho mejor."
+    - "Y recuerda la división de trabajo: Glob encuentra archivos por nombre, Grep busca dentro de ellos."
+  pasa_si: "El mismo patrón escapado encuentra las coincidencias que sabes que existen."
+  aplica_desde: "2.1.208 para el mensaje de error correcto"
+  evidencia: ejecutada
+  fuente: "`cli-reference.md`. Ejecutado el 13 de agosto de 2026: `rg 'interface{}'` falla con `regex parse error` y `rg 'interface\\{\\}'` encuentra la línea"
+  no_aplica_si: >-
+    Estás en WSL y la búsqueda no ve archivos que existen. Eso es el problema
+    documentado de búsqueda en WSL y tiene página propia.
+  relacionados:
+    - en-wsl-no-encuentra-archivos-que-estan-ahi
+    - se-le-va-el-contexto-en-leer-dist
+    - buscar-en-google-la-parafrasis-del-error
+
+el-cd-no-se-mantiene-entre-comandos:
+  diagnostico: >-
+    Salió del proyecto y el directorio se reseteó. No es que cada comando corra en
+    una shell nueva sin memoria: es que al salir del alcance del proyecto, el
+    directorio vuelve al punto de partida, y el resultado te lo dice.
+  comprobar:
+    - comando: "pwd"
+      donde: shell
+      busca: "en la salida del comando anterior, la línea `Shell cwd was reset to`"
+  solucion:
+    - "Lee el resultado del comando: si dice `Shell cwd was reset to`, ya tienes el diagnóstico y no hace falta teorizar."
+    - "Usa rutas absolutas, o encadena en un solo comando: `cd /ruta && hacer-cosa`."
+    - "Si necesitas trabajar de verdad fuera del proyecto, añádelo con `--add-dir` en vez de pelearte con el directorio de trabajo."
+  pasa_si: "El comando siguiente corre donde esperabas, o usas rutas absolutas y da igual dónde corra."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`cli-reference.md` y el catálogo de diagnóstico del M18"
+  no_aplica_si: >-
+    Quien no hereda tu directorio es un subagente. Eso no lo hace nunca, por
+    diseño, y tiene página propia.
+  relacionados:
+    - un-subagente-no-hereda-mi-directorio-de-trabajo
+    - anadi-un-directorio-con---add-dir-y-no-lee-su-claudemd
+    - mi-comando-se-bloquea-en-un-worktree-y-no-entiendo-por-que
+
+busque-la-bandera-en-la-referencia-y-no-esta:
+  diagnostico: >-
+    Puede estar en el binario y no en `cli-reference.md`. La referencia del CLI y
+    el binario no coinciden al cien por cien, y cuando discrepan **manda el
+    binario**.
+  comprobar:
+    - comando: "claude --help | grep -- '--la-bandera'"
+      donde: shell
+      busca: "si sale ahí, existe, diga lo que diga la referencia"
+  solucion:
+    - "Pregúntale al binario, no al artículo. `claude --help` decide quién tiene razón."
+    - "Dos ejemplos medidos para esta guía, que estaban en el binario 2.1.228 y no en `cli-reference.md`: **`--brief`**, *Enable SendUserMessage tool for agent-to-user communication*; y **`--file <specs...>`**, *File resources to download at startup*, con formato `file_id:ruta_relativa`."
+    - "Matiz honesto: «no está en `cli-reference.md`» no es «no está documentada en ningún sitio». Lo verificable es lo primero, y es la página donde un lector iría a buscarla."
+    - "Si el binario tampoco la tiene, entonces sí: la bandera no existe en tu versión, y toca mirar el changelog."
+  pasa_si: "`claude --help` responde, y esa respuesta es la que usas."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Cruce propio de `cli-reference.md` contra `claude --help`, documentado en el módulo 19. Reejecutado contra 2.1.229"
+  no_aplica_si: >-
+    La bandera está en la referencia y no en tu binario. Entonces es al revés: tu
+    versión es más vieja que la documentación, y `claude --version` te lo dirá.
+  relacionados:
+    - el-tutorial-dice-ultraplan-y-no-existe
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+    - a-mi-companero-le-existe-un-comando-que-a-mi-no
+
+cambie-el-ajuste-en-los-cuatro-ambitos-y-sigue-igual:
+  diagnostico: >-
+    Una variable de entorno es **otra capa** por encima de los cuatro ámbitos, y
+    es la que todo el mundo olvida. Has recorrido managed, usuario, proyecto y
+    local, y el valor lo estaba fijando el entorno.
+  comprobar:
+    - comando: "env | grep -i -E 'claude|anthropic' | sed 's/=.*/=<valor>/'"
+      donde: shell
+      busca: "cualquier variable relacionada con el ajuste que peleas"
+  solucion:
+    - "Lista el entorno antes de tocar un quinto archivo."
+    - "Mira dónde se pone esa variable: tu `.bashrc` o `.zshrc`, el `env` de los settings, un `direnv`, o el entorno del sistema de CI."
+    - "Recuerda que el bloque `env` de los settings gestionados **sí se fusiona variable a variable** entre fuentes desde v2.1.223, así que puede venir de más de un sitio a la vez."
+    - "`/status` te dice qué fuentes mandan; el entorno no sale ahí, y por eso hay que mirarlo aparte."
+  pasa_si: "`env` no contiene ninguna variable que fije ese ajuste, y entonces sí gana tu archivo."
+  aplica_desde: "cualquiera; fusión de `env` en managed desde 2.1.223"
+  evidencia: ejecutada
+  fuente: "`settings.md` y `debug-your-config.md`. La comprobación del entorno se ejecutó en esta máquina"
+  no_aplica_si: >-
+    El ajuste está fijado en settings gestionados. Managed gana siempre y no lo
+    sobrescribe nadie, tampoco el entorno.
+  relacionados:
+    - mi-ajuste-no-se-aplica
+    - tocar-la-configuracion-a-ciegas
+    - mi-settingsjson-entero-dejo-de-aplicarse
+
+puse-allowed-domains-y-blocked-domains-a-la-vez:
+  diagnostico: >-
+    No se pueden combinar en la misma llamada. `WebSearch` acepta `allowed_domains`
+    **o** `blocked_domains`, nunca las dos.
+  comprobar:
+    - comando: "grep -rn 'allowed_domains\\|blocked_domains' .claude/"
+      donde: shell
+      busca: "si aparecen las dos en la misma configuración de llamada"
+  solucion:
+    - "Elige una. Lista blanca si sabes de dónde quieres la información; lista negra si solo quieres excluir unos pocos."
+    - "Si necesitas las dos semánticas, haz dos llamadas."
+    - "Y recuerda qué devuelve `WebSearch`: **títulos y URLs**, no las páginas. Puede lanzar hasta ocho búsquedas de backend por llamada."
+  pasa_si: "La llamada lleva exactamente uno de los dos parámetros y devuelve resultados."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`cli-reference.md`, herramientas integradas"
+  no_aplica_si: >-
+    Lo que estás configurando es la lista blanca de dominios del **sandbox**. Esa
+    es otra cosa, vive en otro sitio y tiene otras reglas.
+  relacionados:
+    - webfetch-falla-en-toda-la-red-corporativa
+    - webfetch-dice-que-la-pagina-no-menciona-eso
+    - desactive-el-trafico-no-esencial-y-webfetch-sigue-llamando
+
+mi-memorymd-largo-no-se-carga-entero:
+  diagnostico: >-
+    Se cargan **las primeras 200 líneas o 25 KB de `MEMORY.md`**, lo que llegue
+    antes. No es un fallo: es el presupuesto de la auto memory, y todo lo que
+    pase de ahí no entra en contexto.
+  comprobar:
+    - comando: "wc -lc ~/.claude/projects/*/memory/MEMORY.md"
+      donde: shell
+      busca: "líneas y bytes. Por encima de 200 líneas o 25.600 bytes, el resto se queda fuera"
+  solucion:
+    - "Trata `MEMORY.md` como un **índice**, no como el almacén: una línea por memoria, con enlace al archivo que la contiene. El detalle vive en los archivos por tema del mismo directorio."
+    - "Poda las entradas que ya no son ciertas. Una memoria caducada ocupa presupuesto y además miente."
+    - "Desde **v2.1.210**, un `MEMORY.md` por encima del límite **avisa al escribir**. Antes se truncaba en silencio, que es como se llega a este síntoma sin enterarse."
+    - "Recuerda dónde vive: `~/.claude/projects/<proyecto>/memory/`, y la ruta se deriva del repositorio git, así que **todos los worktrees y subdirectorios del mismo repo comparten un único directorio de memoria**."
+  pasa_si: "`wc -lc` devuelve menos de 200 líneas y menos de 25.600 bytes."
+  aplica_desde: "2.1.210 para el aviso al escribir"
+  evidencia: ejecutada
+  fuente: "`memory.md` y `context-window.md`. `wc -lc` sobre el `MEMORY.md` de esta máquina se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    Lo que no se carga es un `CLAUDE.md`, no el `MEMORY.md`. Ese no tiene este
+    límite y el problema es otro.
+  relacionados:
+    - suponer-que-memorymd-entero-se-carga
+    - se-le-olvido-lo-que-le-dije-al-principio
+    - en-el-monorepo-se-cuela-el-claudemd-de-otro-equipo
+
+# ─────────────────────────────────────────── M21 · retiradas y cambios
+
+el-tutorial-dice-ultraplan-y-no-existe:
+  diagnostico: >-
+    Está retirado. **Ultraplan, el comando `/ultraplan` y la palabra clave
+    `ultraplan` se retiraron en la semana 32.** Si tu fuente lo menciona, es de
+    antes de agosto de 2026 y probablemente tenga más cosas caducadas.
+  comprobar:
+    - comando: "claude --help | grep -ci ultraplan"
+      donde: shell
+      busca: "devuelve `0`: la palabra no aparece en la ayuda del binario"
+  solucion:
+    - "Usa el **modo plan**, o Claude Code en la web. Es lo que lo sustituye."
+    - "Quítalo de todos tus scripts: `grep -rn ultraplan .` en el repositorio."
+    - "Y desconfía del resto de esa fuente. Las cuatro señales de que un tutorial está caducado son: habla de `/ultraplan`; dice que los subagentes bloquean; dice que hay un tope de 200 subagentes; dice que MCP carga todas sus herramientas en contexto."
+    - "La regla general, que es la razón de ser de todo este proyecto: **pregúntale la versión al binario, no al artículo**."
+  pasa_si: "`claude --help | grep -ci ultraplan` devuelve `0` y `grep -rn ultraplan .` no encuentra nada en tus scripts."
+  aplica_desde: "semana 32 de 2026"
+  evidencia: ejecutada
+  fuente: "`whats-new/2026-w32.md`. Ejecutado contra 2.1.229: la ayuda del binario no menciona `ultraplan` ni una vez"
+  no_aplica_si: >-
+    Tienes una máquina anterior a la semana 32 sin actualizar. Ahí todavía existe,
+    y el problema real es la versión.
+  relacionados:
+    - mi-subagente-no-bloquea-como-esperaba
+    - lei-que-hay-un-tope-de-200-por-sesion
+    - pulso-f-en-doctor-y-no-pasa-nada
+
+mi-subagente-no-bloquea-como-esperaba:
+  diagnostico: >-
+    Los subagentes corren **en segundo plano por defecto desde la semana 27**.
+    Sigues trabajando y el resultado llega cuando termina. Si tu script daba por
+    hecho que el turno se detenía, esa suposición ya no es cierta.
+  comprobar:
+    - comando: "/tasks"
+      donde: sesion
+      busca: "el subagente corriendo mientras tú sigues escribiendo"
+  solucion:
+    - "Si necesitas el resultado en el mismo turno, `background: false` en el frontmatter de la skill bifurcada."
+    - "Claude Code espera igualmente, pongas lo que pongas, en estos casos: modo no interactivo con `-p` o con el SDK; `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`; cuando invocas una skill bifurcada mientras otra invocación de la misma sigue corriendo; y cuando la dispara una tarea programada."
+    - "Si lo que quieres es una puerta de calidad antes de que devuelva, un hook `SubagentStop` revisa lo que trae."
+  pasa_si: "El subagente aparece en `/tasks` mientras corre, o esperas su resultado en el turno porque has puesto `background: false`."
+  aplica_desde: "semana 27 de 2026"
+  evidencia: documentada
+  fuente: "`sub-agents.md` y `skills.md`"
+  no_aplica_si: >-
+    Estás en modo no interactivo. Ahí espera de todas formas y el comportamiento
+    que ves es el correcto.
+  relacionados:
+    - el-subagente-de-la-skill-no-sabe-de-que-hablamos
+    - rebobine-y-los-cambios-del-subagente-siguen-ahi
+    - lei-que-hay-un-tope-de-200-por-sesion
+
+de-pronto-ya-no-me-pregunta-por-los-permisos:
+  diagnostico: >-
+    Auto mode pasó a ser el modo por defecto. **A partir del 14 de agosto de
+    2026** es el modo por defecto para las sesiones nuevas en los planes Pro, Max
+    y Team.
+  comprobar:
+    - comando: "claude --help | grep -A4 'permission-mode'"
+      donde: shell
+      busca: "los valores admitidos, para fijar el tuyo"
+    - comando: "grep -n defaultMode ~/.claude/settings.json"
+      donde: shell
+      busca: "si ya tienes un modo fijado, que entonces se respeta"
+  solucion:
+    - "Fija tu propio valor y deja de depender del defecto: en `~/.claude/settings.json`, `\"permissions\": {\"defaultMode\": \"default\"}` para volver a Manual."
+    - "Ojo con el detalle que este mismo módulo llegó a cometer: **ese bloque no puede llevar un comentario `//` dentro**. JSON no admite comentarios y el archivo se rechaza entero."
+    - "Lo que ya está cubierto sin que hagas nada: si tú ya fijaste un modo por defecto, se queda salvo que aceptes el aviso único de cambio; y **un modo por defecto gestionado por tu organización no cambia**."
+    - "Si administras una flota, esta es la fecha en la que te interesa tener ya fijado `defaultMode` en los settings gestionados. Un cambio silencioso del modo por defecto es justo lo que quieres decidir tú y no descubrir en un incidente."
+    - "Auto mode no es «permitirlo todo»: es un clasificador que bloquea por defecto `curl | bash`, envío de datos sensibles fuera, despliegues y migraciones de producción, borrado masivo en la nube, conceder permisos de IAM, modificar infraestructura compartida, destruir de forma irreversible archivos previos a la sesión, `force push`, y publicar cambios que sacarían secretos fuera del repositorio."
+  pasa_si: "La sesión muestra el modo que tú fijaste, y `claude doctor` no reporta el settings como inválido."
+  aplica_desde: "14 de agosto de 2026"
+  evidencia: ejecutada
+  fuente: "`iam.md`. Los valores de `--permission-mode` se comprobaron en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Tu plan no es Pro, Max ni Team, o tu organización fija el modo desde settings
+    gestionados. En los dos casos el cambio no te aplica.
+  relacionados:
+    - solo-hay-cinco-modos
+    - puse-manual-y-no-lo-reconoce
+    - cambie-el-output-style-y-sigue-pidiendo-permisos
+
+mi-script-del-sdk-dejo-de-compilar:
+  diagnostico: >-
+    La API de sesiones V2 de TypeScript se eliminó en el **SDK 0.3.142**:
+    `unstable_v2_createSession`, `unstable_v2_resumeSession`, `unstable_v2_prompt`
+    y los tipos `SDKSession` y `SDKSessionOptions`. El prefijo `unstable_` era el
+    aviso.
+  comprobar:
+    - comando: "grep -rn 'unstable_v2_' src/"
+      donde: shell
+      busca: "las llamadas que hay que migrar"
+    - comando: "npm ls @anthropic-ai/claude-code"
+      donde: shell
+      busca: "la versión del SDK instalada"
+  solucion:
+    - "Migra a la API `query()` con `AsyncIterable<SDKUserMessage>`, o usa `options.resume` para reanudar."
+    - "Cambia los tipos `SDKSession` y `SDKSessionOptions` por los de `query()`."
+    - "Fija la versión del SDK en tu `package.json` y actualízala a propósito, no por arrastre."
+    - "Regla general para el futuro: lo que lleva `unstable_` en el nombre es una promesa explícita de que va a cambiar."
+  pasa_si: "`grep -rn 'unstable_v2_' src/` no devuelve nada y el proyecto compila."
+  aplica_desde: "SDK de TypeScript 0.3.142"
+  evidencia: documentada
+  fuente: "`typescript-sdk.md` y el changelog del SDK"
+  no_aplica_si: >-
+    Usas el SDK de Python. Esa retirada es del de TypeScript y no te afecta.
+  relacionados:
+    - unstable-v2-createsession-ya-no-existe
+    - una-replica-no-reanuda-la-sesion-de-otra
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+
+mi-pkill-ya-no-funciona:
+  diagnostico: >-
+    Endurecimiento deliberado: desde **v2.1.214**, un `pkill` cuyo patrón case con
+    el proceso de Claude Code **se rechaza**. Antes corría y mataba la sesión, que
+    es exactamente lo que se quiso cerrar. **Solo en Linux.**
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "2.1.214 o posterior"
+  solucion:
+    - "Estrecha el patrón para que no case con el proceso de Claude Code. Casi siempre el patrón era demasiado ancho de todas formas."
+    - "Mata por PID en vez de por nombre: `pgrep -f 'mi-servicio-concreto'` y luego `kill` sobre ese PID."
+    - "Si lo que quieres es parar trabajo de Claude Code, la vía es `/tasks`, no matar procesos."
+  pasa_si: "El `pkill` mata lo que querías y la sesión sigue viva."
+  aplica_desde: "2.1.214"
+  evidencia: ejecutada
+  fuente: "Changelog de 2.1.214, recogido en el módulo 21. `claude --version` se ejecutó: 2.1.229, por encima del corte"
+  no_aplica_si: >-
+    Estás en macOS o en Windows. El endurecimiento es solo de Linux.
+  relacionados:
+    - no-puedo-interrumpir-al-agente
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+    - mi-comando-se-bloquea-en-un-worktree-y-no-entiendo-por-que
+
+comparo-dos-maquinas-y-dan-resultados-distintos:
+  diagnostico: >-
+    Versiones distintas. En el rango reciente hay media docena de comportamientos
+    que cambian de una versión a otra, así que dos máquinas desalineadas no son
+    comparables por mucho que la configuración sea idéntica.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "el número exacto, en las dos máquinas, antes de cualquier otra cosa"
+    - comando: "claude doctor"
+      donde: shell
+      busca: "vía de instalación, canal y último intento de actualización"
+  solucion:
+    - "Iguala las versiones antes de comparar nada. Es el primer paso, no el último."
+    - "Ten a mano los cortes que más muerden: **2.1.200** remotos añadidos a mitad de sesión dejan de ser de confianza · **2.1.202** reinvocar una skill idéntica ya no duplica · **2.1.205** cambia `/doctor` · **2.1.208** Grep devuelve el error real de ripgrep · **2.1.210** avisa al pasarse el `MEMORY.md` · **2.1.211** la comprobación de secretos aplica en cualquier rama · **2.1.214** se rechaza el `pkill` que case con el proceso · **2.1.217** reconoce la redacción de Bedrock para autocompactar · **2.1.218** las skills bifurcadas no bloquean y los booleanos admiten `yes`/`no` · **2.1.219** cambia a qué resuelve `default` · **2.1.223** el `env` de managed se fusiona por clave · **2.1.228** un `deny` de lectura bloquea también `Write`."
+    - "Fijad canal y `minimumVersion` en el repositorio para que esto deje de pasar."
+    - "Anotad la versión verificada en el CLAUDE.md. Así la primera pregunta de cualquier incidencia ya tiene respuesta escrita."
+  pasa_si: "`claude --version` devuelve el mismo número en las dos máquinas."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 21 de la guía, tabla de endurecimientos silenciosos. `claude --version` y `claude doctor` se ejecutaron contra 2.1.229"
+  no_aplica_si: >-
+    Las versiones ya coinciden. Entonces mirad el entorno: variables, settings
+    gestionados y modelo efectivo con `/status`.
+  relacionados:
+    - a-mi-companero-le-existe-un-comando-que-a-mi-no
+    - comparar-dos-maquinas-sin-mirar-versiones
+    - a-mi-companero-le-sale-otro-modelo-con-default
+
+# ─────────────────────────────────────────── M18 · antipatrones de diagnóstico
+
+relanzar-el-comando-esperando-que-funcione:
+  diagnostico: >-
+    Salvo dos excepciones concretas, relanzar no arregla nada: reproduce. Las
+    excepciones documentadas son **instalación interrumpida antes de terminar** y
+    **conexión caída durante la descarga de la actualización**, que dejan el
+    estado a medias y no corrupto.
+  comprobar:
+    - comando: "claude --debug"
+      donde: shell
+      busca: "el error real, que es lo que el reintento te está ocultando"
+  solucion:
+    - "Si el fallo es de instalación o de descarga interrumpida, reintenta: es la solución documentada."
+    - "Para todo lo demás, para y lee el error entero. Buscar la paráfrasis en Google en vez del literal es el segundo antipatrón de la lista."
+    - "Sigue el orden que ahorra tiempo: mira qué se ha cargado en contexto, `/status` para saber qué fuentes mandan, `/doctor` para los errores de validación con su origen, y arranca contra una configuración limpia para separar tu culpa de la del programa."
+  pasa_si: "Puedes nombrar la causa. Si no la sabes nombrar, no está resuelto aunque haya dejado de fallar."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`troubleshoot-install.md` y `debug-your-config.md`. La bandera `--debug` se comprobó en `claude --help` de 2.1.229"
+  no_aplica_si: >-
+    Es un fallo de red intermitente contra un servicio externo. Ahí reintentar sí
+    es la política correcta, y lo que falta es un backoff.
+  relacionados:
+    - buscar-en-google-la-parafrasis-del-error
+    - tocar-la-configuracion-a-ciegas
+    - comparar-dos-maquinas-sin-mirar-versiones
+
+tocar-la-configuracion-a-ciegas:
+  diagnostico: >-
+    Cambiar ajustes sin saber cuál manda convierte diez minutos en dos horas, y
+    además deja el sistema en un estado que nadie sabe describir. Con cuatro
+    ámbitos, más los argumentos de línea de comandos, más el entorno, hay seis
+    sitios donde puede estar la respuesta.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "qué fuentes de settings están activas"
+    - comando: "claude doctor"
+      donde: shell
+      busca: "entradas inválidas con su origen y su campo"
+  solucion:
+    - "Mira **antes** de tocar. `/status` y `/doctor` cuestan diez segundos."
+    - "Cambia una cosa cada vez y comprueba entre cambio y cambio."
+    - "Arranca contra una configuración limpia para separar tu culpa de la del programa: si en limpio no pasa, el problema está en una de tus capas."
+    - "Y ten presente el orden completo de precedencia: managed, argumentos de línea de comandos, local, proyecto, usuario, con el entorno como capa extra por encima y con los permisos fusionándose en vez de sobrescribirse."
+  pasa_si: "Puedes decir en qué archivo o variable concreta está el valor que gana."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "`debug-your-config.md`. `claude doctor` se ejecutó y lee los settings sin pedir confianza"
+  no_aplica_si: >-
+    Estás explorando a propósito en una máquina de usar y tirar. Ahí tocar a
+    ciegas es barato y legítimo.
+  relacionados:
+    - mi-ajuste-no-se-aplica
+    - cambie-el-ajuste-en-los-cuatro-ambitos-y-sigue-igual
+    - relanzar-el-comando-esperando-que-funcione
+
+comparar-dos-maquinas-sin-mirar-versiones:
+  diagnostico: >-
+    Es la comparación que más tiempo desperdicia, porque todo lo demás parece
+    idéntico. Media docena de comportamientos cambian entre versiones recientes,
+    así que sin igualar versiones no estás comparando configuraciones: estás
+    comparando programas distintos.
+  comprobar:
+    - comando: "claude --version"
+      donde: shell
+      busca: "el número exacto, en las dos máquinas, antes de nada"
+  solucion:
+    - "Primer comando de cualquier comparación: `claude --version` en las dos."
+    - "Segundo: `claude doctor` en las dos, que te da vía de instalación, canal y último intento de actualización."
+    - "Tercero: `/status` en las dos, que te da fuentes de settings activas y modelo efectivo."
+    - "Solo cuando esos tres coinciden tiene sentido mirar los archivos de configuración."
+  pasa_si: "Los tres comandos devuelven lo mismo en las dos máquinas, y ahí sí empieza el diagnóstico de verdad."
+  aplica_desde: cualquiera
+  evidencia: ejecutada
+  fuente: "Módulo 18 y módulo 21 de la guía. `claude --version` y `claude doctor` se ejecutaron contra 2.1.229"
+  no_aplica_si: >-
+    Ya las igualaste. Entonces el siguiente sospechoso es el entorno, que no sale
+    en `/status`.
+  relacionados:
+    - comparo-dos-maquinas-y-dan-resultados-distintos
+    - a-mi-companero-le-existe-un-comando-que-a-mi-no
+    - tocar-la-configuracion-a-ciegas
+
+suponer-que-memorymd-entero-se-carga:
+  diagnostico: >-
+    Se cargan **las primeras 200 líneas o 25 KB**, lo que llegue antes. Suponer
+    que entra entero lleva a escribir memorias largas que nadie lee y a confiar en
+    instrucciones que nunca llegaron al contexto.
+  comprobar:
+    - comando: "wc -lc ~/.claude/projects/*/memory/MEMORY.md"
+      donde: shell
+      busca: "líneas y bytes contra el límite de 200 y 25.600"
+  solucion:
+    - "Escribe `MEMORY.md` como índice: una línea por memoria, con el detalle en archivos aparte del mismo directorio."
+    - "Pon lo importante arriba. Si se corta, se corta por abajo."
+    - "Poda lo que ya no es cierto: una memoria caducada ocupa presupuesto y además miente."
+    - "Desde v2.1.210 te avisa al escribir si te pasas. Antes se truncaba en silencio."
+  pasa_si: "`wc -lc` devuelve menos de 200 líneas y menos de 25.600 bytes."
+  aplica_desde: "2.1.210 para el aviso"
+  evidencia: ejecutada
+  fuente: "`memory.md` y `context-window.md`. `wc -lc` sobre el `MEMORY.md` de esta máquina se ejecutó como comprobación válida"
+  no_aplica_si: >-
+    No tienes auto memory activada. Con `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` o
+    `autoMemoryEnabled` en falso, no se carga nada y el límite es irrelevante.
+  relacionados:
+    - mi-memorymd-largo-no-se-carga-entero
+    - se-le-olvido-lo-que-le-dije-al-principio
+    - claude-elige-una-de-dos-reglas-al-azar
+
+dar-por-hecho-que-un-allow-de-proyecto-se-aplica:
+  diagnostico: >-
+    Las reglas de permisos **se fusionan entre ámbitos en vez de sobrescribirse**,
+    y unos pocos ajustes sensibles a seguridad honran además el valor más
+    restrictivo aunque venga de un ámbito que normalmente no podría imponerse. Un
+    `allow` del proyecto no garantiza que la acción corra.
+  comprobar:
+    - comando: "/status"
+      donde: sesion
+      busca: "las fuentes de permisos activas"
+    - comando: "grep -rn -A5 '\"permissions\"' ~/.claude/settings.json .claude/settings.json .claude/settings.local.json"
+      donde: shell
+      busca: "todos los bloques que están sumándose, incluidos los `deny`"
+  solucion:
+    - "Busca el `deny` antes que el `allow`. Un `deny` gana, venga de donde venga, y es la propiedad que hace útil el sistema."
+    - "Recuerda que managed gana siempre y no lo sobrescribe nadie."
+    - "Si tu organización usa `policyHelper`, ese preempta todo lo demás dentro del nivel managed y su salida pasa a ser la única configuración gestionada de esa ejecución."
+    - "Y no des por hecho tampoco lo contrario: `autoMode` **se ignora** en el settings del proyecto y en el local a propósito, para que un repositorio clonado no pueda relajarte el clasificador."
+  pasa_si: "Sabes nombrar la regla concreta y el ámbito concreto que decide, y coincide con lo que ves."
+  aplica_desde: cualquiera
+  evidencia: documentada
+  fuente: "`settings.md`, precedencia y sus tres excepciones"
+  no_aplica_si: >-
+    El ajuste que peleas no es de permisos. Los demás sí sobrescriben por ámbito.
+  relacionados:
+    - mi-allow-local-no-sustituye-al-del-proyecto
+    - mi-ajuste-no-se-aplica
+    - mi-strictallowlist-del-repositorio-no-hace-nada

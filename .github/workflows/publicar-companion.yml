@@ -14,6 +14,7 @@ on:
     paths:
       - "guia-21/**"
       - "fabrica/generar-companion.py"
+      - "fabrica/resoluciones.yaml"
       - ".github/workflows/publicar-companion.yml"
   workflow_dispatch:
 
@@ -36,7 +37,13 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Generar el sitio desde los módulos canónicos
+      # `resoluciones.yaml` es la segunda fuente canónica del sitio y el generador
+      # se niega a publicar sin ella, en vez de sacar un companion a medias que
+      # parezca completo.
+      - name: Instalar PyYAML
+        run: python3 -m pip install --quiet pyyaml
+
+      - name: Generar el sitio desde las fuentes canónicas
         run: python3 fabrica/generar-companion.py
 
       - name: Comprobar que no hay enlaces internos rotos
@@ -57,7 +64,15 @@ jobs:
             echo "Solo $N páginas. Algo ha ido mal, no publico." >&2
             exit 1
           fi
-          echo "$N páginas, ningún enlace interno roto."
+          # Un `resoluciones.yaml` vacío o mal cargado no rompe nada: produce un
+          # sitio entero de páginas cortas. Sería una regresión silenciosa, que es
+          # la peor clase. Este suelo la convierte en un rojo.
+          R=$(grep -rl 'class="pasa"' companion/ | wc -l)
+          if [ "$R" -lt 60 ]; then
+            echo "Solo $R páginas con resolución completa. Esperaba 60 o más." >&2
+            exit 1
+          fi
+          echo "$N páginas ($R con resolución completa), ningún enlace interno roto."
 
       - name: Publicar en el repositorio del companion
         env:

@@ -72,6 +72,15 @@ def cargar_hechos() -> list[dict]:
 AVISO_GENERADO = "GENERADO por fabrica/construir.py"
 
 
+# Fuentes canónicas que no son markdown y que igualmente afirman cosas sobre la
+# herramienta. `resoluciones.yaml` es la segunda fuente del companion: dice qué
+# versión hace falta, qué límites hay y qué comando comprobarlo. Si se queda
+# fuera de esta red, vuelve a pasar exactamente lo que la creó: una corrección
+# que llega a un archivo y no al otro, y dos frases opuestas conviviendo sin que
+# falle ninguna prueba.
+EXTRA = ("fabrica/resoluciones.yaml",)
+
+
 def archivos_md() -> tuple[list[Path], int]:
     """Devuelve los archivos canónicos, y cuántos derivados se saltó.
 
@@ -81,6 +90,10 @@ def archivos_md() -> tuple[list[Path], int]:
     fábrica existe para matar.
     """
     out, derivados = [], 0
+    for extra in EXTRA:
+        p = RAIZ / extra
+        if p.exists():
+            out.append(p)
     for p in sorted(RAIZ.rglob("*.md")):
         if any(parte in IGNORAR for parte in p.parts):
             continue

@@ -9,7 +9,15 @@ Una ruta propia por síntoma convierte el tráfico de búsqueda en el dato que
 buscamos, que es por qué problema entra la gente. Eso decide el posicionamiento
 con datos en vez de con criterio.
 
-Fuente: los 21 módulos canónicos de `guia-21/`. Nada se escribe a mano aquí.
+Fuentes, las dos canónicas y ninguna editada a mano:
+
+- los 21 módulos de `guia-21/` dan el síntoma y su causa;
+- `fabrica/resoluciones.yaml` da la resolución completa de los que la tienen.
+
+Hay dos formas de página **a propósito**. Un síntoma con resolución sale con las
+nueve secciones, comprobación incluida. Uno sin resolución sale con síntoma y
+causa. La alternativa era rellenar las 74 restantes con procedimientos que nadie
+ha comprobado, y eso es justo lo que este proyecto dice que no se hace.
 
 Salida: `companion/` con index.html, una página por síntoma, sitemap.xml y robots.txt.
 """
@@ -21,6 +29,7 @@ import json
 import re
 import shutil
 import subprocess
+import sys
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,6 +37,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 FUENTE = RAIZ / "guia-21"
 SALIDA = RAIZ / "companion"
+RESOLUCIONES = RAIZ / "fabrica" / "resoluciones.yaml"
 BASE = "https://julian-najas.github.io/claude-code-companion"
 # GitHub Pages sirve el sitio bajo /claude-code-companion/. Un href="./" desde
 # una página de síntoma resuelve a su PROPIA carpeta y recarga la misma página:
@@ -41,6 +51,47 @@ PALABRAS_VACIAS = {
     "me", "mi", "se", "lo", "por", "con", "para", "es", "sin", "al", "del", "su",
     "pero", "como", "más", "esto", "eso", "hay", "ya", "muy", "the",
 }
+
+# Cómo se traduce cada nivel de evidencia a una frase que el lector pueda juzgar.
+# El objetivo es que nadie tenga que adivinar cuánta confianza merece la página.
+CLI_COMPROBADO = "2.1.229"
+FECHA_COMPROBACION = "13 de agosto de 2026"
+NIVELES = {
+    "ejecutada": (
+        "Comprobación ejecutada",
+        f"El comando de «Compruébalo» se lanzó contra Claude Code {CLI_COMPROBADO} "
+        f"el {FECHA_COMPROBACION} y devolvió lo que dice esta página. "
+        "Ejecutar la comprobación no es reproducir la avería: el arreglo sale de la fuente citada.",
+    ),
+    "documentada": (
+        "Documentada",
+        "Sale de la documentación oficial citada, descargada el 12 de agosto de 2026. "
+        "No se ha ejecutado contra el binario.",
+    ),
+    "derivada": (
+        "Derivada",
+        "Se deduce de comportamiento documentado, pero la combinación exacta de esta "
+        "página no se ha ejecutado.",
+    ),
+}
+
+
+def resoluciones() -> dict:
+    """Carga `resoluciones.yaml`.
+
+    Sin PyYAML esto falla en vez de degradar en silencio: publicar el companion
+    sin las resoluciones dejaría un sitio que parece completo y no lo está, que
+    es peor que no publicar.
+    """
+    if not RESOLUCIONES.exists():
+        return {}
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        print("Falta PyYAML y hace falta para leer resoluciones.yaml.\n"
+              "  pip install pyyaml", file=sys.stderr)
+        raise SystemExit(1)
+    return yaml.safe_load(RESOLUCIONES.read_text(encoding="utf-8")) or {}
 
 
 def ranura(s: str) -> str:
@@ -166,22 +217,65 @@ def recoger() -> list[dict]:
             d["titulos_modulo"] = [d["titulo_modulo"]]
             d["archivos"] = [d["archivo"]]
             fusionado[clave] = d
+
+    res = resoluciones()
+    validar_resoluciones(res, set(fusionado))
+    for clave, d in fusionado.items():
+        d["resolucion"] = res.get(clave)
     return list(fusionado.values())
+
+
+CAMPOS = ("diagnostico", "comprobar", "solucion", "pasa_si", "aplica_desde",
+          "evidencia", "fuente", "no_aplica_si", "relacionados")
+
+
+def validar_resoluciones(res: dict, ranuras: set[str]) -> None:
+    """Falla el build antes de publicar nada.
+
+    Una resolución que apunta a un síntoma que ya no existe es una página huérfana;
+    un `relacionados` roto es un enlace a un 404. Las dos cosas pasan solas cuando
+    alguien reescribe la tabla de errores típicos de un módulo, que es exactamente
+    lo que este proyecto espera que ocurra a menudo.
+    """
+    fallos = []
+    for clave, r in res.items():
+        if clave not in ranuras:
+            fallos.append(f"{clave}: no existe ningún síntoma con esa ranura")
+            continue
+        for campo in CAMPOS:
+            if not r.get(campo):
+                fallos.append(f"{clave}: falta {campo}")
+        if r.get("evidencia") not in NIVELES:
+            fallos.append(f"{clave}: nivel de evidencia desconocido {r.get('evidencia')!r}")
+        for rel in r.get("relacionados", []):
+            if rel not in ranuras:
+                fallos.append(f"{clave}: relacionado inexistente {rel!r}")
+            if rel == clave:
+                fallos.append(f"{clave}: se relaciona consigo mismo")
+        for c in r.get("comprobar", []):
+            if c.get("donde") not in ("shell", "sesion"):
+                fallos.append(f"{clave}: comprobación con `donde` inválido {c.get('donde')!r}")
+    if fallos:
+        print("resoluciones.yaml no valida:", file=sys.stderr)
+        for f in fallos[:20]:
+            print(f"  · {f}", file=sys.stderr)
+        raise SystemExit(1)
 
 
 CSS = """
 :root{--bg:#ECEEEE;--sf:#FBFCFC;--sf2:#F3F5F5;--ink:#15191B;--ink2:#4E585C;
---mut:#78838A;--rl:#D2D8D9;--br:#9A6F14;
+--mut:#78838A;--rl:#D2D8D9;--br:#9A6F14;--ok:#2C6E49;--okbg:#E4EEE7;
 --sr:"Charter","Bitstream Charter","Iowan Old Style",Palatino,Georgia,serif;
 --sa:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 --mo:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#121516;--sf:#191D1F;
---sf2:#1E2325;--ink:#E8EAEA;--ink2:#A9B3B7;--mut:#7E888D;--rl:#2A3033;--br:#D5A442}}
+--sf2:#1E2325;--ink:#E8EAEA;--ink2:#A9B3B7;--mut:#7E888D;--rl:#2A3033;--br:#D5A442;
+--ok:#7FBF9A;--okbg:#17241D}}
 :root[data-theme=dark]{--bg:#121516;--sf:#191D1F;--sf2:#1E2325;--ink:#E8EAEA;
---ink2:#A9B3B7;--mut:#7E888D;--rl:#2A3033;--br:#D5A442}
+--ink2:#A9B3B7;--mut:#7E888D;--rl:#2A3033;--br:#D5A442;--ok:#7FBF9A;--okbg:#17241D}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--sa);font-size:17px;
-line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
+line-height:1.6;margin:0;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
 .w{max-width:760px;margin:0 auto;padding:44px 20px 80px}
 a{color:var(--br)}
 h1{font-family:var(--sr);font-weight:600;font-size:clamp(1.6rem,5vw,2.3rem);
@@ -207,6 +301,58 @@ ul.lista .m{font-family:var(--mo);font-size:.7rem;color:var(--mut);margin-left:.
 .cta{background:var(--sf2);border:1px solid var(--rl);padding:20px;margin-top:2.5em}
 .cta .t{font-family:var(--sr);font-size:1.15rem;margin-bottom:.4em}
 .cta p{color:var(--ink2);margin:.4em 0 0;font-size:.95rem}
+
+/* — resolución completa — */
+h2 .n{font-family:var(--mo);font-size:.7rem;color:var(--mut);margin-right:.6em;
+letter-spacing:.1em;vertical-align:.15em}
+pre{background:var(--sf);border:1px solid var(--rl);border-left:2px solid var(--br);
+padding:12px 14px;overflow-x:auto;margin:.5em 0;font-family:var(--mo);font-size:.86rem;
+line-height:1.5;color:var(--ink)}
+pre .p{color:var(--mut);user-select:none}
+/* `overflow-wrap:anywhere` y NUNCA `nowrap`: con nowrap, un nombre de variable
+   largo se sale de la caja en un móvil de 420 px y se come la página. Que
+   `curl | bash` parta por el espacio es feo; que el cuerpo haga scroll
+   horizontal es un fallo. Y nada de `&nbsp;` para evitarlo: esto se copia y se
+   pega en una terminal, donde un espacio duro rompe el comando. */
+code{font-family:var(--mo);font-size:.9em;background:var(--sf2);padding:.1em .35em;
+border:1px solid var(--rl);overflow-wrap:anywhere}
+pre code{background:none;border:0;padding:0;font-size:1em;white-space:pre;
+overflow-wrap:normal}
+.chk{margin:1.1em 0}
+.chk .q{font-size:.88rem;color:var(--ink2);margin:.15em 0 0}
+.chk .q b{color:var(--ink);font-weight:600}
+ol.pasos{padding-left:0;margin:.6em 0 0;list-style:none;counter-reset:p}
+ol.pasos li{counter-increment:p;position:relative;padding:0 0 0 2.1em;margin:0 0 .8em;
+color:var(--ink2)}
+ol.pasos li::before{content:counter(p);position:absolute;left:0;top:.05em;
+font-family:var(--mo);font-size:.72rem;color:var(--br);border:1px solid var(--rl);
+width:1.5em;height:1.5em;display:grid;place-items:center}
+ol.pasos li code{color:var(--ink)}
+.pasa{background:var(--okbg);border:1px solid var(--ok);padding:16px 18px;margin:1.4em 0}
+.pasa .t{font-family:var(--mo);font-size:.7rem;letter-spacing:.14em;
+text-transform:uppercase;color:var(--ok);margin-bottom:.4em}
+.pasa p{margin:0;color:var(--ink)}
+dl.ficha{display:grid;grid-template-columns:auto 1fr;gap:.55em 1.2em;margin:1.4em 0 0;
+padding-top:14px;border-top:1px solid var(--rl);font-size:.9rem}
+dl.ficha dt{font-family:var(--mo);font-size:.68rem;letter-spacing:.1em;
+text-transform:uppercase;color:var(--mut);padding-top:.35em;white-space:nowrap}
+dl.ficha dd{margin:0;color:var(--ink2)}
+dl.ficha dd b{color:var(--ink);font-weight:600}
+@media(max-width:560px){dl.ficha{grid-template-columns:1fr;gap:.15em}
+dl.ficha dt{padding-top:.8em}}
+.rel{list-style:none;padding:0;margin:.5em 0 0;display:flex;flex-wrap:wrap;gap:.5em}
+.rel a{display:block;padding:7px 12px;border:1px solid var(--rl);background:var(--sf);
+text-decoration:none;color:var(--ink);font-size:.88rem}
+.rel a:hover{border-color:var(--br)}
+.bd{font-family:var(--mo);font-size:.6rem;letter-spacing:.08em;color:var(--ok);
+border:1px solid var(--ok);padding:.15em .4em;margin-left:.5em;vertical-align:.1em}
+ul.lista .m{white-space:nowrap}
+.filtro{display:flex;gap:1.2em;align-items:center;margin-top:.9em;font-size:.85rem;
+color:var(--ink2);flex-wrap:wrap}
+.filtro label{display:flex;gap:.4em;align-items:center;cursor:pointer}
+.corta{background:var(--sf2);border:1px dashed var(--rl);padding:16px 18px;margin:1.6em 0;
+font-size:.92rem;color:var(--ink2)}
+.corta b{color:var(--ink)}
 """
 
 
@@ -251,12 +397,80 @@ def enlaces_modulo(d: dict) -> str:
     return " · ".join(partes)
 
 
-def pagina_sintoma(d: dict, total: int, pr: dict) -> str:
-    ctx = f'<h2>Por qué pasa</h2><p>{html.escape(d["contexto"])}</p>' if d["contexto"] else ""
+def inline(s: str) -> str:
+    """Markdown mínimo: escapa, y luego respeta `código` y **negrita**."""
+    s = html.escape(str(s))
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    return re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+
+
+def bloque_comprobar(cs: list[dict]) -> str:
+    partes = []
+    for c in cs:
+        prompt = "$" if c["donde"] == "shell" else "›"
+        donde = "en la terminal" if c["donde"] == "shell" else "dentro de una sesión"
+        partes.append(
+            f'<div class="chk">'
+            f'<pre><code><span class="p">{prompt} </span>{html.escape(c["comando"])}</code></pre>'
+            f'<p class="q"><b>{donde.capitalize()}.</b> Mira {inline(c["busca"])}</p></div>')
+    return "".join(partes)
+
+
+def bloque_resolucion(d: dict, ranuras: dict) -> str:
+    """Las nueve secciones. Solo se renderiza si el síntoma tiene resolución."""
+    r = d["resolucion"]
+    etiqueta, explicacion = NIVELES[r["evidencia"]]
+    pasos = "".join(f"<li>{inline(p)}</li>" for p in r["solucion"])
+    rel = "".join(
+        f'<li><a href="{RUTA}{s}/">{html.escape(ranuras[s])}</a></li>'
+        for s in r["relacionados"] if s in ranuras)
+    desde = r["aplica_desde"]
+    desde = ("cualquier versión" if desde == "cualquiera"
+             else f"<b>{html.escape(str(desde))}</b>")
+    return f"""
+<h2><span class="n">01</span>Diagnóstico probable</h2>
+<p>{inline(r["diagnostico"])}</p>
+
+<h2><span class="n">02</span>Compruébalo</h2>
+{bloque_comprobar(r["comprobar"])}
+
+<h2><span class="n">03</span>Solución</h2>
+<ol class="pasos">{pasos}</ol>
+
+<div class="pasa"><div class="t">Pasa si</div><p>{inline(r["pasa_si"])}</p></div>
+
+<dl class="ficha">
+<dt>Aplica desde</dt><dd>{desde}</dd>
+<dt>Evidencia</dt><dd><b>{etiqueta}.</b> {explicacion} Fuente: {inline(r["fuente"])}.</dd>
+<dt>No aplica si</dt><dd>{inline(r["no_aplica_si"])}</dd>
+</dl>
+
+<h2>Síntomas vecinos</h2>
+<ul class="rel">{rel}</ul>
+"""
+
+
+SIN_RESOLUCION = f"""<div class="corta">
+<b>Esta página está a medias, y se dice.</b> Tiene el síntoma y la causa, que
+salen del módulo; todavía no tiene el procedimiento con su comprobación. Solo se
+publica el arreglo completo cuando existe un comando que tú puedas ejecutar y un
+criterio objetivo que diga si quedó resuelto. Rellenar el hueco con pasos que
+nadie ha comprobado sería exactamente lo que
+<a href="{REPO_MANUAL}">esta guía</a> dice que no se hace.
+</div>"""
+
+
+def pagina_sintoma(d: dict, total: int, pr: dict, ranuras: dict) -> str:
+    if d.get("resolucion"):
+        nucleo = bloque_resolucion(d, ranuras)
+    else:
+        ctx = (f'<h2>Por qué pasa</h2><p>{html.escape(d["contexto"])}</p>'
+               if d["contexto"] else "")
+        nucleo = ctx + SIN_RESOLUCION
     cuerpo = f"""<a class="eb" href="{RUTA}">← Índice por síntoma</a>
 <h1>{html.escape(d["sintoma"])}</h1>
-<div class="card"><div class="t">Qué está pasando</div><p>{html.escape(d["causa"])}</p></div>
-{ctx}
+<div class="card"><div class="t">Qué está pasando</div><p>{inline(d["causa"])}</p></div>
+{nucleo}
 <div class="cta"><div class="t">Resolverlo del todo</div>
 <p>{"Esto sale de" if len(d["modulos"]) == 1 else "Esto aparece en"}
 <strong>{html.escape(" y ".join(d["titulos_modulo"]))}</strong>.</p>
@@ -276,12 +490,16 @@ BUSCADOR = r"""
 <script>
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const q=document.getElementById('q'), l=document.getElementById('l'), c=document.getElementById('c');
-const items=[...l.children].map(el=>({el, t:norm(el.dataset.t)}));
-const TOTAL=items.length;
+const solo=document.getElementById('solo');
+const items=[...l.children].map(el=>({el, t:norm(el.dataset.t), r:el.dataset.r==='1'}));
+const TOTAL=items.length, CONR=items.filter(i=>i.r).length;
 function buscar(){
   const tk = norm(q.value).split(/\s+/).filter(Boolean);
+  const filtro = solo.checked;
+  const universo = filtro ? CONR : TOTAL;
   let n=0;
   const res = items.map(it=>{
+    if(filtro && !it.r) return {it, ok:false, pts:0};
     if(!tk.length) return {it, ok:true, pts:0};
     // todos los tokens deben estar; puntúa mejor si aparecen al principio
     const ok = tk.every(k=>it.t.includes(k));
@@ -293,25 +511,43 @@ function buscar(){
     r.it.el.hidden = !r.ok;
     if(r.ok){ n++; l.appendChild(r.it.el); }
   }
-  c.textContent = tk.length ? (n ? n+' de '+TOTAL+' síntomas' : 'Ningún síntoma para «'+q.value.trim()+'». Si el tuyo falta, es material para la próxima versión.') : TOTAL+' síntomas';
+  const suf = filtro ? ' con resolución' : '';
+  c.textContent = tk.length
+    ? (n ? n+' de '+universo+' síntomas'+suf
+         : 'Ningún síntoma para «'+q.value.trim()+'». Si el tuyo falta, es material para la próxima versión.')
+    : universo+' síntomas'+suf;
 }
 q.addEventListener('input', buscar);
+solo.addEventListener('change', buscar);
 </script>"""
 
 
 def pagina_indice(ds: list[dict], pr: dict) -> str:
+    insignia = '<span class="bd">resuelto</span>'
     items = "".join(
-        f'<li data-t="{html.escape((d["sintoma"]+" "+d["causa"]+" "+d["modulo"]).lower())}">'
+        f'<li data-r="{1 if d.get("resolucion") else 0}" '
+        f'data-t="{html.escape((d["sintoma"]+" "+d["causa"]+" "+d["modulo"]).lower())}">'
         f'<a href="{RUTA}{d["ranura"]}/">{html.escape(d["sintoma"])}'
+        f'{insignia if d.get("resolucion") else ""}'
         f'<span class="m">{d["modulo"]}</span></a></li>'
         for d in ds
     )
+    con = sum(1 for d in ds if d.get("resolucion"))
+    ejec = sum(1 for d in ds
+               if d.get("resolucion") and d["resolucion"]["evidencia"] == "ejecutada")
     cuerpo = f"""<p class="eb">Claude Code en producción</p>
 <h1>Índice por síntoma</h1>
 <p>Busca <strong>lo que te pasa</strong>, no lo que crees que es. {len(ds)} síntomas
 reales con su causa, extraídos de los 21 módulos de la guía.</p>
+<p><strong>{con} de ellos</strong> llevan además el procedimiento entero: diagnóstico,
+un comando para comprobarlo, los pasos, y un criterio objetivo que dice si quedó
+resuelto. En <strong>{ejec}</strong> de esos, el comando se ejecutó contra Claude Code
+{CLI_COMPROBADO}. Los demás llegan hasta la causa y ahí paran, <em>a propósito</em>.</p>
 <input type="search" id="q" placeholder="skill activa, contexto gateway, permisos…"
  autocomplete="off" aria-label="Buscar síntoma">
+<div class="filtro">
+<label><input type="checkbox" id="solo"> Solo los que tienen resolución completa</label>
+</div>
 <p class="cnt" id="c">{len(ds)} síntomas</p>
 <ul class="lista" id="l">{items}</ul>
 <div class="cta"><div class="t">¿Por qué existe esto?</div>
@@ -324,8 +560,9 @@ madrugada contra el binario real, y cuyo resultado es público.</p>
 {BUSCADOR}"""
     return envoltura(
         "Índice por síntoma · Claude Code en producción",
-        f"{len(ds)} síntomas reales de Claude Code con su causa: skills que no se activan, "
-        "contexto que se agota, hooks que no disparan, permisos, MCP y coste.",
+        f"{len(ds)} síntomas reales de Claude Code con su causa, y {con} con el "
+        "procedimiento completo y su comprobación: skills que no se activan, contexto "
+        "que se agota, hooks que no disparan, permisos, MCP y coste.",
         cuerpo, f"{BASE}/")
 
 
@@ -436,10 +673,14 @@ def main() -> int:
     (SALIDA / "404.html").write_text(pagina_404(ds, pr), encoding="utf-8")
     (SALIDA / "README.md").write_text(readme(ds, pr), encoding="utf-8")
     (SALIDA / "LICENSE").write_text(licencia(), encoding="utf-8")
+    # los títulos de los vecinos se resuelven aquí, para que un `relacionados`
+    # nunca imprima una ranura cruda si el síntoma se renombró
+    ranuras = {d["ranura"]: d["sintoma"] for d in ds}
     for d in ds:
         carpeta = SALIDA / d["ranura"]
         carpeta.mkdir()
-        (carpeta / "index.html").write_text(pagina_sintoma(d, len(ds), pr), encoding="utf-8")
+        (carpeta / "index.html").write_text(
+            pagina_sintoma(d, len(ds), pr, ranuras), encoding="utf-8")
 
     urls = "".join(f"<url><loc>{BASE}/{d['ranura']}/</loc></url>" for d in ds)
     (SALIDA / "sitemap.xml").write_text(
@@ -455,11 +696,18 @@ def main() -> int:
     (SALIDA / "sintomas.json").write_text(
         json.dumps(ds, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    con_ctx = sum(1 for d in ds if d["contexto"])
+    con_res = [d for d in ds if d.get("resolucion")]
+    ejec = sum(1 for d in con_res if d["resolucion"]["evidencia"] == "ejecutada")
+    pasos = sum(len(d["resolucion"]["solucion"]) for d in con_res)
+    checks = sum(len(d["resolucion"]["comprobar"]) for d in con_res)
+    con_ctx = sum(1 for d in ds if d["contexto"] and not d.get("resolucion"))
     print(f"companion generado en {SALIDA.name}/")
-    print(f"  {len(ds)} páginas de síntoma · {con_ctx} con explicación del módulo "
-          f"({100*con_ctx//len(ds)} %)")
-    print(f"  índice con buscador · sitemap con {len(ds)+1} URLs")
+    print(f"  {len(ds)} páginas de síntoma")
+    print(f"  {len(con_res)} con resolución completa ({100*len(con_res)//len(ds)} %): "
+          f"{checks} comprobaciones, {pasos} pasos, {ejec} ejecutadas contra {CLI_COMPROBADO}")
+    print(f"  {len(ds)-len(con_res)} con síntoma y causa, {con_ctx} de ellas con "
+          f"explicación del módulo")
+    print(f"  índice con buscador y filtro · sitemap con {len(ds)+1} URLs")
     return 0
 
 
