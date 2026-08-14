@@ -23,6 +23,14 @@ on:
 permissions:
   contents: read
 
+# Dos ejecuciones a la vez se pisan al empujar el estado, y la segunda sale roja
+# por una carrera y no por una rotura. Pasó el 14 de agosto de 2026: el mismo
+# commit dio verde en una ejecución y rojo en otra. No se cancela la que está en
+# marcha, porque una verificación a medias no sirve de nada: se encolan.
+concurrency:
+  group: verificar-el-manual
+  cancel-in-progress: false
+
 jobs:
   # ---------------------------------------------------------------------
   # Trabajo 1: comprobar. Instala Claude Code desde un script remoto, así que
@@ -135,7 +143,22 @@ jobs:
             git config user.email "verificador@cosasagenticas.com"
             git add D2-verificador/ESTADO.md D2-verificador/estado.json D2-verificador/estado.html
             git commit -m "estado: verificado contra ${VERSION}"
-            git push
+            # Reintento con rebase: si otra ejecución empujó su estado mientras
+            # esta corría, el push se rechaza y el workflow sale rojo por una
+            # carrera, no por una rotura. Ya pasó el 14 de agosto de 2026 con dos
+            # ejecuciones sobre el mismo commit. El grupo de concurrencia lo evita
+            # casi siempre; esto cubre el resto.
+            for intento in 1 2 3; do
+              if git push; then
+                echo "Estado publicado en el intento ${intento}."
+                exit 0
+              fi
+              echo "Push rechazado, reintento ${intento}: rebaso sobre el remoto."
+              git pull --rebase --autostash origin main || exit 1
+              sleep $((intento * 5))
+            done
+            echo "No se pudo publicar el estado tras 3 intentos." >&2
+            exit 1
           else
             echo "Nada que publicar."
           fi
