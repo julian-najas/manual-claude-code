@@ -205,19 +205,19 @@ pruebas:
     capitulo: "00 · Gobierno del proyecto"
     afirmacion: "El repositorio del manual está público, como se decidió el 13 de agosto de 2026."
     tipo: cli
-    comando: ["curl", "-sS", "--max-time", "25", "https://api.github.com/repos/julian-najas/manual-claude-code"]
+    comando: ["curl", "-sS", "--max-time", "25", "-o", "/dev/null", "-w", "%{http_code}", "https://github.com/julian-najas/manual-claude-code"]
     espera_salida: 0
-    espera_patron: '"private":\s*false'
-    nota: "Si pasa a privado, la API sin autenticar devuelve 404 y esta prueba falla. Para cambiar la decisión hay que actualizar esta entrada, a propósito."
+    espera_patron: '^200$'
+    nota: "Si pasa a privado, github.com devuelve 404 a quien no ha iniciado sesión y esta prueba falla. Para cambiar la decisión hay que actualizar esta entrada, a propósito. NO usar api.github.com: sin autenticar son 60 peticiones por hora y por IP, y la IP de un runner de Actions está compartida, así que devuelve 403 y esta prueba daba FALLA con los dos repos públicos. Pasaba en local y fallaba en CI, que es la peor forma de fallar."
 
   - id: REPO-002
     capitulo: "00 · Gobierno del proyecto"
     afirmacion: "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas."
     tipo: cli
-    comando: ["curl", "-sS", "--max-time", "25", "https://api.github.com/repos/julian-najas/claude-code-companion"]
+    comando: ["curl", "-sS", "--max-time", "25", "-o", "/dev/null", "-w", "%{http_code}", "https://github.com/julian-najas/claude-code-companion"]
     espera_salida: 0
-    espera_patron: '"private":\s*false'
-    nota: "Este es el silencioso: si el companion se cierra, el sitio se cae sin aviso y se pierde el experimento de medición."
+    espera_patron: '^200$'
+    nota: "Este es el silencioso: si el companion se cierra, el sitio se cae sin aviso y se pierde el experimento de medición. Mismo motivo que REPO-001 para no usar api.github.com."
 
   - id: REPO-003
     capitulo: "00 · Gobierno del proyecto"
