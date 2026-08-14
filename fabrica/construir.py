@@ -29,6 +29,7 @@ import hashlib
 import re
 import shutil
 import sys
+import unicodedata
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -87,6 +88,32 @@ def render_guia(mods: list[Path]) -> str:
     return "\n".join(partes)
 
 
+COMPANION = "https://julian-najas.github.io/claude-code-companion"
+
+
+def ranura(s: str) -> str:
+    """Misma normalización que `generar-companion.py`. Si las dos divergen, el
+    generador del companion lo detecta al validar y falla; aquí solo se usa para
+    enlazar."""
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
+    s = re.sub(r"[^\w\s-]", "", s.lower()).strip()
+    return re.sub(r"[\s_]+", "-", s)[:70].strip("-")
+
+
+def con_resolucion() -> set[str]:
+    """Ranuras que tienen resolución completa en `resoluciones.yaml`.
+
+    Se leen las claves de primer nivel con una expresión regular en vez de con
+    PyYAML a propósito: esto solo decide si una fila lleva enlace, y no merece
+    añadirle una dependencia a la construcción entera. La validación de verdad
+    la hace `generar-companion.py`, que sí carga el YAML y falla si no cuadra.
+    """
+    ruta = RAIZ / "fabrica" / "resoluciones.yaml"
+    if not ruta.exists():
+        return set()
+    return set(re.findall(r"^([a-z0-9][a-z0-9-]*):\s*$", ruta.read_text(encoding="utf-8"), re.M))
+
+
 def render_indice_sintomas(mods: list[Path]) -> str:
     filas = []
     for f in mods:
@@ -100,6 +127,10 @@ def render_indice_sintomas(mods: list[Path]) -> str:
             if s.strip() in ("Síntoma", "Lo que se hace") or set(s.strip()) <= set("-: "):
                 continue
             filas.append((s.strip(), c.strip(), mod))
+    res = con_resolucion()
+    limpio = re.compile(r"[`*]")
+    marcadas = [(s, c, m, ranura(limpio.sub("", s).strip('"'))) for s, c, m in filas]
+    n = sum(1 for *_, r in marcadas if r in res)
     L = [
         AVISO,
         "",
@@ -110,10 +141,19 @@ def render_indice_sintomas(mods: list[Path]) -> str:
         "",
         "Busca lo que te pasa, no lo que crees que es.",
         "",
-        "| Síntoma | Qué está pasando | Módulo |",
-        "|---|---|---|",
+        f"De los {len(filas)}, **{n} tienen resolución verificable publicada**: "
+        "diagnóstico, un comando para comprobarlo, los pasos y un criterio objetivo "
+        "que dice si quedó resuelto. La columna **Resolución** enlaza a la suya. "
+        "Los demás llegan hasta la causa, que es lo que hay en esta tabla.",
+        "",
+        "| Síntoma | Qué está pasando | Módulo | Resolución |",
+        "|---|---|---|---|",
     ]
-    L += [f"| {s} | {c} | [{m}](modulos/) |" for s, c, m in filas]
+    L += [
+        f"| {s} | {c} | [{m}](modulos/) | "
+        f"{f'[procedimiento]({COMPANION}/{r}/)' if r in res else '—'} |"
+        for s, c, m, r in marcadas
+    ]
     return "\n".join(L) + "\n"
 
 
