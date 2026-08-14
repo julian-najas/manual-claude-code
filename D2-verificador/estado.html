@@ -28,9 +28,9 @@
   h2{font-size:1.25rem}
   p{margin:0}
   .eyebrow{font-family:var(--mono);font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
-  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--ok);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
+  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--mal);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
   .titular{font-family:var(--serif);font-size:clamp(1.4rem,4.4vw,1.9rem);line-height:1.2}
-  .titular .n{color:var(--ok)}
+  .titular .n{color:var(--mal)}
   .meta{font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.8}
   .cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
   .cifra{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
@@ -61,19 +61,19 @@
 
   <div class="veredicto">
     <p class="titular">De las 22 afirmaciones comprobables de este libro,
-      <span class="n">22 siguen siendo ciertas</span> hoy.</p>
+      <span class="n">20 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
       Verificado contra <strong>2.1.232 (Claude Code)</strong><br>
-      2026-08-14 06:07:56 UTC · Linux 6.17.0-1020-azure · versión del libro v2026.08
+      2026-08-14 08:14:26 UTC · Linux 6.17.0-1020-azure · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">22</span><span class="k">Pasan</span></div>
-    <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
+    <div class="cifra ok"><span class="v">20</span><span class="k">Pasan</span></div>
+    <div class="cifra mal"><span class="v">2</span><span class="k">Fallan</span></div>
     <div class="cifra rev"><span class="v">3</span><span class="k">A revisar</span></div>
     <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
-    <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
+    <div class="cifra"><span class="v">91%</span><span class="k">Vigencia</span></div>
   </div>
 
   <section>
@@ -82,9 +82,9 @@
       <table>
         <thead><tr><th></th><th>ID</th><th>Lo que dice el libro</th><th>Cómo se comprueba</th></tr></thead>
         <tbody>
-          <tr class="cap ok"><td colspan="4">00 · Gobierno del proyecto</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-001</td><td>El repositorio del manual está público, como se decidió el 13 de agosto de 2026.</td><td class="cmd">curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-002</td><td>El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.</td><td class="cmd">curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion</td></tr>
+          <tr class="cap mal"><td colspan="4">00 · Gobierno del proyecto</td></tr>
+<tr class="mal"><td class="ic">🔴</td><td class="id">REPO-001</td><td>El repositorio del manual está público, como se decidió el 13 de agosto de 2026.</td><td class="cmd">curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code</td></tr>
+<tr class="mal"><td class="ic">🔴</td><td class="id">REPO-002</td><td>El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.</td><td class="cmd">curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">REPO-003</td><td>El sitio del companion responde y sirve el índice por síntoma.</td><td class="cmd">curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/</td></tr>
 <tr class="cap ok"><td colspan="4">02 · Instalación y autenticación</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-001</td><td>El binario responde a --version y devuelve una versión semántica.</td><td class="cmd">claude --version</td></tr>
