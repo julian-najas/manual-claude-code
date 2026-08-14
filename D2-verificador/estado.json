@@ -2,12 +2,12 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.232 (Claude Code)",
-  "sistema": "Linux 6.17.0-1020-azure",
+  "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-08-14 08:14:26 UTC",
+  "fecha_utc": "2026-08-14 08:20:30 UTC",
   "resumen": {
-    "PASA": 20,
-    "FALLA": 2,
+    "PASA": 22,
+    "FALLA": 0,
     "REVISAR": 3,
     "OMITIDO": 3
   },
@@ -257,20 +257,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El repositorio del manual está público, como se decidió el 13 de agosto de 2026.",
       "tipo": "cli",
-      "resultado": "FALLA",
-      "motivo": "no aparece el patrón /\"private\":\\s*false/",
-      "comando": "curl -sS --max-time 25 https://api.github.com/repos/julian-najas/manual-claude-code",
-      "salida": "{\"message\":\"API rate limit exceeded for 20.120.230.196. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\"https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting\"}\n"
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/manual-claude-code",
+      "salida": "200"
     },
     {
       "id": "REPO-002",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "FALLA",
-      "motivo": "no aparece el patrón /\"private\":\\s*false/",
-      "comando": "curl -sS --max-time 25 https://api.github.com/repos/julian-najas/claude-code-companion",
-      "salida": "{\"message\":\"API rate limit exceeded for 20.120.230.196. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)\",\"documentation_url\":\"https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting\"}\n"
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
+      "salida": "200"
     },
     {
       "id": "REPO-003",
@@ -280,7 +280,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa: skills que no se activan, contexto que se agota, hooks que no disparan, permisos, MCP y coste.\">\n<link rel=\"canonical\" href=\"ht"
+      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 81 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, p"
     },
     {
       "id": "SEG-001",
