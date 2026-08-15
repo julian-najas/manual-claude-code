@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.232 (Claude Code)",
+  "cli_verificado": "2.1.233 (Claude Code)",
   "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-08-14 08:20:30 UTC",
+  "fecha_utc": "2026-08-15 05:17:00 UTC",
   "resumen": {
     "PASA": 22,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.232 (Claude Code)\n"
+      "salida": "2.1.233 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.232)\nCommit: a640e96821ee\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.232\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.233\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
     },
     {
       "id": "CLI-003",
@@ -280,7 +280,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 81 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, p"
+      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
     },
     {
       "id": "SEG-001",
