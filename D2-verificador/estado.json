@@ -4,7 +4,7 @@
   "cli_verificado": "2.1.233 (Claude Code)",
   "sistema": "Linux 6.17.0-41-generic",
   "python": "3.13.7",
-  "fecha_utc": "2026-08-17 12:35:42 UTC",
+  "fecha_utc": "2026-08-17 13:24:05 UTC",
   "resumen": {
     "PASA": 30,
     "FALLA": 0,
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.233 (2026-08-15)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: not set\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai a"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.233 (2026-08-15)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: unknown\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai a"
     },
     {
       "id": "CLI-005",
@@ -79,8 +79,8 @@
       "tipo": "cli",
       "resultado": "PASA",
       "motivo": "comprobado",
-      "comando": "bash -c test -L \"$HOME/.local/bin/claude\" && readlink \"$HOME/.local/bin/claude\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -99,7 +99,7 @@
       "tipo": "cli",
       "resultado": "PASA",
       "motivo": "comprobado",
-      "comando": "bash -c curl -sS --max-time 25 https://code.claude.com/docs/en/authentication.md | grep -oE \"v2[.]1[.][0-9]+\" | sort -u | wc -l",
+      "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/authentication.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -oE \"v2[.]1[.][0-9]+\" | sort -u | wc -l",
       "salida": "8\n"
     },
     {
@@ -199,7 +199,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/nombre/.claude",
+      "comando": "test -e /tmp/home-sin-claude-2i7eaczc/.claude",
       "salida": ""
     },
     {

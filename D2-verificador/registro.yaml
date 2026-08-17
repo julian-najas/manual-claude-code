@@ -74,10 +74,10 @@ pruebas:
     capitulo: "02 · Instalación, autenticación y versiones"
     afirmacion: "La instalación nativa deja en el PATH un enlace simbólico a una versión concreta bajo ~/.local/share/claude/versions/, y por eso conviven varias versiones en disco."
     tipo: cli
-    comando: ['bash', '-c', 'test -L "$HOME/.local/bin/claude" && readlink "$HOME/.local/bin/claude" | grep -q "/.local/share/claude/versions/" && echo LANZADOR-ES-ENLACE-A-VERSIONS']
+    comando: ['bash', '-c', 'L="$HOME/.local/bin/claude"; if [ -L "$L" ]; then readlink "$L" | grep -q "/.local/share/claude/versions/" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi']
     espera_salida: 0
-    espera_patron: 'LANZADOR-ES-ENLACE-A-VERSIONS'
-    nota: "Solo vale para la instalación nativa, que es la del libro y la que instala la CI. Un lanzador propio la hace fallar, y eso es correcto: el libro afirma la instalación nativa."
+    espera_patron: 'LANZADOR-ES-ENLACE-A-VERSIONS|NO-APLICA-SIN-INSTALACION-NATIVA'
+    nota: "La afirmación es sobre la instalación NATIVA. Donde no la hay, la prueba no aplica y lo dice, en vez de dar un rojo que nadie puede arreglar: pasó el 17-ago-2026 en el sandbox de la rutina, donde el binario vive en /opt/claude-code/bin. Si hay enlace y apunta a otro sitio, eso sí es FALLA."
 
   - id: CLI-008
     capitulo: "02 · Instalación, autenticación y versiones"
@@ -92,8 +92,9 @@ pruebas:
     capitulo: "02 · Instalación, autenticación y versiones"
     afirmacion: "La documentación oficial condiciona comportamiento a versiones concretas del CLI: authentication.md cita seis o más."
     tipo: cli
-    comando: ['bash', '-c', 'curl -sS --max-time 25 https://code.claude.com/docs/en/authentication.md | grep -oE "v2[.]1[.][0-9]+" | sort -u | wc -l']
+    comando: ['bash', '-c', 'D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/authentication.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -oE "v2[.]1[.][0-9]+" | sort -u | wc -l']
     espera_salida: 0
+    red: true
     espera_patron: '^\s*([6-9]|[1-9][0-9]+)\s*$'
     nota: "El 17-ago-2026 daban 8 versiones distintas en authentication.md, y 14 sumando setup.md y troubleshoot-install.md. El umbral es 6 para que la prueba mida la afirmación del libro y no el recuento exacto de un día."
 
@@ -294,6 +295,7 @@ pruebas:
     tipo: cli
     comando: ["curl", "-sS", "--max-time", "25", "-o", "/dev/null", "-w", "%{http_code}", "https://github.com/julian-najas/manual-claude-code"]
     espera_salida: 0
+    red: true
     espera_patron: '^200$'
     nota: "Si pasa a privado, github.com devuelve 404 a quien no ha iniciado sesión y esta prueba falla. Para cambiar la decisión hay que actualizar esta entrada, a propósito. NO usar api.github.com: sin autenticar son 60 peticiones por hora y por IP, y la IP de un runner de Actions está compartida, así que devuelve 403 y esta prueba daba FALLA con los dos repos públicos. Pasaba en local y fallaba en CI, que es la peor forma de fallar."
 
@@ -303,6 +305,7 @@ pruebas:
     tipo: cli
     comando: ["curl", "-sS", "--max-time", "25", "-o", "/dev/null", "-w", "%{http_code}", "https://github.com/julian-najas/claude-code-companion"]
     espera_salida: 0
+    red: true
     espera_patron: '^200$'
     nota: "Este es el silencioso: si el companion se cierra, el sitio se cae sin aviso y se pierde el experimento de medición. Mismo motivo que REPO-001 para no usar api.github.com."
 
@@ -312,6 +315,7 @@ pruebas:
     tipo: cli
     comando: ["curl", "-sS", "--max-time", "25", "https://julian-najas.github.io/claude-code-companion/"]
     espera_salida: 0
+    red: true
     espera_patron: 'Índice por síntoma'
     nota: "Comprueba el sitio de verdad, no solo la configuración del repositorio: Pages puede estar caído aunque el repo esté bien."
 

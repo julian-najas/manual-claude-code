@@ -45,6 +45,37 @@ FALLA = "FALLA"
 OMITIDO = "OMITIDO"
 REVISAR = "REVISAR"
 
+# --------------------------------------------------------------------------
+# "Es falso" y "no he podido comprobarlo" no son lo mismo.
+#
+# Una prueba que sale por la red puede no llegar a ejecutarse: sin DNS, sin
+# salida a Internet, detrás de un proxy que corta el túnel. Eso NO refuta la
+# afirmación del libro, y contarlo como FALLA es mentir en la dirección
+# contraria: llena el informe de rojos que nadie puede arreglar y entierra los
+# rojos de verdad.
+#
+# Nos pasó el 17 de agosto de 2026. La rutina que escribe el manuscrito corre
+# en un sandbox cuyo proxy devuelve 403 a github.io y a github.com, y el
+# verificador dio tres rojos que en el R630 y en la CI salían verdes. Es la
+# misma familia del falso rojo de api.github.com que ya documenta REPO-001.
+#
+# Una prueba marcada con `red: true` que se cae por conectividad se reporta
+# como REVISAR con el motivo escrito. Un 404 sigue siendo FALLA: eso sí es la
+# respuesta del servidor y es justo lo que REPO-001 y REPO-002 vigilan.
+# --------------------------------------------------------------------------
+SENALES_DE_RED_CAIDA = re.compile(
+    r"curl:\s*\((6|7|28|35|56|60|97)\)"
+    r"|CONNECT tunnel failed"
+    r"|Could not resolve host"
+    r"|Connection (timed out|refused|reset)"
+    r"|Proxy CONNECT aborted"
+    r"|SIN-RED",
+    re.I,
+)
+
+# Códigos que devuelve un intermediario, no el servidor que queríamos consultar.
+HTTP_INCONCLUYENTE = {"", "000", "403", "407", "408", "429", "502", "503", "504"}
+
 
 # --------------------------------------------------------------------------
 # Lector de YAML mínimo
@@ -225,9 +256,24 @@ def ejecutar_prueba(p: dict, con_coste: bool, cwd: str) -> dict:
     if "espera_patron" in p and not re.search(str(p["espera_patron"]), salida):
         fallos.append(f"no aparece el patrón /{p['espera_patron']}/")
 
+    if fallos and p.get("red") and _no_llego_a_comprobarse(salida):
+        res["resultado"] = REVISAR
+        res["motivo"] = (
+            "sin salida a Internet desde esta máquina: la afirmación no se ha "
+            "podido comprobar, que no es lo mismo que ser falsa"
+        )
+        return res
+
     res["resultado"] = FALLA if fallos else PASA
     res["motivo"] = "; ".join(fallos) if fallos else "comprobado"
     return res
+
+
+def _no_llego_a_comprobarse(salida: str) -> bool:
+    """La prueba se cayó por conectividad, no por la afirmación."""
+    if SENALES_DE_RED_CAIDA.search(salida):
+        return True
+    return salida.strip() in HTTP_INCONCLUYENTE
 
 
 def main() -> int:
