@@ -2,6 +2,30 @@
 
 Una entrada por iteración. Dos líneas: qué se cerró y qué queda.
 
+## Próxima iteración · Módulo 03 · Memoria y contexto
+
+**No empezado.** La iteración del 17-ago se cortó por límite de uso antes de
+escribir una línea, y no se dejó un módulo a medias a propósito.
+
+Preparación ya hecha, para no repetirla:
+
+- Fuente principal: `guia-21/M4-memoria-y-contexto.md`, leído y utilizable.
+- Contrato: sección "Módulo 03" de `manuscrito/ESQUELETO.md`. IDs ya en el
+  registro: `CTX-001` (`--add-dir`), `CTX-002` (`--autocompact`), `CTX-003`
+  (`--bare`). Habrá que añadir entradas nuevas.
+- Documentación oficial **pendiente de descargar de nuevo** (la regla es
+  descargarla en cada módulo, no reutilizar la de otra sesión):
+  `memory.md`, `context-window.md`, `claude-directory.md`, `settings.md`.
+- Laboratorio: `D6-repo-feo/gestor-pedidos`, que ya tiene `.claude/settings.json`
+  y `ENTORNO.md` del módulo 02. El `CLAUDE.md` lo escribe este módulo.
+- **La trampa del laboratorio, ya documentada como hecho canónico
+  `CONFIG-NINGUNO-SE-USA`:** la respuesta a "qué configuración manda" es
+  **ninguna de las dos**. Ni `config.py` ni `settings.py` se importan; `app.py`
+  fija sus valores a mano (`DB`, `DEBUG`, el IVA y el tope de 50 líneas). El
+  módulo tiene que llevar al lector hasta ahí, no hasta "manda settings.py".
+- El código muerto que el `CLAUDE.md` debe declarar: `/pedido_old/<id>`, que lee
+  la tabla `pedidos_2019` (fallo 6 del guion de doma).
+
 ## 2026-08-17 · Módulo 02 · Instalación, autenticación y versiones
 
 Cerrado `manuscrito/modulo-02-instalacion.md`, 3.849 palabras, las seis partes
