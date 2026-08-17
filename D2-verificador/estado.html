@@ -60,18 +60,18 @@
   </header>
 
   <div class="veredicto">
-    <p class="titular">De las 22 afirmaciones comprobables de este libro,
-      <span class="n">22 siguen siendo ciertas</span> hoy.</p>
+    <p class="titular">De las 30 afirmaciones comprobables de este libro,
+      <span class="n">30 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
       Verificado contra <strong>2.1.233 (Claude Code)</strong><br>
-      2026-08-15 05:17:00 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
+      2026-08-17 12:35:42 UTC · Linux 6.17.0-41-generic · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">22</span><span class="k">Pasan</span></div>
+    <div class="cifra ok"><span class="v">30</span><span class="k">Pasan</span></div>
     <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
-    <div class="cifra rev"><span class="v">3</span><span class="k">A revisar</span></div>
+    <div class="cifra rev"><span class="v">5</span><span class="k">A revisar</span></div>
     <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
     <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
   </div>
@@ -90,6 +90,17 @@
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-001</td><td>El binario responde a --version y devuelve una versión semántica.</td><td class="cmd">claude --version</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-002</td><td>claude doctor comprueba la salud de la instalación sin abrir sesión.</td><td class="cmd">claude doctor</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-003</td><td>claude setup-token crea un token de larga duración para suscriptores.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap ok"><td colspan="4">02 · Instalación, autenticación y versiones</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-004</td><td>claude doctor informa del método de instalación, del canal de actualización y del resultado del último intento.</td><td class="cmd">claude doctor</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-005</td><td>claude install acepta como destino un canal o un número de versión concreto, que es la vía para reproducir un fallo ajeno.</td><td class="cmd">claude install --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-006</td><td>claude auth gestiona el inicio de sesión y expone status, que dice qué credencial está activa sin abrir sesión.</td><td class="cmd">claude auth --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-007</td><td>La instalación nativa deja en el PATH un enlace simbólico a una versión concreta bajo ~/.local/share/claude/versions/, y por eso conviven varias versiones en disco.</td><td class="cmd">bash -c test -L &quot;$HOME/.local/bin/claude&quot; &amp;&amp; readlink &quot;$HOME/.local/bin/claude&quot; | grep -q &quot;/.local/share/claude/versions/&quot; &amp;&amp; echo LANZADOR-ES-ENLACE-A-VERSIONS</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-008</td><td>claude doctor termina con código 0 aunque reporte ajustes inválidos: el código de salida no sirve como comprobación de configuración.</td><td class="cmd">bash -c d=$(mktemp -d); mkdir -p &quot;$d/.claude&quot;; echo &quot;{&quot; &gt; &quot;$d/.claude/settings.json&quot;; cd &quot;$d&quot;; claude doctor &gt; out.txt 2&gt;&amp;1; c=$?; grep -q &quot;Invalid settings&quot; out.txt &amp;&amp; [ &quot;$c&quot; = &quot;0&quot; ] &amp;&amp; echo AJUSTES-INVALIDOS-Y-SALIDA-CERO; rm -f &quot;$d/out.txt&quot; &quot;$d/.claude/settings.json&quot;; rmdir &quot;$d/.claude&quot; &quot;$d&quot;</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CLI-009</td><td>La documentación oficial condiciona comportamiento a versiones concretas del CLI: authentication.md cita seis o más.</td><td class="cmd">bash -c curl -sS --max-time 25 https://code.claude.com/docs/en/authentication.md | grep -oE &quot;v2[.]1[.][0-9]+&quot; | sort -u | wc -l</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">CLI-010</td><td>El binario acepta un tercer canal de publicación, rc, que la documentación oficial no menciona.</td><td class="cmd">Comprobado el 17-ago-2026 con la 2.1.233. Poniendo un autoUpdatesChannel inválido en un settings.json, claude doctor contesta: Expected one of latest, stable, rc. Y rc no aparece ni en setup.md ni en settings.md descargadas ese mismo día. Se deja manual a propósito: automatizarlo exige comillas dobles dentro del comando, y el lector de YAML sin dependencias del verificador las deja escapadas, así que pasaría en local con PyYAML y fallaría en CI sin él. Es la misma clase de fallo que documenta REPO-001. Se revisa cada trimestre; el día que se documente, deja de ser una caja de aviso y pasa a ser una sección.</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">AUT-001</td><td>El orden de precedencia de credenciales tiene siete niveles, y una sesión de pasarela de aplicaciones de Claude queda por encima de los siete.</td><td class="cmd">Eran cuatro en el material propio del 12-ago-2026 y son siete en authentication.md del 17-ago-2026. Es una lista que crece: se recuenta contra la documentación oficial en cada revisión trimestral, no se copia de una edición anterior.</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">ENT-001</td><td>El laboratorio del módulo 02 deja los mandos del proyecto versionados en gestor-pedidos.</td><td class="cmd">test -f .claude/settings.json</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">ENT-002</td><td>El laboratorio del módulo 02 deja la versión del CLI anotada en el repositorio, no en la cabeza de nadie.</td><td class="cmd">grep -qE [0-9]+[.][0-9]+[.][0-9]+ ENTORNO.md</td></tr>
 <tr class="cap ok"><td colspan="4">03 · Memoria y contexto</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CTX-001</td><td>--add-dir da acceso a directorios fuera del proyecto actual.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CTX-002</td><td>--autocompact controla el tamaño de la ventana antes de compactar.</td><td class="cmd">claude --help</td></tr>
@@ -97,7 +108,7 @@
 <tr class="cap ok"><td colspan="4">04 · Permisos y sandbox</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-001</td><td>--allowedTools acepta una lista de herramientas permitidas.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-002</td><td>Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa.</td><td class="cmd">claude --help</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/runner/.claude</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/nombre/.claude</td></tr>
 <tr class="cap ok"><td colspan="4">05 · Hooks</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">HOK-001</td><td>Los hooks se configuran en settings.json, no en un archivo aparte.</td><td class="cmd">Comprobar contra la documentación oficial en cada revisión trimestral.</td></tr>
 <tr class="cap ok"><td colspan="4">06 · MCP</td></tr>
