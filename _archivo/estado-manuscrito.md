@@ -2,10 +2,34 @@
 
 Una entrada por iteración. Dos líneas: qué se cerró y qué queda.
 
+## Cómo se escribe esto ahora · desde el 17-ago-2026
+
+El manuscrito lo escribe una **rutina en la nube**, no el R630. Un módulo al día
+a las 08:00 de Madrid (06:00 UTC), modelo Opus 5, sobre este mismo repositorio
+clonado desde GitHub.
+
+- Rutina: `trig_01RzL9eHhTvWuejJYqBLgV7Z`
+- Panel: https://claude.ai/code/routines/trig_01RzL9eHhTvWuejJYqBLgV7Z
+- Para pararla o cambiarla, ahí. No se borra por API.
+
+**Lo que hay que saber para no romperlo:**
+
+1. **El agente clona de GitHub, no ve el R630.** Si trabajas en local, empuja.
+   Lo que no esté en `origin/main` no existe para la rutina.
+2. **La rutina empuja a `main` cada día.** Si tienes trabajo local sin subir
+   cuando termine, te va a tocar rebase.
+3. **Guarda de seguridad:** si el agente no encuentra
+   `manuscrito/modulo-02-instalacion.md`, para y no escribe nada, en vez de
+   escribir un módulo duplicado. Es la red contra un repositorio desincronizado.
+4. **08:00 y no 07:00 a propósito:** el flujo `verificar.yml` corre a las 05:00
+   UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
+   empujaran a `main` a la vez.
+
 ## Próxima iteración · Módulo 03 · Memoria y contexto
 
 **No empezado.** La iteración del 17-ago se cortó por límite de uso antes de
-escribir una línea, y no se dejó un módulo a medias a propósito.
+escribir una línea, y no se dejó un módulo a medias a propósito. Lo recoge la
+rutina de la nube en su primera ejecución.
 
 Preparación ya hecha, para no repetirla:
 
