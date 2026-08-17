@@ -38,6 +38,93 @@ pruebas:
     comando: ["claude", "--help"]
     espera_patron: 'setup-token'
 
+  # ---------------------------------------------------------------------
+  # Módulo 02. Las tres de arriba son las del esqueleto; las de abajo se
+  # añaden el 17-ago-2026 al escribir el módulo, por la regla de la casa: si
+  # el texto afirma algo comprobable, aquí está el comando que lo comprueba.
+  # ---------------------------------------------------------------------
+
+  - id: CLI-004
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "claude doctor informa del método de instalación, del canal de actualización y del resultado del último intento."
+    tipo: cli
+    comando: ["claude", "doctor"]
+    espera_salida: 0
+    espera_patron: 'Config install method[\s\S]*Auto-update channel[\s\S]*Last update attempt'
+    nota: "Se comprueba que las líneas existen, no su redacción exacta: la salida de doctor es diagnóstico, no interfaz estable."
+
+  - id: CLI-005
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "claude install acepta como destino un canal o un número de versión concreto, que es la vía para reproducir un fallo ajeno."
+    tipo: cli
+    comando: ["claude", "install", "--help"]
+    espera_salida: 0
+    espera_patron: 'stable,\s+latest, or specific version'
+
+  - id: CLI-006
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "claude auth gestiona el inicio de sesión y expone status, que dice qué credencial está activa sin abrir sesión."
+    tipo: cli
+    comando: ["claude", "auth", "--help"]
+    espera_salida: 0
+    espera_patron: 'status'
+    nota: "Se comprueba contra --help a propósito. Ejecutar `claude auth status` volcaría el correo y el orgId de la cuenta a estado.json, que es público."
+
+  - id: CLI-007
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "La instalación nativa deja en el PATH un enlace simbólico a una versión concreta bajo ~/.local/share/claude/versions/, y por eso conviven varias versiones en disco."
+    tipo: cli
+    comando: ['bash', '-c', 'test -L "$HOME/.local/bin/claude" && readlink "$HOME/.local/bin/claude" | grep -q "/.local/share/claude/versions/" && echo LANZADOR-ES-ENLACE-A-VERSIONS']
+    espera_salida: 0
+    espera_patron: 'LANZADOR-ES-ENLACE-A-VERSIONS'
+    nota: "Solo vale para la instalación nativa, que es la del libro y la que instala la CI. Un lanzador propio la hace fallar, y eso es correcto: el libro afirma la instalación nativa."
+
+  - id: CLI-008
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "claude doctor termina con código 0 aunque reporte ajustes inválidos: el código de salida no sirve como comprobación de configuración."
+    tipo: cli
+    comando: ['bash', '-c', 'd=$(mktemp -d); mkdir -p "$d/.claude"; echo "{" > "$d/.claude/settings.json"; cd "$d"; claude doctor > out.txt 2>&1; c=$?; grep -q "Invalid settings" out.txt && [ "$c" = "0" ] && echo AJUSTES-INVALIDOS-Y-SALIDA-CERO; rm -f "$d/out.txt" "$d/.claude/settings.json"; rmdir "$d/.claude" "$d"']
+    espera_salida: 0
+    espera_patron: 'AJUSTES-INVALIDOS-Y-SALIDA-CERO'
+    nota: "Es la afirmación central del laboratorio del módulo 02. Si algún día doctor pasa a salir con código distinto de 0, esta prueba falla y hay que reescribir el paso 6, que es justo lo que queremos."
+
+  - id: CLI-009
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "La documentación oficial condiciona comportamiento a versiones concretas del CLI: authentication.md cita seis o más."
+    tipo: cli
+    comando: ['bash', '-c', 'curl -sS --max-time 25 https://code.claude.com/docs/en/authentication.md | grep -oE "v2[.]1[.][0-9]+" | sort -u | wc -l']
+    espera_salida: 0
+    espera_patron: '^\s*([6-9]|[1-9][0-9]+)\s*$'
+    nota: "El 17-ago-2026 daban 8 versiones distintas en authentication.md, y 14 sumando setup.md y troubleshoot-install.md. El umbral es 6 para que la prueba mida la afirmación del libro y no el recuento exacto de un día."
+
+  - id: CLI-010
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "El binario acepta un tercer canal de publicación, rc, que la documentación oficial no menciona."
+    tipo: manual
+    nota: "Comprobado el 17-ago-2026 con la 2.1.233. Poniendo un autoUpdatesChannel inválido en un settings.json, claude doctor contesta: Expected one of latest, stable, rc. Y rc no aparece ni en setup.md ni en settings.md descargadas ese mismo día. Se deja manual a propósito: automatizarlo exige comillas dobles dentro del comando, y el lector de YAML sin dependencias del verificador las deja escapadas, así que pasaría en local con PyYAML y fallaría en CI sin él. Es la misma clase de fallo que documenta REPO-001. Se revisa cada trimestre; el día que se documente, deja de ser una caja de aviso y pasa a ser una sección."
+
+  - id: AUT-001
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "El orden de precedencia de credenciales tiene siete niveles, y una sesión de pasarela de aplicaciones de Claude queda por encima de los siete."
+    tipo: manual
+    nota: "Eran cuatro en el material propio del 12-ago-2026 y son siete en authentication.md del 17-ago-2026. Es una lista que crece: se recuenta contra la documentación oficial en cada revisión trimestral, no se copia de una edición anterior."
+
+  - id: ENT-001
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "El laboratorio del módulo 02 deja los mandos del proyecto versionados en gestor-pedidos."
+    tipo: cli
+    comando: ["test", "-f", ".claude/settings.json"]
+    directorio: "D6-repo-feo/gestor-pedidos"
+    espera_salida: 0
+
+  - id: ENT-002
+    capitulo: "02 · Instalación, autenticación y versiones"
+    afirmacion: "El laboratorio del módulo 02 deja la versión del CLI anotada en el repositorio, no en la cabeza de nadie."
+    tipo: cli
+    comando: ["grep", "-qE", "[0-9]+[.][0-9]+[.][0-9]+", "ENTORNO.md"]
+    directorio: "D6-repo-feo/gestor-pedidos"
+    espera_salida: 0
+
   - id: CTX-001
     capitulo: "03 · Memoria y contexto"
     afirmacion: "--add-dir da acceso a directorios fuera del proyecto actual."

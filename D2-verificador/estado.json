@@ -2,13 +2,13 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.233 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-15 05:17:00 UTC",
+  "sistema": "Linux 6.17.0-41-generic",
+  "python": "3.13.7",
+  "fecha_utc": "2026-08-17 08:27:57 UTC",
   "resumen": {
-    "PASA": 22,
+    "PASA": 30,
     "FALLA": 0,
-    "REVISAR": 3,
+    "REVISAR": 5,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.233\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.233 (2026-08-15)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
     },
     {
       "id": "CLI-003",
@@ -41,6 +41,106 @@
       "motivo": "comprobado",
       "comando": "claude --help",
       "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CLI-004",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "claude doctor informa del método de instalación, del canal de actualización y del resultado del último intento.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude doctor",
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: success → 2.1.233 (2026-08-15)\n\nRemote Control\nControl this session from claude.ai/code or the Claude mobile app\n\nNo installation issue"
+    },
+    {
+      "id": "CLI-005",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "claude install acepta como destino un canal o un número de versión concreto, que es la vía para reproducir un fallo ajeno.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude install --help",
+      "salida": "Usage: claude install [options] [target]\n\nInstall Claude Code native build. Use [target] to specify version (stable,\nlatest, or specific version)\n\nOptions:\n  --force     Force installation even if already installed\n  -h, --help  Display help for command\n"
+    },
+    {
+      "id": "CLI-006",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "claude auth gestiona el inicio de sesión y expone status, que dice qué credencial está activa sin abrir sesión.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude auth --help",
+      "salida": "Usage: claude auth [options] [command]\n\nManage authentication\n\nOptions:\n  -h, --help        Display help for command\n\nCommands:\n  help [command]    display help for command\n  login [options]   Sign in to your Anthropic account\n  logout            Log out from your Anthropic account\n  status [options]  Show authentication status\n"
+    },
+    {
+      "id": "CLI-007",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "La instalación nativa deja en el PATH un enlace simbólico a una versión concreta bajo ~/.local/share/claude/versions/, y por eso conviven varias versiones en disco.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c test -L \"$HOME/.local/bin/claude\" && readlink \"$HOME/.local/bin/claude\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS",
+      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+    },
+    {
+      "id": "CLI-008",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "claude doctor termina con código 0 aunque reporte ajustes inválidos: el código de salida no sirve como comprobación de configuración.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c d=$(mktemp -d); mkdir -p \"$d/.claude\"; echo \"{\" > \"$d/.claude/settings.json\"; cd \"$d\"; claude doctor > out.txt 2>&1; c=$?; grep -q \"Invalid settings\" out.txt && [ \"$c\" = \"0\" ] && echo AJUSTES-INVALIDOS-Y-SALIDA-CERO; rm -f \"$d/out.txt\" \"$d/.claude/settings.json\"; rmdir \"$d/.claude\" \"$d\"",
+      "salida": "AJUSTES-INVALIDOS-Y-SALIDA-CERO\n"
+    },
+    {
+      "id": "CLI-009",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "La documentación oficial condiciona comportamiento a versiones concretas del CLI: authentication.md cita seis o más.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c curl -sS --max-time 25 https://code.claude.com/docs/en/authentication.md | grep -oE \"v2[.]1[.][0-9]+\" | sort -u | wc -l",
+      "salida": "8\n"
+    },
+    {
+      "id": "CLI-010",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "El binario acepta un tercer canal de publicación, rc, que la documentación oficial no menciona.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Comprobado el 17-ago-2026 con la 2.1.233. Poniendo un autoUpdatesChannel inválido en un settings.json, claude doctor contesta: Expected one of latest, stable, rc. Y rc no aparece ni en setup.md ni en settings.md descargadas ese mismo día. Se deja manual a propósito: automatizarlo exige comillas dobles dentro del comando, y el lector de YAML sin dependencias del verificador las deja escapadas, así que pasaría en local con PyYAML y fallaría en CI sin él. Es la misma clase de fallo que documenta REPO-001. Se revisa cada trimestre; el día que se documente, deja de ser una caja de aviso y pasa a ser una sección.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "AUT-001",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "El orden de precedencia de credenciales tiene siete niveles, y una sesión de pasarela de aplicaciones de Claude queda por encima de los siete.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Eran cuatro en el material propio del 12-ago-2026 y son siete en authentication.md del 17-ago-2026. Es una lista que crece: se recuenta contra la documentación oficial en cada revisión trimestral, no se copia de una edición anterior.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "ENT-001",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "El laboratorio del módulo 02 deja los mandos del proyecto versionados en gestor-pedidos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "test -f .claude/settings.json",
+      "salida": ""
+    },
+    {
+      "id": "ENT-002",
+      "capitulo": "02 · Instalación, autenticación y versiones",
+      "afirmacion": "El laboratorio del módulo 02 deja la versión del CLI anotada en el repositorio, no en la cabeza de nadie.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "grep -qE [0-9]+[.][0-9]+[.][0-9]+ ENTORNO.md",
+      "salida": ""
     },
     {
       "id": "CTX-001",
@@ -99,7 +199,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /home/nombre/.claude",
       "salida": ""
     },
     {
