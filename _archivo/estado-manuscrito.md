@@ -25,6 +25,42 @@ clonado desde GitHub.
    UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
    empujaran a `main` a la vez.
 
+## 2026-08-17 · Primera ejecución de la rutina: escribió el 03 y lo perdió
+
+**El módulo 03 se escribió entero y no llegó a publicarse.** La ejecución de
+prueba (`cse_013jyT7FnGxu85HXcXvgyvPi`) hizo el trabajo bien: 4.005 palabras,
+seis partes, `CLAUDE.md` del laboratorio, entradas nuevas en el registro,
+coherencia en verde, commit `07b30e6`. Y el push murió:
+
+```
+fatal: unable to access 'https://github.com/julian-najas/manual-claude-code/':
+The requested URL returned error: 403
+```
+
+**Causa:** el sandbox de la nube clona sin credenciales (basta con que el repo
+sea público) pero **no tiene credenciales de escritura**. Un push anónimo
+siempre da 403. Falta conectar GitHub, con `/web-setup` desde el terminal o
+autorizando la Claude GitHub App. Según `claude-code-on-the-web.md`, instalar la
+App en el repositorio no es obligatorio: vale cualquiera de las dos vías.
+
+**Culpa del montaje, no del agente.** La rutina se creó llamando a la API
+directamente en vez de por el flujo interactivo, y así se salta el aviso que
+`/schedule` da cuando no hay acceso de escritura.
+
+**Arreglado ya:** la rutina hace ahora `git push --dry-run` como **paso 0a** y
+para en seco si no puede publicar, sin escribir una línea. Media hora de máquina
+en vez de treinta minutos tirados.
+
+**Lo que se salvó del naufragio.** La ejecución destapó tres defectos reales del
+verificador, y esos sí están arreglados y commiteados:
+
+- `REPO-002` y `REPO-003` daban rojo por el proxy del sandbox (403), no porque
+  el companion se hubiera caído.
+- `CLI-007` daba por hecho una instalación nativa que en la nube no existe.
+- De fondo: el verificador no distinguía **"es falso"** de **"no he podido
+  comprobarlo"**. Ahora una prueba de red caída sale amarilla con el motivo
+  escrito, y un 404 sigue siendo rojo.
+
 ## Próxima iteración · Módulo 03 · Memoria y contexto
 
 **No empezado.** La iteración del 17-ago se cortó por límite de uso antes de
