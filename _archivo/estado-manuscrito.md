@@ -25,6 +25,52 @@ clonado desde GitHub.
    UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
    empujaran a `main` a la vez.
 
+## 2026-08-17 · Tercera ejecución: murió por límite de uso, pero dejó oro
+
+`cse_01LZNBhNjXkAaV63WnyvQXWS`. Con GitHub ya conectado, pasó las guardas y
+midió de verdad. Murió a las 18:21 con `rate_limit: rejected (five_hour)`, no
+por fallo propio: se habían encadenado tres ejecuciones en la misma ventana.
+
+**Hallazgo que salva todas las ejecuciones futuras.** El 403 del push nunca fue
+de credenciales del todo: **el sandbox clona en HEAD desprendido y deja un
+`main` local viejo**, así que `git push origin main` intentaba enviar una rama
+cuatro commits atrasada y fallaba con `non-fast-forward`. Se arregla con
+`git checkout -B main origin/main` antes de nada. Ya está en el paso 0a de la
+rutina. También dejó una rama de prueba `zz-cred-check` que no pudo borrar por
+un fallo de sideband del proxy; se borró a mano desde el R630.
+
+**Mediciones, con dos repeticiones idénticas cada una.** Sirven de patrón para
+el módulo, no como cifras del libro (dependen de la máquina):
+
+| Medida | Tokens de entrada |
+|---|---:|
+| `gestor-pedidos` sin `CLAUDE.md` | 39.625 |
+| con `CLAUDE.md` de 58 líneas | 40.754 |
+| **coste del archivo** | **1.129** |
+| relleno dentro de comentario HTML | 40.754 |
+| el mismo relleno visible | 44.594 |
+| **lo que ahorra el comentario** | **3.840** |
+
+**El experimento del laboratorio, que es el corazón del módulo 03.** Misma
+petición ("sube el IVA de Portugal del 23 al 24, dime qué tocar"), mismo repo,
+lo único distinto el `CLAUDE.md`:
+
+| | Sin `CLAUDE.md` | Con `CLAUDE.md` |
+|---|---|---|
+| Respuesta | `settings.py:5`, `utils.py:23` y `app.py:74` | solo `app.py:74` |
+| Correcta | **no**, dos de tres archivos están muertos | sí |
+| Tokens de entrada | 209.868 | 85.217 |
+| Turnos | 8 | 2 |
+
+El archivo de memoria no solo lo hace acertar: lo hace costar **2,5 veces
+menos**. Ese contraste vale el módulo entero.
+
+**Fallo nuevo del laboratorio, no inventariado.** `utils.py` **no lo importa
+nadie**, así que el módulo entero está muerto, incluida `calcular_iva()`, que
+parece la función buena del IVA. El `guion-de-doma.md` lo lista como
+"lógica duplicada" (fallo 11) y es peor que eso: es lógica muerta que atrae
+cambios. Añadir al inventario.
+
 ## 2026-08-17 · La guardia funciona, y el bloqueo sigue
 
 Segunda ejecución (`cse_018J8jRAL6L4rwo6o8VJCvyy`) con el paso 0a puesto:
