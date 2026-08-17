@@ -25,6 +25,32 @@ clonado desde GitHub.
    UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
    empujaran a `main` a la vez.
 
+## 2026-08-17 · La guardia funciona, y el bloqueo sigue
+
+Segunda ejecución (`cse_018J8jRAL6L4rwo6o8VJCvyy`) con el paso 0a puesto:
+**paró en 47 segundos sin escribir nada.** Antes eran treinta minutos tirados.
+
+Su diagnóstico, mejor que el nuestro: no hay `credential.helper`, el proxy del
+sandbox está sano (`recentRelayFailures` vacío, `gitConfigInjection` activo), y
+la API de GitHub por MCP devuelve 503. **El 403 es de autorización, no de red.**
+
+Comprobado desde el R630 el mismo minuto: GitHub "All Systems Operational", cero
+incidentes, su API responde 200. El 503 del sandbox y el 500 de `/web-setup` son
+del lado de Anthropic.
+
+**Estado de las dos vías para desbloquear:**
+
+- `/web-setup` sincroniza el token del `gh` local. En el R630 `gh` ya está
+  autenticado como `julian-najas` con permisos `repo` y `workflow`, o sea que la
+  materia prima está lista. El comando devolvió 500 el 17-ago; hay que
+  reintentarlo.
+- La Claude GitHub App, en `https://github.com/apps/claude`, no pasa por el
+  servidor que está fallando. Instalarla en el repositorio no es obligatorio
+  para que la sesión pueda empujar.
+
+Cualquiera de las dos vale. Hasta que haya una, la rutina para en 47 segundos
+cada mañana en vez de trabajar en balde.
+
 ## 2026-08-17 · Primera ejecución de la rutina: escribió el 03 y lo perdió
 
 **El módulo 03 se escribió entero y no llegó a publicarse.** La ejecución de
