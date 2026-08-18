@@ -25,6 +25,93 @@ clonado desde GitHub.
    UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
    empujaran a `main` a la vez.
 
+## 2026-08-18 · Módulo 03 · Memoria y contexto · PUBLICADO
+
+Cerrado `manuscrito/modulo-03-memoria-y-contexto.md`, **3.989 palabras**, las
+seis partes del esqueleto y runbook de una página. Verificador contra la
+**2.1.234**: **36 pasan, 0 fallan, 9 a revisar, 3 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. Quedan nueve módulos: 04 a 12.
+
+**La rutina publicó por primera vez.** El paso 0a no bastaba: el sandbox clona
+con un `origin/main` **también** atrasado, así que `git checkout -B main
+origin/main` reseteaba a un commit viejo y el dry-run seguía dando
+`non-fast-forward`. Se arregla con un `git fetch origin main` **antes** del
+checkout. Conviene meterlo en el paso 0a de la rutina: con el fetch delante, el
+dry-run dio `Everything up-to-date` a la primera.
+
+**Registro:** diez entradas nuevas, `CTX-004` a `CTX-013`. Once de las trece
+`CTX` se comprueban solas; las dos amarillas son la medición de tokens
+(`CTX-012`, marcada además con `coste: true`) y el fallo de autenticación de
+`--bare` (`CTX-013`).
+
+**Mediciones propias, dos repeticiones idénticas cada una, 2.1.234.** Mismo
+repo, misma petición, variando una sola cosa:
+
+| Estado del archivo | Tokens de entrada |
+|---|---:|
+| Sin `CLAUDE.md` | 42.302 |
+| `CLAUDE.md` de 66 líneas | 43.480 |
+| Más 40 líneas dentro de `<!-- -->` | **43.480, el mismo número exacto** |
+| Esas 40 líneas visibles | 46.720 |
+
+El comentario HTML no cuesta "poco": cuesta **cero**, al token. Y el archivo
+final de 67 líneas cuesta **1.311 tokens por turno**, que es el impuesto de
+contexto que declara el módulo.
+
+**El experimento del IVA, repetido y confirmado.** Con el `CLAUDE.md` final:
+solo `app.py`, 3 turnos, 131.952 y 132.003 tokens. Sin él: `settings.py`,
+`utils.py` y `app.py`, 7 turnos, 216.615 y 261.009. Acierta **y** cuesta entre
+1,6 y 2 veces menos. Las dos ejecuciones sin archivo se diferencian un veinte
+por ciento entre sí: sin contexto, cada una explora por su cuenta.
+
+**Hallazgos propios del módulo:**
+
+- **El agente corrigió mi `CLAUDE.md` en directo.** El borrador citaba números
+  de línea y dos estaban mal; lo detectó y avisó. La versión publicada cita
+  función y literal, y el módulo lo convierte en regla de escritura: los números
+  de línea envejecen en el primer commit y luego mandan al sitio equivocado con
+  la autoridad de estar escritos.
+- **`--bare` no sirve de diagnóstico con login de suscripción.** No lee el OAuth
+  guardado, así que contesta `Authentication error · This may be a temporary
+  network issue`, que no lleva a nadie hasta la causa. El módulo da la
+  alternativa: apartar el archivo con `mv` y volver a preguntar.
+- **El suelo de arranque son 42.302 tokens** en este repo, antes de escribir una
+  palabra. Pelearse por doscientos tokens de `CLAUDE.md` es pelearse por el
+  0,5 %.
+- **Partir el `CLAUDE.md` en reglas sin `paths` no ahorra ni un token**: se
+  cargan al arrancar con la misma prioridad. Lo que ahorra es el frontmatter.
+- La documentación de hoy trae cosas que la guía del 12-ago no tenía: el
+  objetivo de 200 líneas, el recorte que propone `/doctor` desde la 2.1.206, el
+  hook `InstructionsLoaded`, y que el `CLAUDE.md` **se entrega como mensaje de
+  usuario después del sistema**, que es el fundamento de por qué no es
+  configuración impuesta.
+
+**Laboratorio:** `D6-repo-feo/gestor-pedidos` gana `CLAUDE.md`, 67 líneas, con
+la tabla de dónde vive de verdad cada valor, la lista de código muerto y quién
+gana los empates. `CTX-006` vigila que nadie lo reescriba diciendo que manda
+`settings.py`.
+
+**Bookkeeping:** `fabrica/hechos.yaml` y `README.md` pasan de "2 de 12" a
+"3 de 12".
+
+### PARA JULIÁN
+
+1. **Sigue abierta la fecha de corte del libro**, sin tocar. El módulo 03 se ha
+   escrito contra la 2.1.234 y lo declara en cabecera, igual que hizo el 02 con
+   la 2.1.233. Ya van dos módulos declarando versión propia, así que la opción
+   "cada módulo declara la suya" está ganando de hecho aunque no se haya
+   decidido. Conviene decidirlo antes del 04.
+2. **El inventario del repo feo se queda corto y ya son dos módulos que lo
+   dicen.** El fallo 11 del guion de doma llama "lógica duplicada" a `utils.py`,
+   y lo comprobado es peor: **nadie importa `utils.py`, ni `config.py`, ni
+   `settings.py`**. Son tres módulos muertos, no una duplicación. Lo sostiene
+   `CTX-007`. Actualizar `D6-repo-feo/guion-de-doma.md` es trabajo de una línea
+   y no lo he hecho yo porque toca el material de laboratorio de los doce
+   módulos.
+3. **El paso 0a de la rutina necesita el `git fetch origin main` delante**, por
+   lo explicado arriba. Sin él, la rutina se va a bloquear otra vez con un error
+   que parece de credenciales y no lo es.
+
 ## 2026-08-17 · Tercera ejecución: murió por límite de uso, pero dejó oro
 
 `cse_01LZNBhNjXkAaV63WnyvQXWS`. Con GitHub ya conectado, pasó las guardas y

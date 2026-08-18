@@ -1,14 +1,14 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.233 (Claude Code)",
-  "sistema": "Linux 6.17.0-41-generic",
-  "python": "3.13.7",
-  "fecha_utc": "2026-08-17 13:24:05 UTC",
+  "cli_verificado": "2.1.234 (Claude Code)",
+  "sistema": "Linux 6.18.5-fc-v20",
+  "python": "3.11.15",
+  "fecha_utc": "2026-08-18 06:45:17 UTC",
   "resumen": {
-    "PASA": 30,
+    "PASA": 36,
     "FALLA": 0,
-    "REVISAR": 5,
+    "REVISAR": 9,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.233 (Claude Code)\n"
+      "salida": "2.1.234 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: not set\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai a"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.234)\nCommit: 7215ba60b06d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.233)\nCommit: f8d57569aaf3\nPlatform: linux-x64\nPath: /home/nombre/.local/share/claude/versions/2.1.233\nConfig install method: unknown\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai a"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.234)\nCommit: 7215ba60b06d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-005",
@@ -173,6 +173,106 @@
       "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
     },
     {
+      "id": "CTX-004",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "El modo mínimo se salta el descubrimiento automático de CLAUDE.md, además de hooks, plugins y auto memory.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CTX-005",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "El laboratorio del módulo 03 deja un CLAUDE.md en la raíz de gestor-pedidos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "test -f CLAUDE.md",
+      "salida": ""
+    },
+    {
+      "id": "CTX-006",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "El CLAUDE.md del laboratorio declara por escrito que no hay ningún archivo de configuración en uso, que es la respuesta correcta y no la intuitiva.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "grep -q No hay archivo de configuración en uso CLAUDE.md",
+      "salida": ""
+    },
+    {
+      "id": "CTX-007",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "En gestor-pedidos ningún archivo importa config, settings ni utils: los tres módulos están muertos y app.py fija sus valores a mano.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c n=$(grep -rlE \"^(import|from) (config|settings|utils)\" --include=*.py . | wc -l); [ \"$n\" = \"0\" ] && echo NADIE-IMPORTA-LOS-TRES || echo ALGUIEN-LOS-IMPORTA",
+      "salida": "NADIE-IMPORTA-LOS-TRES\n"
+    },
+    {
+      "id": "CTX-008",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "El endpoint muerto de gestor-pedidos sigue expuesto y lee la tabla pedidos_2019.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "grep -q pedidos_2019 app.py",
+      "salida": ""
+    },
+    {
+      "id": "CTX-009",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "El binario conoce las tres claves de memoria del módulo: claudeMdExcludes, autoMemoryEnabled y autoMemoryDirectory.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c d=$(mktemp -d); mkdir -p \"$d/.claude\"; printf \"%b\" \"{\\0042claudeMdExcludes\\0042: 5, \\0042autoMemoryEnabled\\0042: 7, \\0042autoMemoryDirectory\\0042: 9}\" > \"$d/.claude/settings.json\"; cd \"$d\"; claude doctor 2>&1 | grep -cE \"claudeMdExcludes|autoMemoryEnabled|autoMemoryDirectory\" > c.txt; echo CLAVES-RECONOCIDAS=$(cat c.txt); rm -rf \"$d\"",
+      "salida": "CLAVES-RECONOCIDAS=3\n"
+    },
+    {
+      "id": "CTX-010",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "La documentación oficial fija el objetivo de tamaño de un CLAUDE.md por debajo de 200 líneas.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/memory.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"under 200 lines\"",
+      "salida": "1\n"
+    },
+    {
+      "id": "CTX-011",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "El CLAUDE.md de la raíz y las reglas sin paths se releen del disco y se reinyectan tras compactar; las reglas con paths y los CLAUDE.md anidados no.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/context-window.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"Re-injected from disk\"",
+      "salida": "2\n"
+    },
+    {
+      "id": "CTX-012",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "Un CLAUDE.md de 66 líneas costó 1.178 tokens de entrada por turno, y 40 líneas de notas dentro de un comentario HTML costaron exactamente cero.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 18-ago-2026 con la 2.1.234 sobre D6-repo-feo/gestor-pedidos. Método: misma petición trivial, mismo repo, variando solo el archivo, con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Dos repeticiones por medida, las dos idénticas. Suelo sin archivo 42.302; con el archivo 43.480; con 40 líneas más dentro de comentario HTML 43.480, el mismo número exacto; con esas 40 líneas visibles 46.720. Se deja manual porque automatizarla gasta tokens de verdad y porque las cifras dependen de la máquina y del modelo: lo que se revisa cada trimestre es el método y el orden de magnitud, no el número.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CTX-013",
+      "capitulo": "03 · Memoria y contexto",
+      "afirmacion": "Con inicio de sesión de suscripción, el modo mínimo no autentica, y el mensaje de error habla de red en vez de credenciales.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Comprobado el 18-ago-2026 con la 2.1.234. claude -p con --bare devuelve: Authentication error, This may be a temporary network issue, please try again. Es coherente con lo documentado en el módulo 02: con --bare la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper y no se lee el OAuth guardado ni el llavero. Consecuencia para el módulo 03: quien no tenga clave de API no puede usar el modo mínimo como herramienta de diagnóstico y tiene que apartar el CLAUDE.md a mano. Se revisa cuando cambie el mensaje de error.",
+      "comando": "",
+      "salida": ""
+    },
+    {
       "id": "PRM-001",
       "capitulo": "04 · Permisos y sandbox",
       "afirmacion": "--allowedTools acepta una lista de herramientas permitidas.",
@@ -199,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /tmp/home-sin-claude-2i7eaczc/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -367,20 +467,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

@@ -147,6 +147,95 @@ pruebas:
     comando: ["claude", "--help"]
     espera_patron: '--bare'
 
+  # ---------------------------------------------------------------------
+  # Módulo 03. Las tres de arriba son las del esqueleto; las de abajo se
+  # añaden el 18-ago-2026 al escribir el módulo.
+  # ---------------------------------------------------------------------
+
+  - id: CTX-004
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "El modo mínimo se salta el descubrimiento automático de CLAUDE.md, además de hooks, plugins y auto memory."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_salida: 0
+    espera_patron: 'CLAUDE.md auto-discovery'
+
+  - id: CTX-005
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "El laboratorio del módulo 03 deja un CLAUDE.md en la raíz de gestor-pedidos."
+    tipo: cli
+    comando: ["test", "-f", "CLAUDE.md"]
+    directorio: "D6-repo-feo/gestor-pedidos"
+    espera_salida: 0
+
+  - id: CTX-006
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "El CLAUDE.md del laboratorio declara por escrito que no hay ningún archivo de configuración en uso, que es la respuesta correcta y no la intuitiva."
+    tipo: cli
+    comando: ["grep", "-q", "No hay archivo de configuración en uso", "CLAUDE.md"]
+    directorio: "D6-repo-feo/gestor-pedidos"
+    espera_salida: 0
+    nota: "Es el criterio PASA del módulo. Si alguien reescribe el CLAUDE.md diciendo que manda settings.py, esta prueba se pone roja, que es exactamente lo que queremos."
+
+  - id: CTX-007
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "En gestor-pedidos ningún archivo importa config, settings ni utils: los tres módulos están muertos y app.py fija sus valores a mano."
+    tipo: cli
+    comando: ['bash', '-c', 'n=$(grep -rlE "^(import|from) (config|settings|utils)" --include=*.py . | wc -l); [ "$n" = "0" ] && echo NADIE-IMPORTA-LOS-TRES || echo ALGUIEN-LOS-IMPORTA']
+    directorio: "D6-repo-feo/gestor-pedidos"
+    espera_salida: 0
+    espera_patron: 'NADIE-IMPORTA-LOS-TRES'
+    nota: "Sostiene el hecho canónico CONFIG-NINGUNO-SE-USA. La guía de doma lo lista como fallo 8 y se queda corta: utils.py entero está muerto, calcular_iva() incluida."
+
+  - id: CTX-008
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "El endpoint muerto de gestor-pedidos sigue expuesto y lee la tabla pedidos_2019."
+    tipo: cli
+    comando: ["grep", "-q", "pedidos_2019", "app.py"]
+    directorio: "D6-repo-feo/gestor-pedidos"
+    espera_salida: 0
+
+  - id: CTX-009
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "El binario conoce las tres claves de memoria del módulo: claudeMdExcludes, autoMemoryEnabled y autoMemoryDirectory."
+    tipo: cli
+    comando: ['bash', '-c', 'd=$(mktemp -d); mkdir -p "$d/.claude"; printf "%b" "{\0042claudeMdExcludes\0042: 5, \0042autoMemoryEnabled\0042: 7, \0042autoMemoryDirectory\0042: 9}" > "$d/.claude/settings.json"; cd "$d"; claude doctor 2>&1 | grep -cE "claudeMdExcludes|autoMemoryEnabled|autoMemoryDirectory" > c.txt; echo CLAVES-RECONOCIDAS=$(cat c.txt); rm -rf "$d"']
+    espera_salida: 0
+    espera_patron: 'CLAVES-RECONOCIDAS=3'
+    nota: "Se comprueba metiendo valores del tipo equivocado y contando cuántas claves reporta doctor como inválidas. Que las reporte demuestra que las conoce. El JSON se escribe con escapes octales para no meter una barra invertida antes de una comilla, que es lo que rompe el lector de YAML sin dependencias."
+
+  - id: CTX-010
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "La documentación oficial fija el objetivo de tamaño de un CLAUDE.md por debajo de 200 líneas."
+    tipo: cli
+    comando: ['bash', '-c', 'D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/memory.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "under 200 lines"']
+    espera_salida: 0
+    red: true
+    espera_patron: '^\s*[1-9]'
+
+  - id: CTX-011
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "El CLAUDE.md de la raíz y las reglas sin paths se releen del disco y se reinyectan tras compactar; las reglas con paths y los CLAUDE.md anidados no."
+    tipo: cli
+    comando: ['bash', '-c', 'D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/context-window.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "Re-injected from disk"']
+    espera_salida: 0
+    red: true
+    espera_patron: '^\s*[1-9]'
+    nota: "Es la tabla que sostiene la sección 3.2.4 y el runbook entero. Dos coincidencias el 18-ago-2026: el CLAUDE.md de la raíz y la auto memory."
+
+  - id: CTX-012
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "Un CLAUDE.md de 66 líneas costó 1.178 tokens de entrada por turno, y 40 líneas de notas dentro de un comentario HTML costaron exactamente cero."
+    tipo: manual
+    coste: true
+    nota: "Medido el 18-ago-2026 con la 2.1.234 sobre D6-repo-feo/gestor-pedidos. Método: misma petición trivial, mismo repo, variando solo el archivo, con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Dos repeticiones por medida, las dos idénticas. Suelo sin archivo 42.302; con el archivo 43.480; con 40 líneas más dentro de comentario HTML 43.480, el mismo número exacto; con esas 40 líneas visibles 46.720. Se deja manual porque automatizarla gasta tokens de verdad y porque las cifras dependen de la máquina y del modelo: lo que se revisa cada trimestre es el método y el orden de magnitud, no el número."
+
+  - id: CTX-013
+    capitulo: "03 · Memoria y contexto"
+    afirmacion: "Con inicio de sesión de suscripción, el modo mínimo no autentica, y el mensaje de error habla de red en vez de credenciales."
+    tipo: manual
+    nota: "Comprobado el 18-ago-2026 con la 2.1.234. claude -p con --bare devuelve: Authentication error, This may be a temporary network issue, please try again. Es coherente con lo documentado en el módulo 02: con --bare la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper y no se lee el OAuth guardado ni el llavero. Consecuencia para el módulo 03: quien no tenga clave de API no puede usar el modo mínimo como herramienta de diagnóstico y tiene que apartar el CLAUDE.md a mano. Se revisa cuando cambie el mensaje de error."
+
   - id: PRM-001
     capitulo: "04 · Permisos y sandbox"
     afirmacion: "--allowedTools acepta una lista de herramientas permitidas."

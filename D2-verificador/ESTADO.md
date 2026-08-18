@@ -1,11 +1,11 @@
 # Estado de verificación · Claude Code en producción
 
 **Versión del libro:** v2026.08  
-**Verificado contra:** `2.1.233 (Claude Code)`  
-**Sistema:** Linux 6.17.0-41-generic  
-**Fecha:** 2026-08-17 13:24:05 UTC
+**Verificado contra:** `2.1.234 (Claude Code)`  
+**Sistema:** Linux 6.18.5-fc-v20  
+**Fecha:** 2026-08-18 06:45:17 UTC
 
-🟢 30 pasan · 🔴 0 fallan · 🟡 5 a revisar · ⚪ 3 omitidas
+🟢 36 pasan · 🔴 0 fallan · 🟡 9 a revisar · ⚪ 3 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -25,9 +25,19 @@
 | 🟢 | CTX-001 | 03 · Memoria y contexto | --add-dir da acceso a directorios fuera del proyecto actual. | `claude --help` |
 | 🟢 | CTX-002 | 03 · Memoria y contexto | --autocompact controla el tamaño de la ventana antes de compactar. | `claude --help` |
 | 🟢 | CTX-003 | 03 · Memoria y contexto | --bare arranca sin CLAUDE.md, sin hooks y sin plugins, para depurar contexto. | `claude --help` |
+| 🟢 | CTX-004 | 03 · Memoria y contexto | El modo mínimo se salta el descubrimiento automático de CLAUDE.md, además de hooks, plugins y auto memory. | `claude --help` |
+| 🟢 | CTX-005 | 03 · Memoria y contexto | El laboratorio del módulo 03 deja un CLAUDE.md en la raíz de gestor-pedidos. | `test -f CLAUDE.md` |
+| 🟢 | CTX-006 | 03 · Memoria y contexto | El CLAUDE.md del laboratorio declara por escrito que no hay ningún archivo de configuración en uso, que es la respuesta correcta y no la intuitiva. | `grep -q No hay archivo de configuración en uso CLAUDE.md` |
+| 🟢 | CTX-007 | 03 · Memoria y contexto | En gestor-pedidos ningún archivo importa config, settings ni utils: los tres módulos están muertos y app.py fija sus valores a mano. | `bash -c n=$(grep -rlE "^(import|from) (config|settings|utils)" --include=*.py . | wc -l); [ "$n" = "0" ] && echo NADIE-IMPORTA-LOS-TRES || echo ALGUIEN-LOS-IMPORTA` |
+| 🟢 | CTX-008 | 03 · Memoria y contexto | El endpoint muerto de gestor-pedidos sigue expuesto y lee la tabla pedidos_2019. | `grep -q pedidos_2019 app.py` |
+| 🟢 | CTX-009 | 03 · Memoria y contexto | El binario conoce las tres claves de memoria del módulo: claudeMdExcludes, autoMemoryEnabled y autoMemoryDirectory. | `bash -c d=$(mktemp -d); mkdir -p "$d/.claude"; printf "%b" "{\0042claudeMdExcludes\0042: 5, \0042autoMemoryEnabled\0042: 7, \0042autoMemoryDirectory\0042: 9}" > "$d/.claude/settings.json"; cd "$d"; claude doctor 2>&1 | grep -cE "claudeMdExcludes|autoMemoryEnabled|autoMemoryDirectory" > c.txt; echo CLAVES-RECONOCIDAS=$(cat c.txt); rm -rf "$d"` |
+| 🟢 | CTX-010 | 03 · Memoria y contexto | La documentación oficial fija el objetivo de tamaño de un CLAUDE.md por debajo de 200 líneas. | `bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/memory.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "under 200 lines"` |
+| 🟢 | CTX-011 | 03 · Memoria y contexto | El CLAUDE.md de la raíz y las reglas sin paths se releen del disco y se reinyectan tras compactar; las reglas con paths y los CLAUDE.md anidados no. | `bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/context-window.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "Re-injected from disk"` |
+| 🟡 | CTX-012 | 03 · Memoria y contexto | Un CLAUDE.md de 66 líneas costó 1.178 tokens de entrada por turno, y 40 líneas de notas dentro de un comentario HTML costaron exactamente cero. | Medido el 18-ago-2026 con la 2.1.234 sobre D6-repo-feo/gestor-pedidos. Método: misma petición trivial, mismo repo, variando solo el archivo, con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Dos repeticiones por medida, las dos idénticas. Suelo sin archivo 42.302; con el archivo 43.480; con 40 líneas más dentro de comentario HTML 43.480, el mismo número exacto; con esas 40 líneas visibles 46.720. Se deja manual porque automatizarla gasta tokens de verdad y porque las cifras dependen de la máquina y del modelo: lo que se revisa cada trimestre es el método y el orden de magnitud, no el número. |
+| 🟡 | CTX-013 | 03 · Memoria y contexto | Con inicio de sesión de suscripción, el modo mínimo no autentica, y el mensaje de error habla de red en vez de credenciales. | Comprobado el 18-ago-2026 con la 2.1.234. claude -p con --bare devuelve: Authentication error, This may be a temporary network issue, please try again. Es coherente con lo documentado en el módulo 02: con --bare la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper y no se lee el OAuth guardado ni el llavero. Consecuencia para el módulo 03: quien no tenga clave de API no puede usar el modo mínimo como herramienta de diagnóstico y tiene que apartar el CLAUDE.md a mano. Se revisa cuando cambie el mensaje de error. |
 | 🟢 | PRM-001 | 04 · Permisos y sandbox | --allowedTools acepta una lista de herramientas permitidas. | `claude --help` |
 | 🟢 | PRM-002 | 04 · Permisos y sandbox | Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa. | `claude --help` |
-| 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /tmp/home-sin-claude-2i7eaczc/.claude` |
+| 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /root/.claude` |
 | 🟡 | HOK-001 | 05 · Hooks | Los hooks se configuran en settings.json, no en un archivo aparte. | Comprobar contra la documentación oficial en cada revisión trimestral. |
 | 🟢 | MCP-001 | 06 · MCP | claude mcp gestiona los servidores MCP desde la línea de comandos. | `claude mcp --help` |
 | 🟡 | MCP-002 | 06 · MCP | Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search. | Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral. |
@@ -44,8 +54,8 @@
 | 🟢 | TRB-001 | 11 · Troubleshooting | claude update comprueba e instala actualizaciones. | `claude --help` |
 | 🟡 | TRB-002 | 11 · Troubleshooting | Borrar la caché de proyecto no borra la configuración de usuario. | Requiere una máquina limpia. Se comprueba en la revisión trimestral. |
 | 🟢 | REPO-001 | 00 · Gobierno del proyecto | El repositorio del manual está público, como se decidió el 13 de agosto de 2026. | `curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/manual-claude-code` |
-| 🟢 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion` |
-| 🟢 | REPO-003 | 00 · Gobierno del proyecto | El sitio del companion responde y sirve el índice por síntoma. | `curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/` |
+| 🟡 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion` |
+| 🟡 | REPO-003 | 00 · Gobierno del proyecto | El sitio del companion responde y sirve el índice por síntoma. | `curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/` |
 | ⚪ | SEG-001 | 10 · Seguridad y costes | rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo. | prueba destructiva, documentada pero nunca ejecutada |
 
 ---

@@ -104,7 +104,7 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 2 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 3 de 12."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
