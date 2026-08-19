@@ -27,6 +27,9 @@ RAIZ = Path(__file__).resolve().parent
 ESTADOS = {"PASA", "FALLA", "REVISAR", "OMITIDO"}
 # nada de rutas, comandos ni salidas: solo lo que se muestra
 LARGO_MAX = 400
+# el motivo de una prueba manual es prosa: por qué no se automatiza y cuándo se
+# revisa. Es legítimamente más largo que una afirmación, pero sigue acotado.
+LARGO_MAX_MOTIVO = 1200
 
 
 def error(msg: str) -> int:
@@ -60,7 +63,8 @@ def validar(d: object) -> str | None:
         if not re.fullmatch(r"[A-Z]{3,6}-\d{3}", p["id"]):
             return f"el identificador {p['id']!r} no tiene la forma XXX-000"
         for clave in ("afirmacion", "capitulo", "motivo", "comando"):
-            if len(str(p.get(clave, ""))) > LARGO_MAX:
+            tope = LARGO_MAX_MOTIVO if clave == "motivo" else LARGO_MAX
+            if len(str(p.get(clave, ""))) > tope:
                 return f"la prueba {p['id']} tiene {clave} sospechosamente largo"
     contados = {e: sum(1 for p in d["pruebas"] if p["resultado"] == e) for e in ESTADOS}
     if contados != d["resumen"]:
