@@ -5,12 +5,13 @@
 > hay que comprobar aquí se comprueba contra el binario y contra tu disco.
 > **Verificado contra:** Claude Code 2.1.233 · 17 de agosto de 2026.
 
-> **Nota de versión de este módulo.** El libro tiene una fecha de corte,
-> 12 de agosto de 2026, y la versión de aquel día era la 2.1.228. Cinco días
-> después, escribiendo esto, la máquina va por la 2.1.233. No hemos ajustado la
-> fecha de corte para disimularlo: el módulo que trata de versiones es el peor
-> sitio posible para redondear una versión. Lo que sigue está comprobado contra
-> la 2.1.233, y en la sección 2.4 verás exactamente qué se movió entre las dos.
+> **Nota de versión de este módulo.** Este libro no promete una versión única
+> del CLI: cada módulo declara la suya, la del día en que se escribió y se midió.
+> El módulo 01 se hizo contra la 2.1.228 el 12 de agosto de 2026; este, cinco
+> días después, contra la 2.1.233. Redondear las dos a una sola cifra de portada
+> quedaría más limpio y sería mentira, y el módulo que trata precisamente de
+> versiones es el peor sitio posible para empezar a mentir. En la sección 2.4
+> verás exactamente qué se movió entre esas dos.
 
 ---
 

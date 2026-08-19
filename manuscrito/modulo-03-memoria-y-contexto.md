@@ -6,10 +6,10 @@
 > de 0,35 €**. Con un plan de suscripción va incluido.
 > **Verificado contra:** Claude Code 2.1.234 · 18 de agosto de 2026.
 
-> **Nota de versión de este módulo.** El libro declara corte el 12 de agosto de
-> 2026 contra la 2.1.228; este módulo se ha escrito y medido seis días después
-> contra la 2.1.234. Las cifras de tokens son de esa ejecución y de esa máquina,
-> y están marcadas como tales.
+> **Nota de versión de este módulo.** Cada módulo de este libro declara la
+> versión del CLI con la que se escribió, y esta es la 2.1.234, seis días después
+> de la 2.1.228 del módulo 01. Las cifras de tokens son de esa ejecución y de esa
+> máquina, y están marcadas como tales.
 
 ---
 

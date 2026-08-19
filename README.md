@@ -4,7 +4,8 @@
 máquina.**
 
 **Versión:** v2026.08
-**Verificado contra:** Claude Code 2.1.228, el 12 de agosto de 2026
+**Verificado contra:** cada módulo declara su versión del CLI, la del día en que
+se midió. El libro no finge una sola.
 **Estado de verificación:** [`D2-verificador/ESTADO.md`](D2-verificador/ESTADO.md)
 
 Este repositorio no está afiliado, patrocinado ni respaldado por Anthropic.
@@ -89,7 +90,9 @@ python3 D8-boletin/detectar-roturas.py
    del libro**: son las que se pueden comprobar solas y las que más daño harían
    si dejaran de ser ciertas. El resto lleva fuente, fecha y nivel de evidencia
    al pie de su módulo.
-2. **Fecha de corte visible.** En la portada, no escondida en los créditos.
+2. **La versión, visible y por módulo.** No hay una fecha de corte única que
+   cubra el libro entero: cada módulo dice contra qué versión del CLI se
+   escribió, en su cabecera y no en los créditos. La portada lleva la edición.
 3. **Sin system prompts filtrados.** Sala limpia, declarada en el libro.
 4. **Los euros no se inventan.** Los tokens se miden; las tarifas las pone quien
    las tiene.

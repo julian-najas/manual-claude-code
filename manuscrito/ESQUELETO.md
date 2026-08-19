@@ -1,7 +1,8 @@
 # Esqueleto del manuscrito
 
 **Libro:** Claude Code en producción
-**Versión:** v2026.08 · **Verificado contra:** CLI 2.1.228 · **Corte:** 12-ago-2026
+**Versión:** v2026.08 · **Cada módulo declara la versión del CLI con la que se
+escribió y se midió.** El libro no tiene una versión única.
 **Objetivo de extensión:** 240 páginas (12 módulos × ~18 pp + preliminares y cierre)
 
 Este archivo es el contrato de la obra. Cualquiera que escriba un módulo escribe
@@ -205,7 +206,7 @@ una lección más, es el contrapeso de todas.
 
 | Pieza | Qué es | Estado |
 |---|---|---|
-| Portada | Diseño de Julián. Fecha de corte visible en portada. | Pendiente |
+| Portada | Diseño de Julián. En portada va la edición, `v2026.08`, no una versión del CLI. | Pendiente |
 | Página de verificación | Versión del CLI, fecha, dirección de la página de estado | Redactable ya |
 | Cómo leer este libro | Las dos rutas, en una página | Pendiente |
 | Glosario | Término en castellano, término en inglés al lado | Pendiente |
@@ -225,6 +226,12 @@ una lección más, es el contrapeso de todas.
 5. **Los euros no se inventan.** Los tokens se miden.
 6. **El repo del laboratorio es siempre el mismo.** Doce demos no son un sistema.
 7. **Todo módulo termina en un runbook de una página.**
+8. **Cada módulo declara en su cabecera la versión del CLI contra la que se
+   escribió, y la fecha.** Decidido el 19-ago-2026. Un libro sobre una
+   herramienta que publica versión casi a diario no puede prometer una sola: o
+   miente en la portada, o se reescribe entero cada semana. La portada lleva la
+   edición (`v2026.08`); la versión la lleva cada módulo, donde se midió. Las
+   cifras de tokens pertenecen a esa ejecución y a esa máquina, y se dicen así.
 
 ## 6 · Orden de escritura recomendado
 
