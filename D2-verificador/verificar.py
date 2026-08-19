@@ -208,7 +208,15 @@ def ejecutar_prueba(p: dict, con_coste: bool, cwd: str) -> dict:
         return res
 
     if p.get("tipo") == "fichero":
-        ruta = Path(os.path.expanduser(str(p.get("ruta", "")))).resolve()
+        # Las rutas del registro son del REPOSITORIO, no del directorio desde el
+        # que se lance esto. La CI corre el verificador desde D2-verificador y
+        # la rutina de la nube desde la raíz: hasta el 19-ago-2026 la misma
+        # prueba pasaba en una y fallaba en la otra. Mismo criterio que el campo
+        # `directorio` de más abajo.
+        ruta = Path(os.path.expanduser(str(p.get("ruta", ""))))
+        if not ruta.is_absolute():
+            ruta = RAIZ.parent / ruta
+        ruta = ruta.resolve()
         res["comando"] = f"test -e {ruta}"
         existe = ruta.exists()
         res["resultado"] = PASA if existe else FALLA
