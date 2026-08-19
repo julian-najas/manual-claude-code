@@ -24,6 +24,64 @@ clonado desde GitHub.
 4. **08:00 y no 07:00 a propósito:** el flujo `verificar.yml` corre a las 05:00
    UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
    empujaran a `main` a la vez.
+5. **Nadie contesta a un diálogo de permisos.** La sesión se congela hasta que
+   caduca y el día se pierde sin dejar nada escrito. Lo dispara copiar un
+   archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
+   no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
+
+## 2026-08-19 · El módulo 04 no se escribió: colgada en un diálogo de permisos
+
+**La rutina disparó a las 06:17 y a las 06:22 se quedó parada.** No fue el paso
+0a: el agente se arregló solo lo del `fetch`, pasó el dry-run, eligió el 04, se
+leyó `permission-modes`, `permissions`, `sandboxing` y `sandbox-environments`, y
+empezó a medir. Murió en la llamada que devolvía el laboratorio a su sitio:
+
+```
+cp /tmp/.../settings.bak2.json .claude/settings.json
+```
+
+Escribir en un `settings.json` **copiando desde fuera del repositorio** se lee
+como escalada de privilegios y pide permiso. Que el mismo archivo lo hubiera
+modificado un minuto antes con un `cat > ... <<'JSON'` sin que nadie preguntara
+es exactamente lo que hace que la trampa no se vea venir. Cuatro horas y media
+en `requires_action` delante de un `cp`.
+
+**Arreglado en la rutina** (19-ago, 12:53): el `git fetch origin main` va delante
+en el paso 0a, y hay un **paso 0d** nuevo con la regla: lo que entra al
+repositorio se escribe, no se copia; y si algo se queda esperando permiso, no se
+reintenta, se cambia de camino o se termina la sesión.
+
+**Se rescatan dos cosas de lo que sí midió**, y valen para el módulo 04:
+
+- `claude auto-mode defaults` imprime la política del clasificador en JSON: 17
+  entradas en `allow`, 66 en `soft_deny`, 1 en `hard_deny` y 20 de `environment`,
+  62.957 bytes. Es una cifra propia y comprobable, mejor que cualquier paráfrasis
+  de la documentación.
+- **El sandbox de la nube no puede medir el efecto de `permissions.allow`**: no
+  ha aceptado el diálogo de confianza del espacio de trabajo, así que ignora las
+  cuatro reglas y **lo avisa por la salida de error, no por la de datos**. Con
+  reglas y sin reglas dio el mismo número exacto, 43.616 tokens. Quien lo mida
+  sin mirar stderr publicará que las reglas no cuestan nada, y lo que pasa es que
+  no se están aplicando. Anotado en la rutina.
+
+**La CI llevaba seis ejecuciones en rojo desde el 17-ago**, y no se había mirado.
+El trabajo `verificar` pasaba; el que moría era `publicar-estado`, con `la prueba
+CLI-010 tiene motivo sospechosamente largo`. El tope de 400 caracteres valía para
+afirmaciones y comandos, pero el `motivo` de una prueba amarilla es prosa: ya
+eran tres los que no cabían (CLI-010, CTX-012 y CTX-013, los tres del 02 y el
+03). El motivo tiene ahora su propio tope de 1200. Efecto colateral que importa:
+**`estado.html`, la página pública de verificación, llevaba desde el 17-ago
+congelada** diciendo 30 pruebas contra la 2.1.233, mientras `ESTADO.md` ya decía
+36 contra la 2.1.234. Regenerada.
+
+### PARA JULIÁN
+
+1. **Sigue abierta la fecha de corte**, tercera vez que se pide. Recomendación:
+   que cada módulo declare su versión, que es lo que ya hacen el 02 y el 03 de
+   hecho, y que la portada diga solo `v2026.08`. Un libro que promete una
+   versión única del CLI nace caducado; uno que fecha cada módulo, no.
+2. Falta empujar el arreglo de la CI, que el R630 no puede:
+   `! git -C ~/manual-claude-code push origin main`
 
 ## 2026-08-18 · Módulo 03 · Memoria y contexto · PUBLICADO
 
