@@ -28,9 +28,9 @@
   h2{font-size:1.25rem}
   p{margin:0}
   .eyebrow{font-family:var(--mono);font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
-  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--ok);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
+  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--mal);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
   .titular{font-family:var(--serif);font-size:clamp(1.4rem,4.4vw,1.9rem);line-height:1.2}
-  .titular .n{color:var(--ok)}
+  .titular .n{color:var(--mal)}
   .meta{font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.8}
   .cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
   .cifra{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
@@ -60,20 +60,20 @@
   </header>
 
   <div class="veredicto">
-    <p class="titular">De las 45 afirmaciones comprobables de este libro,
-      <span class="n">45 siguen siendo ciertas</span> hoy.</p>
+    <p class="titular">De las 47 afirmaciones comprobables de este libro,
+      <span class="n">44 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
       Verificado contra <strong>2.1.235 (Claude Code)</strong><br>
-      2026-08-19 11:25:26 UTC · Linux 6.18.5-fc-v20 · versión del libro v2026.08
+      2026-08-19 11:28:46 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">45</span><span class="k">Pasan</span></div>
-    <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
-    <div class="cifra rev"><span class="v">13</span><span class="k">A revisar</span></div>
+    <div class="cifra ok"><span class="v">44</span><span class="k">Pasan</span></div>
+    <div class="cifra mal"><span class="v">3</span><span class="k">Fallan</span></div>
+    <div class="cifra rev"><span class="v">11</span><span class="k">A revisar</span></div>
     <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
-    <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
+    <div class="cifra"><span class="v">94%</span><span class="k">Vigencia</span></div>
   </div>
 
   <section>
@@ -84,8 +84,8 @@
         <tbody>
           <tr class="cap ok"><td colspan="4">00 · Gobierno del proyecto</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">REPO-001</td><td>El repositorio del manual está público, como se decidió el 13 de agosto de 2026.</td><td class="cmd">curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/manual-claude-code</td></tr>
-<tr class="rev"><td class="ic">🟡</td><td class="id">REPO-002</td><td>El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.</td><td class="cmd">curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion</td></tr>
-<tr class="rev"><td class="ic">🟡</td><td class="id">REPO-003</td><td>El sitio del companion responde y sirve el índice por síntoma.</td><td class="cmd">curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-002</td><td>El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.</td><td class="cmd">curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">REPO-003</td><td>El sitio del companion responde y sirve el índice por síntoma.</td><td class="cmd">curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/</td></tr>
 <tr class="cap ok"><td colspan="4">02 · Instalación y autenticación</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-001</td><td>El binario responde a --version y devuelve una versión semántica.</td><td class="cmd">claude --version</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CLI-002</td><td>claude doctor comprueba la salud de la instalación sin abrir sesión.</td><td class="cmd">claude doctor</td></tr>
@@ -115,10 +115,10 @@
 <tr class="ok"><td class="ic">🟢</td><td class="id">CTX-011</td><td>El CLAUDE.md de la raíz y las reglas sin paths se releen del disco y se reinyectan tras compactar; las reglas con paths y los CLAUDE.md anidados no.</td><td class="cmd">bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/context-window.md 2&gt;/dev/null) || { echo SIN-RED; exit 0; }; printf &quot;%s&quot; &quot;$D&quot; | grep -c &quot;Re-injected from disk&quot;</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">CTX-012</td><td>Un CLAUDE.md de 66 líneas costó 1.178 tokens de entrada por turno, y 40 líneas de notas dentro de un comentario HTML costaron exactamente cero.</td><td class="cmd">Medido el 18-ago-2026 con la 2.1.234 sobre D6-repo-feo/gestor-pedidos. Método: misma petición trivial, mismo repo, variando solo el archivo, con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Dos repeticiones por medida, las dos idénticas. Suelo sin archivo 42.302; con el archivo 43.480; con 40 líneas más dentro de comentario HTML 43.480, el mismo número exacto; con esas 40 líneas visibles 46.720. Se deja manual porque automatizarla gasta tokens de verdad y porque las cifras dependen de la máquina y del modelo: lo que se revisa cada trimestre es el método y el orden de magnitud, no el número.</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">CTX-013</td><td>Con inicio de sesión de suscripción, el modo mínimo no autentica, y el mensaje de error habla de red en vez de credenciales.</td><td class="cmd">Comprobado el 18-ago-2026 con la 2.1.234. claude -p con --bare devuelve: Authentication error, This may be a temporary network issue, please try again. Es coherente con lo documentado en el módulo 02: con --bare la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper y no se lee el OAuth guardado ni el llavero. Consecuencia para el módulo 03: quien no tenga clave de API no puede usar el modo mínimo como herramienta de diagnóstico y tiene que apartar el CLAUDE.md a mano. Se revisa cuando cambie el mensaje de error.</td></tr>
-<tr class="cap ok"><td colspan="4">04 · Permisos y sandbox</td></tr>
+<tr class="cap mal"><td colspan="4">04 · Permisos y sandbox</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-001</td><td>--allowedTools acepta una lista de herramientas permitidas.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-002</td><td>Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa.</td><td class="cmd">claude --help</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /root/.claude</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-003</td><td>El archivo de ajustes de usuario vive en ~/.claude/settings.json.</td><td class="cmd">test -e /home/runner/.claude</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-004</td><td>La bandera --permission-mode enumera los seis modos, y al modo por defecto lo llama manual.</td><td class="cmd">claude --permission-mode zzz -p x</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-005</td><td>El esquema de configuración enumera los mismos seis modos, y ahí el nombre del primero es default y no manual.</td><td class="cmd">claude doctor</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-006</td><td>Las claves sandbox.enabled, sandbox.network.strictAllowlist y autoMode.environment existen en el esquema del binario instalado, no solo en la documentación.</td><td class="cmd">claude doctor</td></tr>
@@ -127,10 +127,10 @@
 <tr class="rev"><td class="ic">🟡</td><td class="id">PRM-009</td><td>Una regla deny de Read bloquea cat y no bloquea a un subproceso que abra el mismo archivo por su cuenta.</td><td class="cmd">Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos, con deny Read(./secretos/**) puesto en el settings.json del proyecto y --allowedTools Bash. Dos repeticiones por comando. cat secretos/pasarela.env: bloqueado las dos veces, y el agente lo dice en la respuesta. python3 -c print(open(...).read()) sobre el mismo archivo: imprimió la clave entera las dos veces. Es coherente con la documentación: las reglas Read y Edit cubren las herramientas de archivo y los comandos de lectura que Claude Code reconoce en Bash, no los subprocesos arbitrarios. Se revisa cuando cambie la lista de comandos reconocidos.</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">PRM-010</td><td>Las reglas de permisos no ocupan contexto: 24 reglas deny cuestan exactamente los mismos tokens de entrada que ninguna.</td><td class="cmd">Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos. Misma petición trivial (Responde solo con la palabra OK.), con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Sin bloque de permisos: 43.619 y 43.619. Con 24 reglas deny: 43.619 y 43.619. Antes de publicarlo se comprobó que ese archivo de 24 reglas se estaba aplicando de verdad, pidiendo el archivo de secretos y viendo el bloqueo: si no, el número idéntico probaría lo contrario de lo que parece.</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">PRM-011</td><td>--dangerously-skip-permissions se niega a arrancar como root o con sudo en Linux y macOS.</td><td class="cmd">Comprobado el 19-ago-2026 con la 2.1.235 en el sandbox de la nube, que corre como root: el mensaje es --dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons. No se automatiza porque el resultado depende del usuario que ejecute el verificador: en una máquina normal la orden arrancaría y la prueba daría falso rojo. La comprobación se salta sola dentro de un sandbox reconocido, que es la razón de que el contenedor de referencia corra como usuario no root.</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-012</td><td>Los tres perfiles de permisos del módulo están escritos y disponibles.</td><td class="cmd">test -e /home/user/manual-claude-code/entregables/plantillas/permisos</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-013</td><td>La plantilla de contenedor de desarrollo con red restringida está escrita.</td><td class="cmd">test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json</td></tr>
+<tr class="mal"><td class="ic">🔴</td><td class="id">PRM-012</td><td>Los tres perfiles de permisos del módulo están escritos y disponibles.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/entregables/plantillas/permisos</td></tr>
+<tr class="mal"><td class="ic">🔴</td><td class="id">PRM-013</td><td>La plantilla de contenedor de desarrollo con red restringida está escrita.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/entregables/plantillas/devcontainer/devcontainer.json</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-014</td><td>El laboratorio deja versionada la regla que prohíbe leer el directorio de secretos.</td><td class="cmd">python3 -c import json,sys; d=json.load(open(&quot;.claude/settings.json&quot;)); sys.exit(0 if &quot;Read(./secretos/**)&quot; in d[&quot;permissions&quot;][&quot;deny&quot;] else 1)</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">PRM-015</td><td>El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen.</td><td class="cmd">test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md</td></tr>
+<tr class="mal"><td class="ic">🔴</td><td class="id">PRM-015</td><td>El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/D6-repo-feo/gestor-pedidos/PERMISOS.md</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">PRM-016</td><td>El archivo de secretos del laboratorio está excluido del control de versiones.</td><td class="cmd">git check-ignore D6-repo-feo/gestor-pedidos/secretos/pasarela.env</td></tr>
 <tr class="cap ok"><td colspan="4">05 · Hooks</td></tr>
 <tr class="rev"><td class="ic">🟡</td><td class="id">HOK-001</td><td>Los hooks se configuran en settings.json, no en un archivo aparte.</td><td class="cmd">Comprobar contra la documentación oficial en cada revisión trimestral.</td></tr>
