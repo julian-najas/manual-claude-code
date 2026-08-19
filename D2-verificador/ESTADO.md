@@ -3,9 +3,9 @@
 **Versión del libro:** v2026.08  
 **Verificado contra:** `2.1.235 (Claude Code)`  
 **Sistema:** Linux 6.17.0-1022-azure  
-**Fecha:** 2026-08-19 11:28:46 UTC
+**Fecha:** 2026-08-19 13:17:07 UTC
 
-🟢 44 pasan · 🔴 3 fallan · 🟡 11 a revisar · ⚪ 3 omitidas
+🟢 47 pasan · 🔴 0 fallan · 🟡 11 a revisar · ⚪ 3 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -46,10 +46,10 @@
 | 🟡 | PRM-009 | 04 · Permisos y sandbox | Una regla deny de Read bloquea cat y no bloquea a un subproceso que abra el mismo archivo por su cuenta. | Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos, con deny Read(./secretos/**) puesto en el settings.json del proyecto y --allowedTools Bash. Dos repeticiones por comando. cat secretos/pasarela.env: bloqueado las dos veces, y el agente lo dice en la respuesta. python3 -c print(open(...).read()) sobre el mismo archivo: imprimió la clave entera las dos veces. Es coherente con la documentación: las reglas Read y Edit cubren las herramientas de archivo y los comandos de lectura que Claude Code reconoce en Bash, no los subprocesos arbitrarios. Se revisa cuando cambie la lista de comandos reconocidos. |
 | 🟡 | PRM-010 | 04 · Permisos y sandbox | Las reglas de permisos no ocupan contexto: 24 reglas deny cuestan exactamente los mismos tokens de entrada que ninguna. | Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos. Misma petición trivial (Responde solo con la palabra OK.), con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Sin bloque de permisos: 43.619 y 43.619. Con 24 reglas deny: 43.619 y 43.619. Antes de publicarlo se comprobó que ese archivo de 24 reglas se estaba aplicando de verdad, pidiendo el archivo de secretos y viendo el bloqueo: si no, el número idéntico probaría lo contrario de lo que parece. |
 | 🟡 | PRM-011 | 04 · Permisos y sandbox | --dangerously-skip-permissions se niega a arrancar como root o con sudo en Linux y macOS. | Comprobado el 19-ago-2026 con la 2.1.235 en el sandbox de la nube, que corre como root: el mensaje es --dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons. No se automatiza porque el resultado depende del usuario que ejecute el verificador: en una máquina normal la orden arrancaría y la prueba daría falso rojo. La comprobación se salta sola dentro de un sandbox reconocido, que es la razón de que el contenedor de referencia corra como usuario no root. |
-| 🔴 | PRM-012 | 04 · Permisos y sandbox | Los tres perfiles de permisos del módulo están escritos y disponibles. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/entregables/plantillas/permisos` |
-| 🔴 | PRM-013 | 04 · Permisos y sandbox | La plantilla de contenedor de desarrollo con red restringida está escrita. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/entregables/plantillas/devcontainer/devcontainer.json` |
+| 🟢 | PRM-012 | 04 · Permisos y sandbox | Los tres perfiles de permisos del módulo están escritos y disponibles. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos` |
+| 🟢 | PRM-013 | 04 · Permisos y sandbox | La plantilla de contenedor de desarrollo con red restringida está escrita. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json` |
 | 🟢 | PRM-014 | 04 · Permisos y sandbox | El laboratorio deja versionada la regla que prohíbe leer el directorio de secretos. | `python3 -c import json,sys; d=json.load(open(".claude/settings.json")); sys.exit(0 if "Read(./secretos/**)" in d["permissions"]["deny"] else 1)` |
-| 🔴 | PRM-015 | 04 · Permisos y sandbox | El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/D6-repo-feo/gestor-pedidos/PERMISOS.md` |
+| 🟢 | PRM-015 | 04 · Permisos y sandbox | El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md` |
 | 🟢 | PRM-016 | 04 · Permisos y sandbox | El archivo de secretos del laboratorio está excluido del control de versiones. | `git check-ignore D6-repo-feo/gestor-pedidos/secretos/pasarela.env` |
 | 🟡 | HOK-001 | 05 · Hooks | Los hooks se configuran en settings.json, no en un archivo aparte. | Comprobar contra la documentación oficial en cada revisión trimestral. |
 | 🟢 | MCP-001 | 06 · MCP | claude mcp gestiona los servidores MCP desde la línea de comandos. | `claude mcp --help` |

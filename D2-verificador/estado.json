@@ -4,10 +4,10 @@
   "cli_verificado": "2.1.235 (Claude Code)",
   "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-08-19 11:28:46 UTC",
+  "fecha_utc": "2026-08-19 13:17:07 UTC",
   "resumen": {
-    "PASA": 44,
-    "FALLA": 3,
+    "PASA": 47,
+    "FALLA": 0,
     "REVISAR": 11,
     "OMITIDO": 3
   },
@@ -387,9 +387,9 @@
       "capitulo": "04 · Permisos y sandbox",
       "afirmacion": "Los tres perfiles de permisos del módulo están escritos y disponibles.",
       "tipo": "fichero",
-      "resultado": "FALLA",
-      "motivo": "no existe en esta máquina",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/entregables/plantillas/permisos",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -397,9 +397,9 @@
       "capitulo": "04 · Permisos y sandbox",
       "afirmacion": "La plantilla de contenedor de desarrollo con red restringida está escrita.",
       "tipo": "fichero",
-      "resultado": "FALLA",
-      "motivo": "no existe en esta máquina",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/entregables/plantillas/devcontainer/devcontainer.json",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -417,9 +417,9 @@
       "capitulo": "04 · Permisos y sandbox",
       "afirmacion": "El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen.",
       "tipo": "fichero",
-      "resultado": "FALLA",
-      "motivo": "no existe en esta máquina",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
