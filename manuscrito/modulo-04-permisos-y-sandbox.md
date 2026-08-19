@@ -6,8 +6,9 @@
 > de 0,55 €**. Con un plan de suscripción va incluido.
 > **Verificado contra:** Claude Code 2.1.235 · 19 de agosto de 2026.
 
-> **Nota de versión.** El libro declara corte el 12 de agosto de 2026 contra la
-> 2.1.228; este módulo se ha medido siete días después contra la 2.1.235.
+> **Nota de versión.** Cada módulo de este libro declara la versión del CLI con
+> la que se midió, y esta es la 2.1.235: siete días después de la 2.1.228 del
+> módulo 01. Las cifras de más abajo son de esa versión y de esa máquina.
 
 ---
 
