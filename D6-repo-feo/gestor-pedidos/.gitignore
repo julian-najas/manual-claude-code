@@ -1,0 +1,6 @@
+# Lo que nunca se sube. Ojo: esto impide el accidente, no el acceso.
+# Quien vigila el acceso son las reglas de permisos de .claude/settings.json.
+secretos/pasarela.env
+datos/*.db
+__pycache__/
+*.pyc

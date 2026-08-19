@@ -256,6 +256,111 @@ pruebas:
     tipo: fichero
     ruta: "~/.claude"
 
+  # ---------------------------------------------------------------------
+  # Módulo 04. Las tres de arriba son las del esqueleto; las de abajo se
+  # añaden el 19-ago-2026 al escribir el módulo, por la regla de la casa: si
+  # el texto afirma algo comprobable, aquí está el comando que lo comprueba.
+  # ---------------------------------------------------------------------
+
+  - id: PRM-004
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "La bandera --permission-mode enumera los seis modos, y al modo por defecto lo llama manual."
+    tipo: cli
+    comando: ["claude", "--permission-mode", "zzz", "-p", "x"]
+    espera_salida: 1
+    espera_patron: 'acceptEdits, auto, bypassPermissions, manual, dontAsk, plan'
+    nota: "Se provoca el error a propósito: es la única forma de que el binario enumere lo que acepta. Si la lista cambia, el patrón falla, que es justo lo que queremos."
+
+  - id: PRM-005
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "El esquema de configuración enumera los mismos seis modos, y ahí el nombre del primero es default y no manual."
+    tipo: cli
+    directorio: "D2-verificador/sonda-esquema"
+    comando: ["claude", "doctor"]
+    espera_patron: '"acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan"'
+    nota: "Corre sobre la sonda de esquema, cuyo settings.json es inválido a propósito. Los dos sitios aceptan las dos palabras; cada mensaje de error enseña solo una."
+
+  - id: PRM-006
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "Las claves sandbox.enabled, sandbox.network.strictAllowlist y autoMode.environment existen en el esquema del binario instalado, no solo en la documentación."
+    tipo: cli
+    directorio: "D2-verificador/sonda-esquema"
+    comando: ["claude", "doctor"]
+    espera_patron: '(?s)(?=.*sandbox\.enabled)(?=.*sandbox\.network\.strictAllowlist)(?=.*autoMode\.environment)'
+    nota: "Una clave con el nombre mal escrito no se reporta, así que si su línea sale en Invalid settings es que el binario la conoce."
+
+  - id: PRM-007
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "claude auto-mode defaults imprime las cuatro listas del clasificador en JSON."
+    tipo: cli
+    comando: ["claude", "auto-mode", "defaults"]
+    espera_salida: 0
+    espera_patron: '"hard_deny"'
+    nota: "El módulo publica los recuentos del 19-ago-2026 con la 2.1.235: 17 allow, 66 soft_deny, 1 hard_deny y 20 environment, 63.477 bytes. Los recuentos se revisan cada trimestre; esta prueba solo vigila que la orden siga existiendo y devolviendo las cuatro listas."
+
+  - id: PRM-008
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "Las reglas permissions.allow del settings.json de un proyecto se ignoran hasta aceptar el diálogo de confianza, y el aviso sale por la salida de error."
+    tipo: manual
+    coste: true
+    nota: "Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos. Misma petición (crear un archivo vacío con touch), misma regla Bash(touch *), dos repeticiones por fila, variando solo de dónde se lee el permiso. Desde permissions.allow del proyecto sin confianza: NO se crea el archivo, 131.788 y 131.806 tokens de entrada y 3 turnos. Desde la bandera --allowedTools: sí, 87.452 tokens y 2 turnos. Desde el mismo archivo con hasTrustDialogAccepted puesto a true: sí, 87.456 y 2 turnos. El aviso literal es: Ignoring 1 permissions.allow entry from .claude/settings.json: this workspace has not been trusted. Se deja manual porque gasta tokens de verdad y porque exige tocar ~/.claude.json. Lo que se revisa cada trimestre es el comportamiento, no los tokens exactos."
+
+  - id: PRM-009
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "Una regla deny de Read bloquea cat y no bloquea a un subproceso que abra el mismo archivo por su cuenta."
+    tipo: manual
+    coste: true
+    nota: "Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos, con deny Read(./secretos/**) puesto en el settings.json del proyecto y --allowedTools Bash. Dos repeticiones por comando. cat secretos/pasarela.env: bloqueado las dos veces, y el agente lo dice en la respuesta. python3 -c print(open(...).read()) sobre el mismo archivo: imprimió la clave entera las dos veces. Es coherente con la documentación: las reglas Read y Edit cubren las herramientas de archivo y los comandos de lectura que Claude Code reconoce en Bash, no los subprocesos arbitrarios. Se revisa cuando cambie la lista de comandos reconocidos."
+
+  - id: PRM-010
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "Las reglas de permisos no ocupan contexto: 24 reglas deny cuestan exactamente los mismos tokens de entrada que ninguna."
+    tipo: manual
+    coste: true
+    nota: "Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos. Misma petición trivial (Responde solo con la palabra OK.), con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Sin bloque de permisos: 43.619 y 43.619. Con 24 reglas deny: 43.619 y 43.619. Antes de publicarlo se comprobó que ese archivo de 24 reglas se estaba aplicando de verdad, pidiendo el archivo de secretos y viendo el bloqueo: si no, el número idéntico probaría lo contrario de lo que parece."
+
+  - id: PRM-011
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "--dangerously-skip-permissions se niega a arrancar como root o con sudo en Linux y macOS."
+    tipo: manual
+    nota: "Comprobado el 19-ago-2026 con la 2.1.235 en el sandbox de la nube, que corre como root: el mensaje es --dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons. No se automatiza porque el resultado depende del usuario que ejecute el verificador: en una máquina normal la orden arrancaría y la prueba daría falso rojo. La comprobación se salta sola dentro de un sandbox reconocido, que es la razón de que el contenedor de referencia corra como usuario no root."
+
+  - id: PRM-012
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "Los tres perfiles de permisos del módulo están escritos y disponibles."
+    tipo: fichero
+    ruta: "entregables/plantillas/permisos"
+
+  - id: PRM-013
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "La plantilla de contenedor de desarrollo con red restringida está escrita."
+    tipo: fichero
+    ruta: "entregables/plantillas/devcontainer/devcontainer.json"
+
+  - id: PRM-014
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "El laboratorio deja versionada la regla que prohíbe leer el directorio de secretos."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["python3", "-c", 'import json,sys; d=json.load(open(".claude/settings.json")); sys.exit(0 if "Read(./secretos/**)" in d["permissions"]["deny"] else 1)']
+    espera_salida: 0
+    nota: "Vigila que nadie afloje el laboratorio sin darse cuenta. Comprueba la regla, no el comportamiento: el comportamiento lo sostiene PRM-009."
+
+  - id: PRM-015
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen."
+    tipo: fichero
+    ruta: "D6-repo-feo/gestor-pedidos/PERMISOS.md"
+
+  - id: PRM-016
+    capitulo: "04 · Permisos y sandbox"
+    afirmacion: "El archivo de secretos del laboratorio está excluido del control de versiones."
+    tipo: cli
+    directorio: "."
+    comando: ["git", "check-ignore", "D6-repo-feo/gestor-pedidos/secretos/pasarela.env"]
+    espera_salida: 0
+    nota: "Un manual que enseña a proteger secretos y confirma el suyo en git no lo enseña. Solo se versiona secretos/pasarela.env.ejemplo, con valores de mentira."
+
   - id: HOK-001
     capitulo: "05 · Hooks"
     afirmacion: "Los hooks se configuran en settings.json, no en un archivo aparte."

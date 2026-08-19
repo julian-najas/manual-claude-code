@@ -29,6 +29,103 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-08-19 (tarde) · Módulo 04 · Permisos y sandbox · PUBLICADO
+
+Cerrado `manuscrito/modulo-04-permisos-y-sandbox.md`, **3.996 palabras**, las
+seis partes del esqueleto y runbook de una página. Verificador contra la
+**2.1.235**: **45 pasan, 0 fallan, 13 a revisar, 3 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. Quedan ocho módulos: 05 a 12.
+
+**El paso 0d funcionó.** Cero llamadas colgadas: todo lo que entró al
+repositorio se escribió con heredoc, los archivos de medición se quedaron en
+`/tmp`, y el `settings.json` del laboratorio se restauró escribiéndolo, no
+copiándolo. La sesión de la mañana murió en un `cp`; esta no ha tenido ninguno.
+
+**Registro:** trece entradas nuevas, `PRM-004` a `PRM-016`. Nueve se comprueban
+solas; las cuatro amarillas son las tres mediciones con coste (`PRM-008`,
+`PRM-009`, `PRM-010`) y la de la bandera peligrosa como root (`PRM-011`), que no
+se automatiza porque su resultado depende del usuario que ejecute el
+verificador y en una máquina normal daría falso rojo.
+
+**Mediciones propias, dos repeticiones idénticas cada una, 2.1.235.** Mismo
+repo, misma petición, variando una sola cosa:
+
+| Medida | Resultado |
+|---|---|
+| `allow` en el settings del proyecto, sin confianza | **no se aplica**, 131.788 y 131.806 tokens, 3 turnos |
+| La misma regla por `--allowedTools` | funciona, 87.452, 2 turnos |
+| La misma regla en el mismo archivo, con confianza aceptada | funciona, 87.456, 2 turnos |
+| `deny Read` frente a `cat` | bloqueado las dos veces, y lo dice |
+| `deny Read` frente a `python3 -c open(...)` | **imprime la clave las dos veces** |
+| 24 reglas `deny` frente a ninguna | 43.619 tokens las cuatro veces |
+| `claude auto-mode defaults` | 17 / 66 / 1 / 20 y 63.477 bytes |
+
+**Hallazgos propios del módulo:**
+
+- **La asimetría de la confianza es la columna vertebral del módulo.** Lo que
+  restringe (`deny`, `ask`) se acepta desde el repositorio; lo que concede
+  (`allow`, `additionalDirectories`) no, hasta aceptar el diálogo. Y como el
+  diálogo **no aparece nunca en `claude -p`**, toda tubería de integración
+  continua del mundo corre con las reglas `allow` de su repositorio ignoradas.
+  El aviso existe y sale **por la salida de error**, así que quien capture solo
+  la estándar no lo ve. Es exactamente la trampa que la rutina ya tenía anotada
+  desde la sesión de la mañana, medida y convertida en sección.
+- **Una regla que no se aplica cuesta un 51 % más** que la misma regla
+  aplicándose, y un turno extra. La configuración rota no es neutra.
+- **Los seis modos tienen dos listas de nombres.** El error de
+  `--permission-mode` enumera `manual`; el del esquema de `settings.json`
+  enumera `default`. Los dos sitios aceptan las dos palabras y cada mensaje
+  enseña solo una. Sostenido por `PRM-004` y `PRM-005`.
+- **Las reglas de permisos cuestan cero tokens.** Al lado de los 1.311 por turno
+  del `CLAUDE.md` del módulo 03, eso reordena el consejo: cuando se pueda elegir
+  entre pedirlo en el archivo de memoria o imponerlo con una regla, la regla es
+  más barata y además se cumple.
+- **Lo que una regla no puede proteger.** `cat` se bloquea y `python3` no, y una
+  regla protege rutas, no valores: la clave que vive dentro de `app.py` no tiene
+  regla posible. Es el puente natural al hook del módulo 05.
+
+**Sonda nueva en el repositorio:** `D2-verificador/sonda-esquema/`, con un
+`settings.json` inválido a propósito. `claude doctor` corriendo ahí enumera lo
+que el esquema del binario acepta de verdad, y es lo que sostiene `PRM-005` y
+`PRM-006`. Es la técnica del módulo 02 convertida en herramienta permanente.
+
+**Laboratorio:** `D6-repo-feo/gestor-pedidos` gana `.claude/settings.json` con
+el perfil normal (deny de secretos y de red, ask en `git push`, allow para lo de
+todos los días), `PERMISOS.md` con el porqué de cada regla y con lo que las
+reglas **no** protegen, `.gitignore`, y `secretos/pasarela.env.ejemplo`. El
+archivo real, `secretos/pasarela.env`, se queda fuera de git y `PRM-016` lo
+vigila. **Ningún fallo sembrado se ha tocado**: la clave sigue dentro de
+`app.py`, que es justo lo que el módulo usa para enseñar el límite del sistema.
+
+**Activos:** `entregables/plantillas/permisos/` con los tres perfiles (cauto,
+normal, laboratorio) y `entregables/plantillas/devcontainer/` con el contenedor
+de red restringida.
+
+**Bookkeeping:** `fabrica/hechos.yaml` y `README.md` pasan de "3 de 12" a
+"4 de 12". Hecho canónico nuevo, `ALLOW-NECESITA-CONFIANZA`.
+
+### PARA JULIÁN
+
+1. **Sigue abierta la fecha de corte del libro**, cuarta vez. El 04 se ha
+   escrito contra la 2.1.235 y lo declara en cabecera, igual que el 02 con la
+   2.1.233 y el 03 con la 2.1.234. Ya van tres módulos con versión propia: la
+   opción "cada módulo declara la suya" está ganando por goleada sin que nadie
+   la haya decidido. Decidirlo cuesta cinco minutos y evita reescribir el 01.
+2. **El inventario del repo feo sigue sin actualizar**, tercer módulo que lo
+   dice. Además de lo del 03 (`utils.py`, `config.py` y `settings.py` son código
+   muerto, no lógica duplicada), el módulo 04 añade dos cosas al recorrido del
+   fallo 1: el laboratorio ahora tiene `secretos/` y `PERMISOS.md`, y la clave
+   de `app.py` queda **explícitamente sin resolver** hasta el módulo 12. Si
+   quieres que el guion lo refleje, es una línea en la tabla del recorrido y no
+   la he tocado yo porque es material compartido por los doce módulos.
+3. **Decisión nueva, y es tuya.** El módulo 04 dice que la clave de `app.py` se
+   saca del código en el 12. El guion de doma dice que el fallo 1 se caza "en el
+   04 y en el 10". Las dos cosas no encajan del todo: o el 04 la saca (y el 10
+   pierde media auditoría), o el guion pasa a decir que en el 04 se **acota** y
+   en el 12 se **elimina**, que es lo que hace el texto tal como está escrito.
+   He escrito el módulo con la segunda lectura porque no destruye material de
+   laboratorio, pero la palabra final es tuya.
+
 ## 2026-08-19 · El módulo 04 no se escribió: colgada en un diálogo de permisos
 
 **La rutina disparó a las 06:17 y a las 06:22 se quedó parada.** No fue el paso

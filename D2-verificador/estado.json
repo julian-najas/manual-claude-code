@@ -2,13 +2,13 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.235 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-19 10:55:51 UTC",
+  "sistema": "Linux 6.18.5-fc-v20",
+  "python": "3.11.15",
+  "fecha_utc": "2026-08-19 11:27:47 UTC",
   "resumen": {
-    "PASA": 38,
+    "PASA": 45,
     "FALLA": 0,
-    "REVISAR": 7,
+    "REVISAR": 13,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.235\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.235\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -299,8 +299,138 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
+    },
+    {
+      "id": "PRM-004",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "La bandera --permission-mode enumera los seis modos, y al modo por defecto lo llama manual.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --permission-mode zzz -p x",
+      "salida": "error: option '--permission-mode <mode>' argument 'zzz' is invalid. Allowed choices are acceptEdits, auto, bypassPermissions, manual, dontAsk, plan.\n"
+    },
+    {
+      "id": "PRM-005",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "El esquema de configuración enumera los mismos seis modos, y ahí el nombre del primero es default y no manual.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude doctor",
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › permissions.defaultMode: Invalid va"
+    },
+    {
+      "id": "PRM-006",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "Las claves sandbox.enabled, sandbox.network.strictAllowlist y autoMode.environment existen en el esquema del binario instalado, no solo en la documentación.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude doctor",
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › permissions.defaultMode: Invalid va"
+    },
+    {
+      "id": "PRM-007",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "claude auto-mode defaults imprime las cuatro listas del clasificador en JSON.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude auto-mode defaults",
+      "salida": "{\n  \"allow\": [\n    \"Security Discussion: Reading, discussing, reviewing, or writing security-related code, docs, configs, or threat models as part of the user's task is not in itself Credential Exploration, Exfil Scouting, or Auto-Mode Bypass — engaging with security as subject matter is fine. This exception covers the discussion and authoring; actually running an exploit, scanning credentials, or"
+    },
+    {
+      "id": "PRM-008",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "Las reglas permissions.allow del settings.json de un proyecto se ignoran hasta aceptar el diálogo de confianza, y el aviso sale por la salida de error.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos. Misma petición (crear un archivo vacío con touch), misma regla Bash(touch *), dos repeticiones por fila, variando solo de dónde se lee el permiso. Desde permissions.allow del proyecto sin confianza: NO se crea el archivo, 131.788 y 131.806 tokens de entrada y 3 turnos. Desde la bandera --allowedTools: sí, 87.452 tokens y 2 turnos. Desde el mismo archivo con hasTrustDialogAccepted puesto a true: sí, 87.456 y 2 turnos. El aviso literal es: Ignoring 1 permissions.allow entry from .claude/settings.json: this workspace has not been trusted. Se deja manual porque gasta tokens de verdad y porque exige tocar ~/.claude.json. Lo que se revisa cada trimestre es el comportamiento, no los tokens exactos.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "PRM-009",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "Una regla deny de Read bloquea cat y no bloquea a un subproceso que abra el mismo archivo por su cuenta.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos, con deny Read(./secretos/**) puesto en el settings.json del proyecto y --allowedTools Bash. Dos repeticiones por comando. cat secretos/pasarela.env: bloqueado las dos veces, y el agente lo dice en la respuesta. python3 -c print(open(...).read()) sobre el mismo archivo: imprimió la clave entera las dos veces. Es coherente con la documentación: las reglas Read y Edit cubren las herramientas de archivo y los comandos de lectura que Claude Code reconoce en Bash, no los subprocesos arbitrarios. Se revisa cuando cambie la lista de comandos reconocidos.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "PRM-010",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "Las reglas de permisos no ocupan contexto: 24 reglas deny cuestan exactamente los mismos tokens de entrada que ninguna.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 19-ago-2026 con la 2.1.235 sobre D6-repo-feo/gestor-pedidos. Misma petición trivial (Responde solo con la palabra OK.), con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Sin bloque de permisos: 43.619 y 43.619. Con 24 reglas deny: 43.619 y 43.619. Antes de publicarlo se comprobó que ese archivo de 24 reglas se estaba aplicando de verdad, pidiendo el archivo de secretos y viendo el bloqueo: si no, el número idéntico probaría lo contrario de lo que parece.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "PRM-011",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "--dangerously-skip-permissions se niega a arrancar como root o con sudo en Linux y macOS.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Comprobado el 19-ago-2026 con la 2.1.235 en el sandbox de la nube, que corre como root: el mensaje es --dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons. No se automatiza porque el resultado depende del usuario que ejecute el verificador: en una máquina normal la orden arrancaría y la prueba daría falso rojo. La comprobación se salta sola dentro de un sandbox reconocido, que es la razón de que el contenedor de referencia corra como usuario no root.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "PRM-012",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "Los tres perfiles de permisos del módulo están escritos y disponibles.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
+      "salida": ""
+    },
+    {
+      "id": "PRM-013",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "La plantilla de contenedor de desarrollo con red restringida está escrita.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "salida": ""
+    },
+    {
+      "id": "PRM-014",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "El laboratorio deja versionada la regla que prohíbe leer el directorio de secretos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import json,sys; d=json.load(open(\".claude/settings.json\")); sys.exit(0 if \"Read(./secretos/**)\" in d[\"permissions\"][\"deny\"] else 1)",
+      "salida": ""
+    },
+    {
+      "id": "PRM-015",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "El laboratorio explica por escrito por qué está cada regla y qué es lo que las reglas no protegen.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "salida": ""
+    },
+    {
+      "id": "PRM-016",
+      "capitulo": "04 · Permisos y sandbox",
+      "afirmacion": "El archivo de secretos del laboratorio está excluido del control de versiones.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "git check-ignore D6-repo-feo/gestor-pedidos/secretos/pasarela.env",
+      "salida": "D6-repo-feo/gestor-pedidos/secretos/pasarela.env\n"
     },
     {
       "id": "HOK-001",
@@ -467,20 +597,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

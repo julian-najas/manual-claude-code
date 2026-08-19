@@ -104,11 +104,20 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 3 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 4 de 12."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
       - "los 12 módulos del manual, completos"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: ALLOW-NECESITA-CONFIANZA
+    valor: "Las reglas permissions.allow del settings.json de un proyecto no se aplican hasta aceptar el diálogo de confianza del espacio de trabajo; las de deny y ask se aplican siempre."
+    fuente: "medición propia 19-ago-2026 con la 2.1.235 (PRM-008) y code.claude.com/docs/en/permissions.md"
+    prohibido:
+      - "los permisos del repositorio se aplican siempre"
+      - "basta con confirmar el settings.json en git"
     excepto:
       - "fabrica/hechos.yaml"
 

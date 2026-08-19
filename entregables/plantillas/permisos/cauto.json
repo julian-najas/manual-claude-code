@@ -1,25 +1,22 @@
 {
-  "autoUpdatesChannel": "stable",
-  "minimumVersion": "2.1.233",
   "permissions": {
     "defaultMode": "default",
     "deny": [
       "Read(./secretos/**)",
-      "Edit(./secretos/**)",
       "Read(./.env)",
       "Read(./.env.*)",
-      "Read(./datos/*.db)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
       "Bash(curl *)",
       "Bash(wget *)"
     ],
     "ask": [
       "Bash(git push *)",
-      "Bash(python app.py)"
+      "Bash(git commit *)"
     ],
     "allow": [
       "Bash(git status)",
-      "Bash(git diff *)",
-      "Bash(python3 -m pytest *)"
+      "Bash(git diff *)"
     ]
   }
 }
