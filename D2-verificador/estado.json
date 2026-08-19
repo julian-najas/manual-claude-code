@@ -1,14 +1,14 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.234 (Claude Code)",
-  "sistema": "Linux 6.18.5-fc-v20",
-  "python": "3.11.15",
-  "fecha_utc": "2026-08-18 06:45:17 UTC",
+  "cli_verificado": "2.1.235 (Claude Code)",
+  "sistema": "Linux 6.17.0-1022-azure",
+  "python": "3.12.3",
+  "fecha_utc": "2026-08-19 10:55:51 UTC",
   "resumen": {
-    "PASA": 36,
+    "PASA": 38,
     "FALLA": 0,
-    "REVISAR": 9,
+    "REVISAR": 7,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.234 (Claude Code)\n"
+      "salida": "2.1.235 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.234)\nCommit: 7215ba60b06d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.235\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.234)\nCommit: 7215ba60b06d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.235)\nCommit: ba01fa45e3d1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.235\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
+      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
     },
     {
       "id": "CLI-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /root/.claude",
+      "comando": "test -e /home/runner/.claude",
       "salida": ""
     },
     {
@@ -467,20 +467,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "REVISAR",
-      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
+      "resultado": "PASA",
+      "motivo": "comprobado",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "403"
+      "salida": "200"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "REVISAR",
-      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
+      "resultado": "PASA",
+      "motivo": "comprobado",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
+      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
     },
     {
       "id": "SEG-001",

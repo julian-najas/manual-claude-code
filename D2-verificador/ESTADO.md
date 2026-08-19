@@ -1,11 +1,11 @@
 # Estado de verificación · Claude Code en producción
 
 **Versión del libro:** v2026.08  
-**Verificado contra:** `2.1.234 (Claude Code)`  
-**Sistema:** Linux 6.18.5-fc-v20  
-**Fecha:** 2026-08-18 06:45:17 UTC
+**Verificado contra:** `2.1.235 (Claude Code)`  
+**Sistema:** Linux 6.17.0-1022-azure  
+**Fecha:** 2026-08-19 10:55:51 UTC
 
-🟢 36 pasan · 🔴 0 fallan · 🟡 9 a revisar · ⚪ 3 omitidas
+🟢 38 pasan · 🔴 0 fallan · 🟡 7 a revisar · ⚪ 3 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -37,7 +37,7 @@
 | 🟡 | CTX-013 | 03 · Memoria y contexto | Con inicio de sesión de suscripción, el modo mínimo no autentica, y el mensaje de error habla de red en vez de credenciales. | Comprobado el 18-ago-2026 con la 2.1.234. claude -p con --bare devuelve: Authentication error, This may be a temporary network issue, please try again. Es coherente con lo documentado en el módulo 02: con --bare la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper y no se lee el OAuth guardado ni el llavero. Consecuencia para el módulo 03: quien no tenga clave de API no puede usar el modo mínimo como herramienta de diagnóstico y tiene que apartar el CLAUDE.md a mano. Se revisa cuando cambie el mensaje de error. |
 | 🟢 | PRM-001 | 04 · Permisos y sandbox | --allowedTools acepta una lista de herramientas permitidas. | `claude --help` |
 | 🟢 | PRM-002 | 04 · Permisos y sandbox | Existe una bandera para saltarse todos los permisos, y la documentación la marca como peligrosa. | `claude --help` |
-| 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /root/.claude` |
+| 🟢 | PRM-003 | 04 · Permisos y sandbox | El archivo de ajustes de usuario vive en ~/.claude/settings.json. | `test -e /home/runner/.claude` |
 | 🟡 | HOK-001 | 05 · Hooks | Los hooks se configuran en settings.json, no en un archivo aparte. | Comprobar contra la documentación oficial en cada revisión trimestral. |
 | 🟢 | MCP-001 | 06 · MCP | claude mcp gestiona los servidores MCP desde la línea de comandos. | `claude mcp --help` |
 | 🟡 | MCP-002 | 06 · MCP | Por defecto solo se cargan los nombres de las herramientas MCP; los esquemas van diferidos y se traen bajo demanda con tool search. | Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral. |
@@ -54,8 +54,8 @@
 | 🟢 | TRB-001 | 11 · Troubleshooting | claude update comprueba e instala actualizaciones. | `claude --help` |
 | 🟡 | TRB-002 | 11 · Troubleshooting | Borrar la caché de proyecto no borra la configuración de usuario. | Requiere una máquina limpia. Se comprueba en la revisión trimestral. |
 | 🟢 | REPO-001 | 00 · Gobierno del proyecto | El repositorio del manual está público, como se decidió el 13 de agosto de 2026. | `curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/manual-claude-code` |
-| 🟡 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion` |
-| 🟡 | REPO-003 | 00 · Gobierno del proyecto | El sitio del companion responde y sirve el índice por síntoma. | `curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/` |
+| 🟢 | REPO-002 | 00 · Gobierno del proyecto | El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas. | `curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion` |
+| 🟢 | REPO-003 | 00 · Gobierno del proyecto | El sitio del companion responde y sirve el índice por síntoma. | `curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/` |
 | ⚪ | SEG-001 | 10 · Seguridad y costes | rm -rf sobre el directorio del proyecto lo destruye sin confirmación del sistema operativo. | prueba destructiva, documentada pero nunca ejecutada |
 
 ---
