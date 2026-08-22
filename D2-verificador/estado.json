@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.238 (Claude Code)",
+  "cli_verificado": "2.1.239 (Claude Code)",
   "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-08-21 05:24:18 UTC",
+  "fecha_utc": "2026-08-22 05:18:29 UTC",
   "resumen": {
     "PASA": 47,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.238 (Claude Code)\n"
+      "salida": "2.1.239 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.238)\nCommit: 46283063a4c2\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.238\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.239)\nCommit: 9bf8e9521fe0\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.239\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.238)\nCommit: 46283063a4c2\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.238\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.239)\nCommit: 9bf8e9521fe0\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.239\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
     },
     {
       "id": "CLI-005",
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.238)\nCommit: 46283063a4c2\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.238\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.239)\nCommit: 9bf8e9521fe0\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.239\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.238)\nCommit: 46283063a4c2\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.238\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.239)\nCommit: 9bf8e9521fe0\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.239\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
     },
     {
       "id": "PRM-007",
