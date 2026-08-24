@@ -1,0 +1,124 @@
+name: Latido de la rutina
+
+# La rutina de la nube escribe un módulo al día y anota una entrada en
+# `_archivo/estado-manuscrito.md` al terminar, también cuando termina mal. Lo
+# que NO deja rastro es una sesión que se muere sola: colgada en un diálogo de
+# permisos, o cortada por límite de uso. El repositorio queda idéntico a como
+# quedaría si la rutina no hubiera disparado nunca.
+#
+# Del 21 al 23 de agosto de 2026 pasó tres días seguidos y nadie se enteró
+# hasta el 24, contando el ritmo real. Tres módulos perdidos en silencio.
+#
+# Este flujo es el interruptor de hombre muerto. No comprueba que el módulo
+# esté bien, para eso está `verificar.yml`. Comprueba que la rutina dejó algo
+# escrito, que es justo lo que no ocurre cuando se muere.
+
+on:
+  schedule:
+    # 21:00 UTC, 23:00 de Madrid. Quince horas después de que dispare la
+    # rutina, así que a esta hora el día ya está decidido: o hay entrada o no
+    # la va a haber. Comprobarlo antes daría falsos rojos con una sesión larga.
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+
+# Este flujo NO instala nada remoto y no necesita escribir en el repositorio.
+# Solo lee el diario y, si hace falta, abre una incidencia.
+permissions:
+  contents: read
+
+concurrency:
+  group: latido-de-la-rutina
+  cancel-in-progress: false
+
+jobs:
+  latido:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Tomar el latido
+        id: latido
+        continue-on-error: true
+        run: |
+          python3 fabrica/latido-rutina.py --json > /tmp/latido.json
+          echo "veredicto<<FIN" >> "$GITHUB_OUTPUT"
+          cat /tmp/latido.json >> "$GITHUB_OUTPUT"
+          echo "FIN" >> "$GITHUB_OUTPUT"
+
+      - name: Publicar el veredicto como resumen del trabajo
+        if: always()
+        run: |
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/latido.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo '{}' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Avisar si la rutina lleva callada
+        if: steps.latido.outcome == 'failure'
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const fs = require('fs');
+            let v = {};
+            try {
+              v = JSON.parse(fs.readFileSync('/tmp/latido.json', 'utf8'));
+            } catch (e) {
+              v = { dias_de_silencio: '?', ultima_entrada: '?' };
+            }
+
+            const cuerpo = [
+              `La rutina del manuscrito lleva **${v.dias_de_silencio} día(s)** sin dejar`,
+              `entrada en \`_archivo/estado-manuscrito.md\`. La última es del`,
+              `**${v.ultima_entrada}**.`,
+              '',
+              'Esto no dice qué pasó, solo que pasó: una sesión que se cuelga en un',
+              'diálogo de permisos o que se corta por límite de uso deja el repositorio',
+              'igual que si no hubiera disparado. Los modos conocidos son esos dos.',
+              '',
+              'Qué mirar, por orden:',
+              '',
+              '1. El panel de la rutina: si disparó y en qué estado quedó la sesión.',
+              '2. Si quedó en `requires_action`, murió esperando un permiso. El paso 0d',
+              '   de la rutina lista lo que lo dispara.',
+              '3. Si no disparó, es la programación, no el agente.',
+              '',
+              'Se cierra sola no: hay que cerrarla a mano cuando se sepa la causa, y',
+              'conviene anotarla en el diario aunque no se haya escrito módulo.',
+            ].join('\n');
+
+            const abiertas = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'rutina-callada',
+            });
+
+            // Una incidencia nueva cada día por el mismo silencio es ruido, y el
+            // ruido se acaba ignorando, que es como se perdieron los tres días.
+            // Mientras el silencio dure, se comenta en la que ya está abierta.
+            if (abiertas.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: abiertas.data[0].number,
+                body: `Sigue callada: **${v.dias_de_silencio} día(s)**, última entrada ${v.ultima_entrada}.`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `La rutina del manuscrito lleva ${v.dias_de_silencio} día(s) callada`,
+                body: cuerpo,
+                labels: ['rutina-callada', 'manual'],
+              });
+            }
+
+      - name: Fallar si no hubo latido
+        if: steps.latido.outcome == 'failure'
+        run: exit 1

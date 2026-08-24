@@ -24,10 +24,65 @@ clonado desde GitHub.
 4. **08:00 y no 07:00 a propósito:** el flujo `verificar.yml` corre a las 05:00
    UTC, que son las 07:00 de Madrid. Ponerlos a la misma hora hacía que los dos
    empujaran a `main` a la vez.
+6. **Una sesión que se muere no deja rastro, y por eso hay un latido.**
+   `.github/workflows/latido-rutina.yml` corre a las 21:00 UTC y comprueba que
+   el diario tiene entrada de hoy. Si no la tiene, abre incidencia con la
+   etiqueta `rutina-callada` y no abre una nueva cada día: comenta en la que ya
+   está. Se prueba a mano con `python3 fabrica/latido-rutina.py`.
+
 5. **Nadie contesta a un diálogo de permisos.** La sesión se congela hasta que
    caduca y el día se pierde sin dejar nada escrito. Lo dispara copiar un
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
+
+## 2026-08-24 (tarde) · Los tres días en blanco, y el latido que los habría cazado
+
+Al contar el ritmo real salió esto: **del 21 al 23 de agosto no hay una sola
+entrada en este diario**. Lo único que hay en esos días son los commits
+automáticos del verificador de las 05:20 UTC. La rutina dispara a las 06:00 y no
+dejó nada, tres días seguidos, y no se detectó hasta hoy.
+
+**El ritmo real, entonces, no es un módulo al día.** Son cuatro módulos en ocho
+días naturales, del 17 al 24: uno cada dos. La cuenta de "siete módulos, ocho
+días" era teórica; con lo observado son unas dos semanas.
+
+**La causa no se puede saber desde aquí, y ese es exactamente el problema.** Una
+sesión que se cuelga en un diálogo de permisos o que se corta por límite de uso
+deja el repositorio idéntico a como quedaría si la rutina no hubiera disparado
+nunca. El 19 y el 20 fallaron y quedaron escritos porque alguien lo escribió
+después; del 21 al 23 no hay ni eso.
+
+**Arreglo: `.github/workflows/latido-rutina.yml`.** Corre a las 21:00 UTC, quince
+horas después de la rutina, cuando el día ya está decidido. Comprueba que el
+diario tiene una entrada con la fecha de hoy y, si no la tiene, abre incidencia
+con la etiqueta `rutina-callada`. Mientras el silencio dure comenta en la
+incidencia abierta en vez de abrir una nueva cada día: una alarma que se repite
+sola se acaba ignorando, que es como se perdieron estos tres días.
+
+La lógica vive en `fabrica/latido-rutina.py`, fuera del YAML, para poder
+probarla: `python3 fabrica/latido-rutina.py` dice si la rutina está viva, y
+`--tolerancia N` afloja el umbral. Probado por los dos lados: contra el diario de
+hoy da viva; contra el diario del 23 (quitando la entrada de hoy) da **5 días
+callada** y sale con código 1.
+
+**Lo que este latido NO hace, a propósito.** No entra en `registro.yaml` ni en
+`verificar.yml`. El verificador dice si el libro sigue siendo cierto; esto dice
+si la fábrica sigue viva. Mezclarlos haría que "0 fallan" significara dos cosas
+distintas, y que un silencio de la rutina abriera una incidencia titulada
+"Rotura con 2.1.24x", que es mentira.
+
+### PARA JULIÁN
+
+1. **El latido detecta el silencio, no lo evita.** Lo que lo evitaría de verdad
+   es que la rutina anote en el diario **al empezar**, no solo al terminar: una
+   línea después del paso 0c diciendo "arranco, toca el módulo NN". Entonces un
+   día en blanco distinguiría "no disparó" de "disparó y murió", que hoy no se
+   distingue. No lo he hecho porque el texto de la rutina vive en el panel, no
+   en el repositorio, y eso lo tienes que pegar tú.
+2. **Los tres días perdidos siguen sin causa.** En el panel de la rutina se ve
+   si esas sesiones dispararon y en qué estado quedaron. Si alguna quedó en
+   `requires_action`, es otra vez el diálogo de permisos y hay que mirar qué lo
+   disparó para añadirlo al paso 0d.
 
 ## 2026-08-24 · Módulo 05 · Hooks · PUBLICADO
 
