@@ -508,6 +508,96 @@ pruebas:
     tipo: manual
     nota: "Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral."
 
+  # ---------------------------------------------------------------------
+  # Módulo 06. MCP-001 y MCP-002 son las del esqueleto; las de abajo se
+  # añaden el 24-ago-2026 al escribir el módulo contra la 2.1.241.
+  #
+  # Las seis primeras corren el servidor MCP del laboratorio EN SECO, por
+  # JSON-RPC contra su entrada estándar, con las fixtures de mcp/ejemplos/.
+  # Misma técnica que las HOK del módulo 05: un servidor stdio es un programa
+  # que lee JSON y escribe JSON, y eso se comprueba sin gastar un token.
+  # ---------------------------------------------------------------------
+
+  - id: MCP-003
+    capitulo: "06 · MCP"
+    afirmacion: "Un servidor MCP por stdio se puede escribir sin dependencias: basta con responder initialize y tools/list en JSON-RPC por la entrada y salida estándar."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["bash", "-c", "CLAUDE_PROJECT_DIR=$PWD python3 mcp/servidor-pedidos.py < mcp/ejemplos/handshake.jsonl"]
+    espera_salida: 0
+    espera_patron: '(?s)(?=.*pedidos-solo-lectura)(?=.*listar_tablas)(?=.*describir_tabla)(?=.*consultar)'
+    nota: "El apretón de manos completo y el catálogo de las tres herramientas. Si el servidor imprimiera cualquier cosa que no sea JSON-RPC por la salida estándar, el transporte se rompería y esta prueba lo caza."
+
+  - id: MCP-004
+    capitulo: "06 · MCP"
+    afirmacion: "El servidor de solo lectura rechaza una escritura directa antes de tocar la base de datos."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["bash", "-c", "CLAUDE_PROJECT_DIR=$PWD python3 mcp/servidor-pedidos.py < mcp/ejemplos/escritura-directa.jsonl"]
+    espera_salida: 0
+    espera_patron: '"isError": true'
+    nota: "Segundo candado de los tres. La sentencia se valida por su forma antes de abrir conexión, así que esta prueba pasa incluso en un clon sin base de datos construida."
+
+  - id: MCP-005
+    capitulo: "06 · MCP"
+    afirmacion: "El servidor rechaza una segunda sentencia escondida detrás de un punto y coma, que es la vía clásica para colar un UPDATE tras un SELECT."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["bash", "-c", "CLAUDE_PROJECT_DIR=$PWD python3 mcp/servidor-pedidos.py < mcp/ejemplos/segunda-sentencia.jsonl"]
+    espera_salida: 0
+    espera_patron: '"isError": true'
+    nota: "Un filtro que solo mirara la primera palabra dejaría pasar esto. Por eso el candado dos son dos comprobaciones y no una."
+
+  - id: MCP-006
+    capitulo: "06 · MCP"
+    afirmacion: "El servidor responde a una consulta legítima con los datos de la base, y el laboratorio se reconstruye desde el esquema versionado."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["bash", "-c", "export CLAUDE_PROJECT_DIR=$PWD && python3 mcp/preparar-bd.py > /dev/null && python3 mcp/servidor-pedidos.py < mcp/ejemplos/consulta-valida.jsonl"]
+    espera_salida: 0
+    espera_patron: '(?s)(?=.*pedidos_totales)(?=.*14)'
+    nota: "datos/pedidos.db está en .gitignore, así que no viene en el clon y la prueba la construye. Son catorce pedidos siempre, a propósito: un dato determinista se puede afirmar en el libro. El patrón admite el salto de línea entre el nombre de la columna y el valor."
+
+  - id: MCP-007
+    capitulo: "06 · MCP"
+    afirmacion: "El servidor valida el nombre de tabla en vez de interpolarlo, y responde con error a una tabla que no existe."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["bash", "-c", "export CLAUDE_PROJECT_DIR=$PWD && python3 mcp/preparar-bd.py > /dev/null && python3 mcp/servidor-pedidos.py < mcp/ejemplos/tabla-inventada.jsonl"]
+    espera_salida: 0
+    espera_patron: '"isError": true'
+    nota: "El repositorio del laboratorio ya tiene tres concatenaciones de SQL sembradas en app.py. El servidor del libro no añade una cuarta: un nombre de tabla no puede ir como parámetro en un PRAGMA, así que se valida contra una expresión regular y se comprueba que la tabla existe."
+
+  - id: MCP-008
+    capitulo: "06 · MCP"
+    afirmacion: "El .mcp.json del laboratorio usa el marcador de ruta con valor por defecto y no contiene ningún secreto."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["bash", "-c", "grep -q CLAUDE_PROJECT_DIR:- .mcp.json && ! grep -qi -e token -e api_key -e secret -e password -e PSP-LIVE .mcp.json"]
+    espera_salida: 0
+    nota: "Un .mcp.json va a git por diseño, así que un secreto ahí dentro es el problema del módulo 04 otra vez: una regla de permisos protege rutas y no valores. La expansión con valor por defecto hace falta porque dentro del archivo la variable se expande antes de que exista."
+
+  - id: MCP-009
+    capitulo: "06 · MCP"
+    afirmacion: "Con tool search activada, que es el defecto, un servidor MCP de tres herramientas cuesta 218 tokens de entrada por turno, y cada herramienta añadida cuesta unos 13."
+    tipo: manual
+    coste: true
+    nota: "Medido el 24-ago-2026 con la 2.1.241 sobre D6-repo-feo/gestor-pedidos. Misma petición trivial (responder solo con la palabra OK), dos repeticiones por celda, las doce idénticas al token, variando solo el número de herramientas MCP conectadas por --mcp-config con --strict-mcp-config. Con tool search: 0 herramientas 45.441, 3 herramientas 45.659, 12 herramientas 45.772. De 3 a 12 el coste sube 113 tokens, unos 13 por herramienta. Sin tool search (ENABLE_TOOL_SEARCH=false): 62.662, 63.220 y 65.016, o sea unos 200 tokens por herramienta, dieciséis veces más. Lo que se revisa cada trimestre es el orden de magnitud y la relación entre las dos filas, no el número exacto, que depende del repositorio."
+
+  - id: MCP-010
+    capitulo: "06 · MCP"
+    afirmacion: "Apagar tool search cuesta 17.221 tokens de entrada por turno aunque no haya ningún servidor MCP conectado, porque los esquemas de las herramientas propias del CLI también estaban diferidos."
+    tipo: manual
+    coste: true
+    nota: "Medido el 24-ago-2026 con la 2.1.241, dos repeticiones idénticas. Misma petición trivial, mismo repositorio, sin ningún servidor MCP: 45.441 tokens con tool search por defecto y 62.662 con ENABLE_TOOL_SEARCH=false. La documentación describe tool search como una optimización de MCP; este número dice que su ahorro mayor no es de MCP. Es el hallazgo propio más importante del módulo y conviene revisarlo cada trimestre, porque depende de cuántas herramientas propias traiga el CLI."
+
+  - id: MCP-011
+    capitulo: "06 · MCP"
+    afirmacion: "Un servidor declarado en el .mcp.json de un repositorio conecta en claude -p y sus herramientas están disponibles, aunque claude mcp list lo dé como pendiente de aprobación."
+    tipo: manual
+    coste: true
+    nota: "Medido el 24-ago-2026 con la 2.1.241, dos repeticiones. Con el .mcp.json del laboratorio sin aprobar nunca, claude mcp list dice Pending approval (run claude to approve). Aun así, en claude -p el agente encontró las herramientas del servidor por tool search e intentó llamarlas; lo único que faltaba era el permiso de la herramienta, no la aprobación del servidor. Con --allowedTools sobre la herramienta MCP, respondió el dato correcto. Es la misma familia que HOK-012: un repositorio ajeno no puede ampliarte los permisos, pero puede ejecutarte código. Para ignorar los servidores del repositorio en una ejecución: --strict-mcp-config."
+
   - id: SEG-002
     capitulo: "10 · Seguridad y costes"
     afirmacion: "Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad."

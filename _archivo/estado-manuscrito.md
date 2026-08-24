@@ -35,6 +35,89 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-08-24 (noche) · Módulo 06 · MCP · PUBLICADO · día recuperado
+
+Segundo módulo del mismo día, escrito a mano para recuperar uno de los tres días
+en blanco del 21 al 23. Cerrado `manuscrito/modulo-06-mcp.md`, **3.508
+palabras**, las seis partes del esqueleto y runbook de una página. Verificador
+contra la **2.1.241**: **60 pasan, 0 fallan, 21 a revisar, 3 omitidas**.
+Coherencia y `construir.py --comprobar`, las dos en verde. Quedan seis módulos:
+07 a 12.
+
+**El esqueleto está equivocado en el 06 y este módulo lo demuestra.** El contrato
+describe el contenido como "el impuesto permanente: cada servidor mete sus
+definiciones de herramientas en cada turno". Eso contradice el hecho canónico
+`MCP-DIFERIDO` desde el 12-ago, y ahora además está medido. El texto publicado
+dice lo cierto; la línea del esqueleto sigue como estaba, porque el contrato es
+de Julián. Está abajo, en PARA JULIÁN, con la línea de recambio escrita.
+
+**Mediciones propias, 2.1.241, dos repeticiones por celda y las doce idénticas al
+token.** Misma petición trivial, mismo repositorio, variando solo el número de
+herramientas MCP conectadas por `--mcp-config` con `--strict-mcp-config`:
+
+| Herramientas MCP | Con tool search | Sin tool search |
+|---:|---:|---:|
+| 0 | 45.441 | 62.662 |
+| 3 | 45.659 | 63.220 |
+| 12 | 45.772 | 65.016 |
+
+**Hallazgos propios del módulo:**
+
+- **Apagar tool search cuesta 17.221 tokens con cero servidores MCP.** Es el
+  número más grande de la tabla y no tiene nada que ver con MCP: los esquemas de
+  las herramientas propias del CLI también iban diferidos. La documentación
+  presenta tool search como una optimización de MCP, y su ahorro mayor no lo es.
+  Hecho canónico nuevo, `TOOL-SEARCH-NO-ES-SOLO-MCP`.
+- **Un servidor de tres herramientas cuesta 218 tokens por turno.** Menos que dos
+  líneas del `CLAUDE.md`. De 3 a 12 herramientas, unos 13 tokens cada una; sin
+  tool search, unos 200, dieciséis veces más. El consejo de "conecta poco" se da
+  la vuelta: conectar es barato, lo caro es la confianza.
+- **La tabla comparada de las cinco piezas es el mejor activo del módulo.**
+  Permisos 0, hooks 0, servidor MCP 218, `CLAUDE.md` 1.311, apagar tool search
+  17.221. Todo en la misma máquina con la misma petición. La última fila es la
+  que hay que enseñarle a quien decide: la configuración puesta "por prudencia"
+  cuesta ochenta veces más que el servidor que nadie deja conectar.
+- **Tercera vuelta a la puerta de confianza.** Con el `.mcp.json` sin aprobar,
+  `claude mcp list` dice `Pending approval`, y aun así en `claude -p` el servidor
+  conectó y sus herramientas estaban disponibles: faltaba el permiso de la
+  herramienta, no la aprobación del servidor. Misma familia que `HOK-012`. Se
+  cierra con `--strict-mcp-config`.
+- **Otro no medido que vale.** Al pedirle que borrara los pedidos, el agente se
+  negó citando las instrucciones del servidor **sin llegar a llamar a la
+  herramienta**, las dos veces. No se publica como candado, porque no lo es: es
+  la misma negativa por criterio propio que el 05 midió fallando 5 de 7. Los
+  candados se prueban en seco, y así están las pruebas.
+
+**Registro:** nueve entradas nuevas, `MCP-003` a `MCP-011`. Seis se comprueban
+solas corriendo el servidor **en seco por JSON-RPC** contra las fixtures de
+`mcp/ejemplos/`, misma técnica que las `HOK` del 05. `MCP-006` y `MCP-007`
+reconstruyen la base desde el esquema versionado, así que pasan desde un clon
+limpio aunque `datos/pedidos.db` esté en `.gitignore`.
+
+**Laboratorio:** `gestor-pedidos` gana `mcp/servidor-pedidos.py` (200 líneas, sin
+dependencias, tres candados), `mcp/preparar-bd.py`, `mcp/ejemplos/` con cinco
+fixtures, `MCP.md` y `.mcp.json`. La base de datos se construye y no se versiona.
+**Ningún fallo sembrado tocado.**
+
+**Activos:** `entregables/plantillas/mcp/` con el servidor generalizado (ruta por
+entorno) y su `LEEME.md`. Probado contra la base del laboratorio.
+
+**Bookkeeping:** `fabrica/hechos.yaml` y `README.md`, de "5 de 12" a "6 de 12".
+
+### PARA JULIÁN
+
+1. **El esqueleto miente en el módulo 06 y hay que corregirlo tú.** Donde dice
+   "El impuesto permanente: cada servidor mete sus definiciones de herramientas
+   en cada turno", debería decir algo como: "El impuesto y por qué ya casi no lo
+   es: tool search difiere los esquemas y solo entran los nombres. Los cinco
+   sitios donde eso deja de valer, y lo que cuesta apagarlo." No lo he tocado
+   porque el esqueleto es el contrato.
+2. **La biblioteca de hooks sigue en 7 de los 10 que promete el esqueleto**,
+   segunda vez que se pide. Misma recomendación: bajar la promesa a siete.
+3. **La fecha de corte, sexta vez.** Ya son cinco módulos declarando su versión
+   sin una sola reescritura. El 01 sigue siendo el único que no la declara, y el
+   único por debajo del rango de palabras.
+
 ## 2026-08-24 (tarde) · Los tres días en blanco, y el latido que los habría cazado
 
 Al contar el ritmo real salió esto: **del 21 al 23 de agosto no hay una sola

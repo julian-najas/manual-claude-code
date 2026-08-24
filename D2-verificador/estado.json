@@ -2,13 +2,13 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.241 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-24 08:25:19 UTC",
+  "sistema": "Linux 6.18.44-fc-v21",
+  "python": "3.11.15",
+  "fecha_utc": "2026-08-24 09:00:29 UTC",
   "resumen": {
-    "PASA": 56,
+    "PASA": 60,
     "FALLA": 0,
-    "REVISAR": 16,
+    "REVISAR": 21,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-007",
@@ -389,7 +389,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -399,7 +399,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -419,7 +419,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "HOK-010",
@@ -599,6 +599,96 @@
       "tipo": "manual",
       "resultado": "REVISAR",
       "motivo": "Corrige material propio erróneo (12-ago-2026). Depende de ENABLE_TOOL_SEARCH: auto carga esquemas si caben en el 10 por ciento de la ventana, false los carga todos. Comprobar en /docs/en/mcp#scale-with-mcp-tool-search cada revisión trimestral.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "MCP-003",
+      "capitulo": "06 · MCP",
+      "afirmacion": "Un servidor MCP por stdio se puede escribir sin dependencias: basta con responder initialize y tools/list en JSON-RPC por la entrada y salida estándar.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c CLAUDE_PROJECT_DIR=$PWD python3 mcp/servidor-pedidos.py < mcp/ejemplos/handshake.jsonl",
+      "salida": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"protocolVersion\": \"2024-11-05\", \"capabilities\": {\"tools\": {}}, \"serverInfo\": {\"name\": \"pedidos-solo-lectura\", \"version\": \"1.0.0\"}, \"instructions\": \"Base de datos de pedidos de gestor-pedidos, en SOLO LECTURA. Úsala para responder cualquier pregunta sobre pedidos, clientes o importes en vez de abrir archivos del repositorio: los datos no están en el código. N"
+    },
+    {
+      "id": "MCP-004",
+      "capitulo": "06 · MCP",
+      "afirmacion": "El servidor de solo lectura rechaza una escritura directa antes de tocar la base de datos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c CLAUDE_PROJECT_DIR=$PWD python3 mcp/servidor-pedidos.py < mcp/ejemplos/escritura-directa.jsonl",
+      "salida": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Solo se admiten consultas SELECT o WITH. Esta base de datos es de solo lectura.\"}], \"isError\": true}}\n"
+    },
+    {
+      "id": "MCP-005",
+      "capitulo": "06 · MCP",
+      "afirmacion": "El servidor rechaza una segunda sentencia escondida detrás de un punto y coma, que es la vía clásica para colar un UPDATE tras un SELECT.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c CLAUDE_PROJECT_DIR=$PWD python3 mcp/servidor-pedidos.py < mcp/ejemplos/segunda-sentencia.jsonl",
+      "salida": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"Solo se admite una sentencia. Quita el punto y coma.\"}], \"isError\": true}}\n"
+    },
+    {
+      "id": "MCP-006",
+      "capitulo": "06 · MCP",
+      "afirmacion": "El servidor responde a una consulta legítima con los datos de la base, y el laboratorio se reconstruye desde el esquema versionado.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c export CLAUDE_PROJECT_DIR=$PWD && python3 mcp/preparar-bd.py > /dev/null && python3 mcp/servidor-pedidos.py < mcp/ejemplos/consulta-valida.jsonl",
+      "salida": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"pedidos_totales\\n14\"}]}}\n"
+    },
+    {
+      "id": "MCP-007",
+      "capitulo": "06 · MCP",
+      "afirmacion": "El servidor valida el nombre de tabla en vez de interpolarlo, y responde con error a una tabla que no existe.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c export CLAUDE_PROJECT_DIR=$PWD && python3 mcp/preparar-bd.py > /dev/null && python3 mcp/servidor-pedidos.py < mcp/ejemplos/tabla-inventada.jsonl",
+      "salida": "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {\"content\": [{\"type\": \"text\", \"text\": \"No existe la tabla no_existe.\"}], \"isError\": true}}\n"
+    },
+    {
+      "id": "MCP-008",
+      "capitulo": "06 · MCP",
+      "afirmacion": "El .mcp.json del laboratorio usa el marcador de ruta con valor por defecto y no contiene ningún secreto.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -q CLAUDE_PROJECT_DIR:- .mcp.json && ! grep -qi -e token -e api_key -e secret -e password -e PSP-LIVE .mcp.json",
+      "salida": ""
+    },
+    {
+      "id": "MCP-009",
+      "capitulo": "06 · MCP",
+      "afirmacion": "Con tool search activada, que es el defecto, un servidor MCP de tres herramientas cuesta 218 tokens de entrada por turno, y cada herramienta añadida cuesta unos 13.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241 sobre D6-repo-feo/gestor-pedidos. Misma petición trivial (responder solo con la palabra OK), dos repeticiones por celda, las doce idénticas al token, variando solo el número de herramientas MCP conectadas por --mcp-config con --strict-mcp-config. Con tool search: 0 herramientas 45.441, 3 herramientas 45.659, 12 herramientas 45.772. De 3 a 12 el coste sube 113 tokens, unos 13 por herramienta. Sin tool search (ENABLE_TOOL_SEARCH=false): 62.662, 63.220 y 65.016, o sea unos 200 tokens por herramienta, dieciséis veces más. Lo que se revisa cada trimestre es el orden de magnitud y la relación entre las dos filas, no el número exacto, que depende del repositorio.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "MCP-010",
+      "capitulo": "06 · MCP",
+      "afirmacion": "Apagar tool search cuesta 17.221 tokens de entrada por turno aunque no haya ningún servidor MCP conectado, porque los esquemas de las herramientas propias del CLI también estaban diferidos.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241, dos repeticiones idénticas. Misma petición trivial, mismo repositorio, sin ningún servidor MCP: 45.441 tokens con tool search por defecto y 62.662 con ENABLE_TOOL_SEARCH=false. La documentación describe tool search como una optimización de MCP; este número dice que su ahorro mayor no es de MCP. Es el hallazgo propio más importante del módulo y conviene revisarlo cada trimestre, porque depende de cuántas herramientas propias traiga el CLI.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "MCP-011",
+      "capitulo": "06 · MCP",
+      "afirmacion": "Un servidor declarado en el .mcp.json de un repositorio conecta en claude -p y sus herramientas están disponibles, aunque claude mcp list lo dé como pendiente de aprobación.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241, dos repeticiones. Con el .mcp.json del laboratorio sin aprobar nunca, claude mcp list dice Pending approval (run claude to approve). Aun así, en claude -p el agente encontró las herramientas del servidor por tool search e intentó llamarlas; lo único que faltaba era el permiso de la herramienta, no la aprobación del servidor. Con --allowedTools sobre la herramienta MCP, respondió el dato correcto. Es la misma familia que HOK-012: un repositorio ajeno no puede ampliarte los permisos, pero puede ejecutarte código. Para ignorar los servidores del repositorio en una ejecución: --strict-mcp-config.",
       "comando": "",
       "salida": ""
     },
@@ -737,20 +827,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

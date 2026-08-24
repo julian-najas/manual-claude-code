@@ -104,11 +104,20 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 5 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 6 de 12."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
       - "los 12 módulos del manual, completos"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: TOOL-SEARCH-NO-ES-SOLO-MCP
+    valor: "Apagar tool search cuesta unos 17.000 tokens de entrada por turno aunque no haya ningún servidor MCP conectado, porque los esquemas de las herramientas propias del CLI también van diferidos."
+    fuente: "medición propia 24-ago-2026 con la 2.1.241 (MCP-010)"
+    prohibido:
+      - "tool search solo afecta a MCP"
+      - "sin servidores MCP da igual tool search"
     excepto:
       - "fabrica/hechos.yaml"
 
