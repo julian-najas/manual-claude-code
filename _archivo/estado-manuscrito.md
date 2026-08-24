@@ -29,6 +29,121 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-08-24 · Módulo 05 · Hooks · PUBLICADO
+
+Cerrado `manuscrito/modulo-05-hooks.md`, **3.997 palabras**, las seis partes del
+esqueleto y runbook de una página. Verificador contra la **2.1.241**: **54
+pasan, 0 fallan, 18 a revisar, 3 omitidas**. Coherencia y `construir.py
+--comprobar`, las dos en verde. Quedan siete módulos: 06 a 12.
+
+**El paso 0d volvió a funcionar.** Cero llamadas colgadas. Los hooks del
+laboratorio viven en `D6-repo-feo/gestor-pedidos/hooks/`, fuera de `.claude/`, y
+los dos archivos que sí están dentro de una carpeta `.claude/`
+(`gestor-pedidos/.claude/settings.json` y la sonda de esquema) se escribieron
+enteros con heredoc. Nada entró al repositorio por `cp` desde `/tmp`. Y el sitio
+de los scripts dejó de ser una precaución para convertirse en contenido: la
+sección 5.3.1 explica por qué separar el código del hook de la configuración que
+lo declara es además mejor práctica.
+
+**Registro:** catorce entradas nuevas, `HOK-002` a `HOK-015`. Nueve se comprueban
+solas y son de un tipo que no había: **corren los hooks del laboratorio en seco**,
+con las fixtures de `hooks/ejemplos/`, comprobando que un hook devuelve `deny`
+cuando toca y no imprime nada cuando no toca. Es la técnica de depuración de
+5.3.3 convertida en prueba permanente, y no gasta un token. Las cinco amarillas
+son las cinco mediciones con coste.
+
+**Mediciones propias, 2.1.241.** Mismo repo, misma petición, variando una sola
+cosa:
+
+| Medida | Resultado |
+|---|---|
+| Credencial escrita, solo `CLAUDE.md` y regla de rutas | **5 de 7** |
+| La misma, con el hook que mira contenido | **0 de 7** |
+| `allow` y hook en el mismo archivo, sin confianza | `allow` ignorado, **hook ejecutado** |
+| Secreto por la herramienta `Read`, con el hook | bloqueado 2 de 2, 91.054 tokens |
+| El mismo secreto por `@ruta` | **clave impresa 2 de 2**, 45.530 tokens |
+| El mismo `@ruta` con la regla `deny` del 04 | bloqueado 2 de 2 |
+| Seis hooks declarados frente a ninguno | 45.381 tokens las cuatro veces |
+| Formateo al editar, sin hook y con hook | 0 de 3 frente a 3 de 3 |
+| Llamadas a herramienta del mismo turno | 2 frente a 6 |
+
+**Hallazgos propios del módulo:**
+
+- **La medida madre es el 5 de 7.** El síntoma del módulo ("unas veces lo hace y
+  otras no") deja de ser una queja y pasa a ser un número. Y las dos veces que
+  el agente NO escribió la credencial, se negó por criterio propio y lo explicó
+  muy bien, que es exactamente lo que hace que la gente crea que tiene un límite
+  donde solo tiene una coincidencia.
+- **La asimetría del módulo 04 gira, y gira del lado malo.** Un `allow` de un
+  repositorio clonado se ignora sin confianza; un **hook** del mismo archivo se
+  ejecuta. Medido en una sola ejecución, con las dos cosas en el mismo
+  `settings.json`: el CLI escribió el aviso de "workspace has not been trusted"
+  por la salida de error mientras el script del hook ya había corrido. Es hecho
+  canónico nuevo, `HOOKS-CORREN-SIN-CONFIANZA`.
+- **El agujero del hook es `@`, y es el camino barato.** `PreToolUse` solo corre
+  cuando hay llamada a herramienta, y un archivo metido en el prompt con `@` no
+  la tiene. Se lleva la clave entera en 1 turno y 45.530 tokens, frente a los 2
+  turnos y 91.054 del camino bloqueado. Nadie lo va a notar por la factura. La
+  regla `deny` del módulo 04 sí lo cubre, así que la tesis de los dos módulos
+  juntos es que **no son alternativas**: cada uno tapa el agujero del otro. Está
+  en la tabla de coberturas de 5.2.7, que es el mejor activo del módulo.
+- **Declarar cuesta cero; disparar, no.** 45.381 tokens con seis hooks y sin
+  ninguno, al token, igual que las reglas del 04. Pero el hook de formato lleva
+  el turno de 2 llamadas a herramienta a 6 y de ~167.000 a ~260.000 tokens,
+  porque `black` reescribe el archivo y el agente vuelve a leerlo. **El hook que
+  impide es barato; el que arregla, no.** Eso no está en ninguna documentación.
+- **Un no medido que también vale.** El agujero de `python3` del módulo 04 no se
+  reprodujo: el agente se negó por su cuenta las dos veces, en las dos
+  configuraciones, sin llegar a llamar a Bash. No se publica ni como "sigue
+  abierto" ni como "está cerrado", porque una negativa del modelo no es un
+  límite del sistema. Es la misma lección que el 5 de 7, por el otro lado.
+
+**Sonda de esquema ampliada:** `D2-verificador/sonda-esquema` gana un bloque
+`hooks` y un `disableAllHooks` inválidos a propósito. `claude doctor` ahí
+enumera `hooks.PreToolUse`, `hooks.PostCompact`, `hooks.TeammateIdle` y
+`disableAllHooks`, y eso sostiene `HOK-009` sin gastar nada.
+
+**Laboratorio:** `D6-repo-feo/gestor-pedidos` gana `hooks/` con los tres scripts
+(`veto-secretos.sh`, `veto-credenciales.sh`, `formatear.sh`), `hooks/ejemplos/`
+con las cinco fixtures de prueba en seco, `HOOKS.md` con lo que impide y lo que
+NO impide cada uno, y el bloque `hooks` en `.claude/settings.json`. **Ningún
+fallo sembrado se ha tocado**: `app.py` quedó restaurado con `DEBUG = True` y sin
+formatear después de las mediciones.
+
+**Activos:** `entregables/plantillas/hooks/` pasa de 4 scripts a 7 y deja de
+tener referencias rotas (`veto-secretos.sh` y `veto-rm.sh` estaban declarados en
+`hooks.json` y no existían). El `hooks.json` de la biblioteca pasa a apuntar a
+`${CLAUDE_PROJECT_DIR}/hooks/` en vez de a `.claude/hooks/`, y todos sus
+manejadores llevan ya `args: []`, la forma de ejecutable que la documentación
+recomienda para cualquier hook con marcador de ruta.
+
+**Bookkeeping:** `fabrica/hechos.yaml` y `README.md` pasan de "4 de 12" a "5 de
+12". Hecho canónico nuevo, `HOOKS-CORREN-SIN-CONFIANZA`.
+
+### PARA JULIÁN
+
+1. **La fecha de corte del libro ya está decidida de facto, quinta vez que se
+   anota.** El 05 se ha escrito contra la **2.1.241** y lo declara en cabecera,
+   como el 02 (2.1.233), el 03 (2.1.234) y el 04 (2.1.235). Son cuatro módulos
+   con versión propia y ninguna reescritura. La regla 8 del esqueleto ya lo dice
+   por escrito desde el 19-ago; lo único que falta es que lo confirmes para
+   poder cerrar el 01, que sigue sin declarar versión.
+2. **El inventario del repo feo sigue sin actualizar, cuarto módulo que lo
+   dice.** El módulo 05 añade al laboratorio `hooks/`, `hooks/ejemplos/` y
+   `HOOKS.md`. La tabla del recorrido de `guion-de-doma.md` no lo refleja, y no
+   la he tocado porque es material compartido por los doce módulos.
+3. **Decisión nueva, y es tuya: la biblioteca de hooks son 7, no 10.** El
+   esqueleto promete "los diez hooks de la biblioteca" como activo del módulo
+   05. Hay siete, todos usados o citados por el libro. No he inventado tres para
+   cuadrar el número. O bajas la promesa del esqueleto a siete, o dices cuáles
+   son los tres que faltan y en qué módulo se ganan. Mi recomendación: bajarla a
+   siete y dejar que la biblioteca crezca donde el libro la necesite, que es
+   como han crecido las plantillas de permisos.
+4. **Sigue abierto lo del módulo 04:** la clave de `app.py` se **acota** en el 04
+   y en el 05, y se **elimina** en el 12. El módulo 05 vuelve a escribirlo así,
+   explícitamente, en su sección de coste. El `guion-de-doma.md` sigue diciendo
+   "04 y 10" para el fallo 1. Es una línea de la tabla.
+
 ## 2026-08-19 (tarde) · Módulo 04 · Permisos y sandbox · PUBLICADO
 
 Cerrado `manuscrito/modulo-04-permisos-y-sandbox.md`, **3.996 palabras**, las

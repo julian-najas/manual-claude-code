@@ -1,19 +1,30 @@
 #!/usr/bin/env bash
-# Veta la lectura de secretos. Cinturón sobre el tirante de permissions.deny.
-# Contrato: recibe el JSON del evento por stdin. Código de salida 2 = bloquea.
-set -euo pipefail
+# veto-secretos.sh · PreToolUse · matcher Read|Edit|Write
+#
+# Veta que cualquier herramienta de archivo toque una ruta protegida.
+# Acompana, NO sustituye, a una regla deny de permisos: un archivo metido en el
+# prompt con @ no pasa por ninguna herramienta y este hook no lo ve.
+#
+# Ajusta RUTAS_VETADAS a tu proyecto. Se comparan sobre la ruta ABSOLUTA, que
+# es la que llega siempre: Claude Code expande ~ y las rutas relativas antes.
+set -uo pipefail
 
 ENTRADA="$(cat)"
-RUTA="$(printf '%s' "$ENTRADA" | python3 -c 'import sys,json;print(json.load(sys.stdin).get("tool_input",{}).get("file_path",""))' 2>/dev/null || true)"
-
-# Las rutas llegan SIEMPRE absolutas: Claude Code expande ~ y las relativas antes
-# de ejecutar el hook, así que no se puede esquivar escribiéndolas de otra forma.
-# En Windows llegan con barras invertidas, de ahí la normalización.
-RUTA="${RUTA//\\//}"
+RUTA="$(printf '%s' "$ENTRADA" | jq -r '.tool_input.file_path // empty')"
+RUTA="${RUTA//\\//}"   # Windows llega con barras invertidas
 
 case "$RUTA" in
-  */.env|*/.env.*|*/secrets/*|*/id_rsa|*/id_ed25519|*/.aws/credentials|*/.npmrc)
-    echo "Bloqueado por politica del repositorio: $RUTA contiene credenciales." >&2
-    exit 2 ;;
+  */secretos/*|*/.ssh/*|*.env|*.env.*|*.pem|*.key)
+    jq -n --arg r "$RUTA" '{
+      hookSpecificOutput: {
+        hookEventName: "PreToolUse",
+        permissionDecision: "deny",
+        permissionDecisionReason: ("Bloqueado por el hook veto-secretos: " + $r +
+          " es una ruta protegida de este repositorio.")
+      }
+    }'
+    ;;
+  *)
+    exit 0
+    ;;
 esac
-exit 0

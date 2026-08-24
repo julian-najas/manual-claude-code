@@ -2,5 +2,7 @@
   "_para_que_es_esto": "Sonda del esquema del binario. Los valores son invalidos A PROPOSITO: claude doctor los rechaza y al rechazarlos enumera lo que el esquema acepta. Es la via del modulo 02 para comprobar que una clave existe de verdad. NO copiar esto a un proyecto.",
   "permissions": { "defaultMode": "zzz" },
   "sandbox": { "enabled": "zzz", "network": { "strictAllowlist": "zzz" } },
-  "autoMode": { "environment": "zzz" }
+  "autoMode": { "environment": "zzz" },
+  "disableAllHooks": "zzz",
+  "hooks": { "PreToolUse": "zzz", "PostCompact": "zzz", "TeammateIdle": "zzz" }
 }

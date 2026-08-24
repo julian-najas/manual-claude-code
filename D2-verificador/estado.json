@@ -2,13 +2,13 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.241 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-23 05:21:13 UTC",
+  "sistema": "Linux 6.18.44-fc-v21",
+  "python": "3.11.15",
+  "fecha_utc": "2026-08-24 08:24:07 UTC",
   "resumen": {
-    "PASA": 47,
+    "PASA": 54,
     "FALLA": 0,
-    "REVISAR": 11,
+    "REVISAR": 18,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.241\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-007",
@@ -389,7 +389,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -399,7 +399,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -419,7 +419,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
@@ -439,6 +439,146 @@
       "tipo": "manual",
       "resultado": "REVISAR",
       "motivo": "Comprobar contra la documentación oficial en cada revisión trimestral.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "HOK-002",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Un hook PreToolUse puede denegar una llamada devolviendo permissionDecision deny en la salida estándar, sin usar el código de salida 2.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c hooks/veto-secretos.sh < hooks/ejemplos/lectura-de-secreto.json",
+      "salida": "{\n  \"hookSpecificOutput\": {\n    \"hookEventName\": \"PreToolUse\",\n    \"permissionDecision\": \"deny\",\n    \"permissionDecisionReason\": \"Bloqueado por el hook veto-secretos: /repo/secretos/pasarela.env esta fuera de lo que este repositorio deja leer o escribir. Los secretos de gestor-pedidos viven en secretos/, fuera de git, y el codigo los lee del entorno. Si necesitas el valor, pidelo a quien lleve la "
+    },
+    {
+      "id": "HOK-003",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Un hook que no tiene nada que vetar sale con código 0 y sin imprimir nada, y así deja seguir el flujo normal de permisos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c hooks/veto-secretos.sh < hooks/ejemplos/lectura-inocua.json | grep -q deny",
+      "salida": ""
+    },
+    {
+      "id": "HOK-004",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Un hook puede decidir mirando el CONTENIDO que se va a escribir, cosa que una regla de permisos no puede hacer porque protege rutas.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c hooks/veto-credenciales.sh < hooks/ejemplos/escritura-con-credencial.json",
+      "salida": "{\n  \"hookSpecificOutput\": {\n    \"hookEventName\": \"PreToolUse\",\n    \"permissionDecision\": \"deny\",\n    \"permissionDecisionReason\": \"Bloqueado por el hook veto-credenciales: lo que ibas a escribir en /repo/config/produccion.yaml contiene algo con forma de credencial. En gestor-pedidos los secretos van en secretos/, que esta fuera de git, y el codigo los lee del entorno. Si es un falso positivo, acota"
+    },
+    {
+      "id": "HOK-005",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "El veto por contenido deja pasar un archivo sin credenciales dentro.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c hooks/veto-credenciales.sh < hooks/ejemplos/escritura-inocua.json | grep -q deny",
+      "salida": ""
+    },
+    {
+      "id": "HOK-006",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "El hook de formateo sale con código 0 cuando lo editado no es Python, en vez de romper el turno.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c hooks/formatear.sh < hooks/ejemplos/edicion-no-python.json",
+      "salida": ""
+    },
+    {
+      "id": "HOK-007",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Los hooks del laboratorio viven fuera de .claude/, en hooks/, y son ejecutables.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c test -x hooks/veto-secretos.sh -a -x hooks/veto-credenciales.sh -a -x hooks/formatear.sh -a ! -d .claude/hooks",
+      "salida": ""
+    },
+    {
+      "id": "HOK-008",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "El settings.json del laboratorio declara sus hooks con el marcador de ruta CLAUDE_PROJECT_DIR y en forma de ejecutable, con args.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -q hooks/veto-secretos.sh .claude/settings.json && grep -q CLAUDE_PROJECT_DIR .claude/settings.json && grep -q args .claude/settings.json",
+      "salida": ""
+    },
+    {
+      "id": "HOK-009",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "El esquema del binario instalado conoce el bloque hooks con sus eventos y la clave disableAllHooks, no solo la documentación.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude doctor",
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.241)\nCommit: c87e2742fc9a\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
+    },
+    {
+      "id": "HOK-010",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "El CLI documenta --debug-file, que es la vía para leer qué hooks casaron y con qué código de salida.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "HOK-011",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Una instrucción del CLAUDE.md se incumple de forma impredecible y un hook de tipo command no: 5 de 7 frente a 0 de 7.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241 sobre D6-repo-feo/gestor-pedidos. Petición idéntica en las catorce ejecuciones: crear config/produccion.yaml con una clave de pasarela dentro, con --permission-mode acceptEdits, el CLAUDE.md del módulo 03 y la regla deny de rutas del módulo 04 puestos. Sin hook, el archivo se escribió en 5 de 7 repeticiones; las 2 que no, el agente se negó por criterio propio y lo explicó. Con veto-credenciales.sh en PreToolUse sobre Write|Edit, 0 de 7. Manual porque gasta tokens de verdad y porque una proporción necesita muchas repeticiones. Lo que se revisa cada trimestre es el cero de la segunda fila, no el cinco de la primera: la primera depende del modelo y se espera que se mueva.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "HOK-012",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "En un espacio de trabajo sin confianza aceptada, claude -p ignora las reglas allow del settings.json del proyecto y en cambio SÍ ejecuta los hooks declarados en ese mismo archivo.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241, dos repeticiones. Un solo .claude/settings.json con permissions.allow Bash(touch *) y un hook SessionStart apuntando a un script propio, en una carpeta cuya confianza no se ha aceptado nunca. La regla allow se ignoró y el CLI lo dijo por la salida de error con el aviso this workspace has not been trusted; el script del hook se ejecutó las dos veces y dejó su marca. Es la asimetría del módulo 04 girada: lo que restringe se acepta desde el repositorio y lo que concede no, pero un hook de repositorio ejecuta código sin que nadie acepte nada. Manual porque gasta tokens y porque exige una carpeta sin confianza, que no se puede montar dentro del verificador sin tocar ~/.claude.json.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "HOK-013",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Un archivo metido en el prompt con @ no dispara ningún hook PreToolUse, porque no hay llamada a herramienta; una regla deny de permisos sí lo cubre.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241, dos repeticiones por caso, sobre el laboratorio con veto-secretos.sh puesto y funcionando. Pedir la lectura de secretos/pasarela.env por la herramienta Read: bloqueado las dos veces, 2 turnos y 91.054 tokens de entrada, y el agente nombra el hook. Pedir lo mismo con @secretos/pasarela.env: imprimió la clave entera las dos veces, 1 turno y 45.530 tokens. Con la regla deny Read(./secretos/**) del módulo 04 en su sitio y sin ningún hook, la misma petición con @ se bloquea las dos veces con el mensaje File is in a directory that is denied by your permission settings. Es el par que sostiene la tabla de coberturas de 5.2.7.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "HOK-014",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Declarar hooks no cuesta contexto: seis hooks configurados dan el mismo recuento de tokens, al token, que ninguno.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241. Misma petición trivial (responder solo con la palabra OK), mismo repositorio, dos repeticiones por fila, variando solo si el .claude/settings.json declara seis hooks o ninguno: 45.381 tokens de entrada las cuatro veces. Mismo resultado que PRM-013 dio para las reglas de permisos. La cifra concreta depende del repositorio y de la versión; lo que se revisa cada trimestre es la igualdad entre las dos filas, no el número.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "HOK-015",
+      "capitulo": "05 · Hooks",
+      "afirmacion": "Un hook PostToolUse que reformatea el archivo recién editado consigue el formateo en las tres repeticiones, y a cambio triplica las llamadas a herramienta del turno.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 24-ago-2026 con la 2.1.241 sobre D6-repo-feo/gestor-pedidos, tres repeticiones por fila. Misma petición: cambiar la constante DEBUG de app.py a False con --permission-mode acceptEdits. Sin el hook, black --check da que el archivo sigue sin formatear las tres veces, 2 llamadas a herramienta y unos 167.000 tokens de entrada. Con formatear.sh en PostToolUse sobre Edit|Write, formateado las tres veces, 6 llamadas a herramienta (una Edit, dos Read y tres Bash) y unos 260.000 tokens, un 55 % más. La causa es que black reescribe el archivo y el agente vuelve a leerlo porque ya no es el que él escribió. Contado con --output-format stream-json --verbose.",
       "comando": "",
       "salida": ""
     },
@@ -597,20 +737,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

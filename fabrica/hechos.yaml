@@ -104,11 +104,20 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 4 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 5 de 12."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
       - "los 12 módulos del manual, completos"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: HOOKS-CORREN-SIN-CONFIANZA
+    valor: "En claude -p y desde el SDK no hay diálogo de confianza y la carpeta se trata como de confianza, así que los hooks declarados en el settings.json de un repositorio se ejecutan aunque nunca hayas confiado en él; las reglas allow del mismo archivo, en cambio, se ignoran."
+    fuente: "medición propia 24-ago-2026 con la 2.1.241 (HOK-012) y code.claude.com/docs/en/hooks.md"
+    prohibido:
+      - "los hooks de un repositorio no se ejecutan hasta que aceptas"
+      - "sin confianza no corre nada del repositorio"
     excepto:
       - "fabrica/hechos.yaml"
 

@@ -1,0 +1,1 @@
+{"hook_event_name":"PreToolUse","tool_name":"Write","tool_input":{"file_path":"/repo/config/produccion.yaml","content":"psp_api_key: PSP-LIVE-9f2b41c7a8e3d6104b5f7e29\npsp_endpoint: https://api.pasarela.example/v2"}}

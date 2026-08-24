@@ -21,5 +21,44 @@
       "Bash(git diff *)",
       "Bash(python3 -m pytest *)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/hooks/veto-secretos.sh",
+            "args": [],
+            "statusMessage": "Comprobando que la ruta no es un secreto"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/hooks/veto-credenciales.sh",
+            "args": [],
+            "statusMessage": "Comprobando que no se escribe una credencial"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/hooks/formatear.sh",
+            "args": [],
+            "timeout": 30
+          }
+        ]
+      }
+    ]
   }
 }

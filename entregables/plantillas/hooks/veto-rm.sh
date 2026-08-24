@@ -1,12 +1,24 @@
 #!/usr/bin/env bash
-# Bloquea borrados masivos. El filtro fino va en el campo "if" del hook,
-# esto es la segunda linea de defensa.
-set -euo pipefail
+# veto-rm.sh · PreToolUse · matcher Bash · if Bash(rm *)
+#
+# El campo `if` del manejador ya filtra por Bash(rm *). Esto es el segundo
+# cinturon: comprueba la cadena de verdad, porque el filtro `if` FALLA ABIERTO
+# cuando no puede analizar el comando, y porque un `rm` puede venir dentro de
+# un $(...) o detras de un &&.
+set -uo pipefail
 
-CMD="$(cat | python3 -c 'import sys,json;print(json.load(sys.stdin).get("tool_input",{}).get("command",""))' 2>/dev/null || true)"
+ENTRADA="$(cat)"
+COMANDO="$(printf '%s' "$ENTRADA" | jq -r '.tool_input.command // empty')"
 
-if printf '%s' "$CMD" | grep -qE '(^|[;&|]\s*)rm\s+(-[a-zA-Z]*\s+)*-[a-zA-Z]*[rR][a-zA-Z]*f|rm\s+-fr'; then
-  echo "Bloqueado: borrado recursivo forzado. Hazlo a mano si de verdad toca." >&2
-  exit 2
+if printf '%s' "$COMANDO" | grep -Eq '(^|[;&|]|\$\()[[:space:]]*rm[[:space:]]+(-[a-zA-Z]*[rf]|--recursive|--force)'; then
+  jq -n --arg c "$COMANDO" '{
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "ask",
+      permissionDecisionReason: ("Borrado recursivo o forzado detectado: " + $c +
+        ". Confirma tu, esto no se auto-aprueba en este repositorio.")
+    }
+  }'
+else
+  exit 0
 fi
-exit 0
