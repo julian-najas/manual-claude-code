@@ -2,13 +2,13 @@
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
   "cli_verificado": "2.1.245 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-25 05:23:53 UTC",
+  "sistema": "Linux 6.18.44-fc-v21",
+  "python": "3.11.15",
+  "fecha_utc": "2026-08-25 05:52:50 UTC",
   "resumen": {
-    "PASA": 62,
+    "PASA": 65,
     "FALLA": 0,
-    "REVISAR": 19,
+    "REVISAR": 26,
     "OMITIDO": 3
   },
   "pruebas": [
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.245\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.245\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.245\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.245\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-007",
@@ -389,7 +389,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -399,7 +399,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -419,7 +419,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.245\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.245)\nCommit: 28b7e8c41235\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "HOK-010",
@@ -723,6 +723,106 @@
       "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
     },
     {
+      "id": "SKL-003",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "La skill del laboratorio existe y su disparo está escrito con los síntomas, no con el nombre de la tarea.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import sys; t=open('.claude/skills/auditar-endpoint/SKILL.md').read(); sys.exit(0 if 'when_to_use' in t and 'apóstrofe' in t else 1)",
+      "salida": ""
+    },
+    {
+      "id": "SKL-004",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "El laboratorio explica por escrito qué mira la skill, qué cuesta y qué no garantiza.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
+      "salida": ""
+    },
+    {
+      "id": "SKL-005",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "Con una petición que nombra la tarea, la skill se dispara aunque su descripción sea de catálogo; con una que cuenta un síntoma no se dispara, y solo lo hace si el síntoma está escrito en when_to_use.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 25-ago-2026 con la 2.1.245 sobre D6-repo-feo/gestor-pedidos, veinticuatro ejecuciones, contando el disparo en la traza de la sesión y no en la respuesta. Petición A, que nombra la tarea (echale un vistazo al endpoint /buscar de app.py): 4 de 4 con una descripción de catálogo de 43 caracteres, y 4 de 4 con una descripción de tarea de 380. Petición B, que cuenta el síntoma (un cliente que se llama O Brien hace que la busqueda falle): 0 de 4 con la de catálogo, 0 de 4 con la de tarea, y 8 de 8 al añadir un when_to_use que habla de apóstrofes, búsquedas que fallan y clientes que tumban la app. Es una tasa de un modelo, no una propiedad del CLI: se revisa cada trimestre y con una sola skill instalada.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SKL-006",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "El cuerpo de una skill no ocupa contexto hasta que se invoca: solo se paga su frontmatter, unos 208 tokens por turno.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 25-ago-2026 con la 2.1.245 sobre D6-repo-feo/gestor-pedidos, dos repeticiones por fila e idénticas al token. Misma petición trivial (Responde solo con la palabra OK.), con claude -p y --output-format json, sumando input_tokens, cache_creation_input_tokens y cache_read_input_tokens. Sin ninguna skill instalada: 45.752. Con la skill del laboratorio: 45.960. Con la misma skill y 20.000 caracteres más de cuerpo: 45.960, el mismo número exacto. Un archivo suelto en .claude/commands/ costó 45.793, o sea 41 tokens, que es lo que ocupa su descripción.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SKL-007",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "description y when_to_use se cortan juntas a 1.536 caracteres: lo que pasa de ahí no llega al modelo.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 25-ago-2026 con la 2.1.245 sobre D6-repo-feo/gestor-pedidos, dos repeticiones por fila e idénticas al token. Misma petición trivial. Descripción de 1.200 caracteres: 46.252. De 1.536: 46.386. De 3.072 cuyos primeros 1.536 caracteres son idénticos a la anterior: 46.387. Duplicar la descripción cuesta un token, así que la segunda mitad no entra. El tope de 1.536 está documentado en code.claude.com/docs/en/skills.md; lo propio aquí es la comprobación por medición y el coste de 634 tokens por turno que sale de llenarlo.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SKL-008",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "disable-model-invocation impide que el modelo dispare la skill, y no impide invocarla por su nombre.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 25-ago-2026 con la 2.1.245 sobre D6-repo-feo/gestor-pedidos. Con la descripción que daba 8 de 8 y disable-model-invocation puesto a true, la misma petición del síntoma dio 0 de 3 disparos automáticos. Invocada a mano como /auditar-endpoint en las mismas condiciones, la respuesta aplicó el procedimiento de la skill las 2 de 2. Se deja manual porque gasta tokens y porque el disparo se cuenta leyendo la traza de la sesión.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SKL-009",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "Los comandos personalizados se han fusionado con las skills: un archivo en .claude/commands/ y una skill del mismo nombre crean el mismo comando, y si coinciden gana la skill.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Comprobado el 25-ago-2026 con la 2.1.245: un .claude/commands/ping-lab.md de cinco líneas responde a /ping-lab en claude -p las dos veces, y cuesta 41 tokens por turno. La precedencia de la skill sobre el archivo de comando sale de code.claude.com/docs/en/skills.md y no se ha provocado aquí. Se revisa cada trimestre: es una convergencia reciente y el libro apoya en ella su consejo de dejar de preguntarse si algo es comando o skill.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "SKL-010",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "Los cuatro comandos de equipo del módulo están escritos y los cuatro impiden que el modelo los dispare por su cuenta.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import sys; c=['revisar-cambio','preparar-release','postmortem','poner-al-dia']; ok=all('disable-model-invocation: true' in open(f'entregables/plantillas/skills/{n}/SKILL.md').read() for n in c); sys.exit(0 if ok else 1)",
+      "salida": ""
+    },
+    {
+      "id": "SKL-011",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "La biblioteca de skills del módulo está escrita y documentada.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/skills/LEEME.md",
+      "salida": ""
+    },
+    {
+      "id": "SKL-012",
+      "capitulo": "07 · Skills y plugins",
+      "afirmacion": "En la plantilla de plugin, dentro de .claude-plugin solo vive plugin.json.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import os,sys; d=os.listdir('entregables/plantillas/plugin/.claude-plugin'); sys.exit(0 if d==['plugin.json'] else 1)",
+      "salida": ""
+    },
+    {
       "id": "SUB-001",
       "capitulo": "08 · Subagentes",
       "afirmacion": "--agents permite definir agentes personalizados en JSON desde la propia llamada.",
@@ -827,20 +927,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

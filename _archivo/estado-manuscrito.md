@@ -35,6 +35,109 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-08-25 · Módulo 07 · Skills y plugins · PUBLICADO
+
+Cerrado `manuscrito/modulo-07-skills-y-plugins.md`, **3.260 palabras**, las seis
+partes del esqueleto y runbook de una página. Verificador contra la **2.1.245**:
+**65 pasan, 0 fallan, 26 a revisar, 3 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. Quedan cinco módulos: 08 a 12.
+
+**Antes que nada, un susto que hay que arreglar en la rutina.** Esta sesión
+arrancó con `origin/main` en el módulo 04, escribió **un módulo 05 entero** y al
+ir a empujar se encontró con que el remoto ya tenía el 05 y el 06 publicados. La
+sesión había estado suspendida entre medias y el clon se quedó viejo. **La
+guarda del paso 0c no lo caza**: comprueba que existe el módulo 02, que existía.
+Se tiró el trabajo duplicado sin pisar nada y se escribió el 07, que era el
+pendiente de verdad. Recomendación concreta abajo, en PARA JULIÁN.
+
+**Mediciones propias, 2.1.245.** El módulo mide **frecuencias**, no cifras, así
+que cada fila son cuatro u ocho ejecuciones. Veinticuatro en total para la tabla
+de disparo, contando el disparo **en la traza de la sesión**, no en la respuesta:
+
+| Lo que pide el usuario | Descripción de la skill | Se disparó |
+|---|---|---|
+| "Échale un vistazo al endpoint /buscar" | de catálogo, 43 caracteres | **4 de 4** |
+| lo mismo | de tarea, 380 caracteres | **4 de 4** |
+| "Un cliente O'Brien tumba la búsqueda" | de catálogo | **0 de 4** |
+| lo mismo | de tarea | **0 de 4** |
+| lo mismo | con el síntoma en `when_to_use` | **8 de 8** |
+| lo mismo, con `disable-model-invocation` | la del síntoma | **0 de 3** |
+
+Y el coste, dos repeticiones por fila e idénticas al token:
+
+| Estado | Tokens de entrada |
+|---|---:|
+| Sin ninguna skill | 45.752 |
+| Con la skill del laboratorio | 45.960 |
+| La misma **más 20.000 caracteres de cuerpo** | **45.960** |
+| Descripción de 1.200 caracteres | 46.252 |
+| Descripción de 1.536 | 46.386 |
+| Descripción de 3.072, los 1.536 primeros idénticos | **46.387** |
+| Archivo suelto en `.claude/commands/` | 45.793 |
+
+**Hallazgos propios del módulo:**
+
+- **La creencia del gremio es media verdad, y la mitad falsa es la que se
+  enseña.** Con una petición que nombra la tarea, la skill se dispara 4 de 4
+  **incluso con una descripción de catálogo de 43 caracteres**. Por eso todo el
+  mundo cree que su descripción está bien: la valida con la petición equivocada.
+  Con la petición real, la que cuenta un síntoma, 0 de 8. Hecho canónico nuevo,
+  `SKILL-DISPARO-SINTOMA`.
+- **Lo que cierra el hueco no es escribir mejor, es escribir otra cosa:** los
+  síntomas en `when_to_use`, con las palabras del que pide. 8 de 8.
+- **El tope de 1.536 caracteres, medido y no citado.** Duplicar la descripción
+  dejando idénticos los primeros 1.536 cuesta **un token**. La segunda mitad no
+  llega al modelo. Y llenarlo cuesta 634 tokens por turno, la mitad de un
+  `CLAUDE.md`.
+- **La divulgación progresiva es literal:** 20.000 caracteres añadidos al cuerpo,
+  **cero** tokens por turno.
+- **Los comandos personalizados ya no existen como pieza aparte.** Se han
+  fusionado con las skills: comprobado que un `.claude/commands/ping-lab.md`
+  responde a `/ping-lab`. Eso deja obsoleta la línea del esqueleto "cuándo un
+  comando es mejor que una skill", y el módulo la sustituye por la pregunta que
+  sí queda: **quién la invoca**. Hecho canónico nuevo, `COMANDOS-SON-SKILLS`.
+- **Tercera vez que el libro mide lo mismo por otro sitio:** el cuerpo de la
+  skill pedía abrir la respuesta con una línea marcada y salió **3 de 8**. Se
+  carga siempre y se cumple a veces. Es el argumento del 05 otra vez: lo que no
+  sea negociable, hook.
+
+**Registro:** diez entradas nuevas, `SKL-003` a `SKL-012`. Seis se comprueban
+solas; las cuatro amarillas son mediciones de frecuencia y una comprobación
+manual de la fusión de comandos.
+
+**Laboratorio:** `gestor-pedidos` gana `.claude/skills/auditar-endpoint/SKILL.md`
+y `SKILLS.md`. **Ningún fallo sembrado tocado.** La skill del laboratorio audita
+el `/buscar`, que es el fallo 2 del guion, pero no lo arregla: auditar y reparar
+son dos encargos, y el 2 se caza en el 10.
+
+**Activos:** `entregables/plantillas/skills/` pasa de dos a **cinco skills**, con
+`LEEME.md`. Los cuatro con `disable-model-invocation` son **los cuatro comandos
+de equipo** que promete el esqueleto: `/revisar-cambio`, `/preparar-release`,
+`/postmortem` y `/poner-al-dia`.
+
+**Bookkeeping:** `fabrica/hechos.yaml` y `README.md`, de "6 de 12" a "7 de 12".
+Dos hechos canónicos nuevos.
+
+### PARA JULIÁN
+
+1. **La guarda del paso 0c se ha quedado corta y hoy ha costado un módulo
+   entero.** Comprobar que existe `modulo-02` ya no protege de nada: protegía de
+   un clon vacío, no de un clon viejo. La guarda que sirve es de dos líneas y va
+   **justo antes de escribir**, no al principio: `git fetch origin main` y, si
+   `git rev-parse HEAD` no coincide con `origin/main`, rehacer el paso 0a y
+   volver a elegir módulo en el paso 1. La lista de `manuscrito/` se lee después
+   del fetch, nunca antes.
+2. **El esqueleto vuelve a quedarse corto, ahora en el 07.** Dice "Cuándo un
+   comando es mejor que una skill" y esa pregunta ya no existe: son la misma
+   pieza. La línea de recambio, si te sirve: "Quién invoca cada cosa:
+   `disable-model-invocation` y `user-invocable`, y por qué un comando de equipo
+   no debe dispararse solo." Es la segunda línea del contrato que se queda vieja
+   en dos módulos seguidos, y las dos por lo mismo: el CLI se movió.
+3. **La fecha de corte, séptima vez.** Van seis módulos con versión propia y hoy
+   el binario ha vuelto a subir solo, de la 2.1.241 a la 2.1.245 entre el módulo
+   de ayer y el de hoy. No hay decisión que tomar ya: la realidad la ha tomado.
+   Falta ratificarla en el módulo 01 y en la portada.
+
 ## 2026-08-24 (noche) · Módulo 06 · MCP · PUBLICADO · día recuperado
 
 Segundo módulo del mismo día, escrito a mano para recuperar uno de los tres días

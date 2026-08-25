@@ -104,7 +104,7 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 6 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 7 de 12."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
@@ -137,6 +137,27 @@ hechos:
       - "los permisos del repositorio se aplican siempre"
       - "basta con confirmar el settings.json en git"
     excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: SKILL-DISPARO-SINTOMA
+    valor: "Lo que decide que una skill se dispare sola no es la calidad de la descripción sino que el disparo esté escrito con las palabras del síntoma: con una petición que nombra la tarea se dispara hasta con una descripción de catálogo, y con una que cuenta un síntoma solo se dispara si el síntoma está en when_to_use."
+    fuente: "medición propia 25-ago-2026 con la 2.1.245, veinticuatro ejecuciones (SKL-005)"
+    prohibido:
+      - "una descripción bien escrita basta para que la skill se dispare"
+      - "la descripción documenta lo que la skill hace"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: COMANDOS-SON-SKILLS
+    valor: "Los comandos personalizados se han fusionado con las skills: un archivo en .claude/commands/ y una skill del mismo nombre crean el mismo comando y funcionan igual, y si coinciden gana la skill."
+    fuente: "code.claude.com/docs/en/skills.md y comprobación propia 25-ago-2026 con la 2.1.245 (SKL-009)"
+    prohibido:
+      - "hay que elegir entre un comando y una skill"
+      - "los comandos y las skills son piezas distintas"
+    excepto:
+      - "guia-21/M7-extension.md"
+      - "guia-21/FASE-1-indice.md"
+      - "entregables/AUDITORIA.md"
       - "fabrica/hechos.yaml"
 
   - id: CONFIG-NINGUNO-SE-USA
