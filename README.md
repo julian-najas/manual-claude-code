@@ -29,7 +29,7 @@ Este repositorio no está afiliado, patrocinado ni respaldado por Anthropic.
 | | Qué es | Estado |
 |---|---|---|
 | **Guía de referencia** · `guia-21/` | 21 módulos ordenados por materia, para consultar. 44.717 palabras, 15 tablas, 3 diagramas | **Terminada** |
-| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 € | **En obra: 7 de 12 módulos** |
+| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 € | **En obra: 8 de 12 módulos** |
 
 La guía alimenta al manual; el manual no repite la guía. **Lo terminado es la
 guía.** Llamar terminado al manual sería falso.
@@ -44,7 +44,7 @@ La skill de `D1-skill/` es la del **manual**, que es más pequeña y aún está 
 | Carpeta | Qué es | Estado |
 |---|---|---|
 | `D1-skill/` | El **manual** empaquetado como skill. Para la **guía**, ver `entregables/skill-guia/` | Instalable, en obra |
-| `D2-verificador/` | Registro de afirmaciones del libro y runner que las comprueba contra el CLI | 22 pasan, 0 fallan |
+| `D2-verificador/` | Registro de afirmaciones del libro y runner que las comprueba contra el CLI | 71 pasan, 0 fallan |
 | `D3-arbol/` | La lámina del árbol de decisión, en HTML e imprimible | Lista |
 | `D4-factura/` | Analizador de gasto real y el capítulo de costes | Con datos medidos |
 | `D5-politica/` | Plantilla de política interna de uso de agentes | Lista para firmar |

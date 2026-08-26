@@ -35,6 +35,118 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-08-26 · Módulo 08 · Subagentes · PUBLICADO
+
+Cerrado `manuscrito/modulo-08-subagentes.md`, **3.997 palabras**, las seis partes
+del esqueleto y runbook de una página. Verificador contra la **2.1.246**:
+**71 pasan, 0 fallan, 27 a revisar, 4 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. Quedan cuatro módulos: 09 a 12.
+
+**Nota de rutina:** el paso 0a funcionó. El clon venía en el módulo 07 y el
+`git fetch` lo puso al día antes del checkout, así que el módulo pendiente que se
+eligió en el paso 1 era el de verdad. Ningún diálogo de permisos: **no se escribió
+nada dentro de ninguna carpeta `.claude/`** y todas las mediciones fueron por
+`--agents`, que no toca el disco. Es la vía que el módulo recomienda además por
+higiene, así que la restricción del sandbox y el consejo del libro coinciden.
+
+**Mediciones propias, 2.1.246 con Sonnet 5.** Veintinueve ejecuciones, ~2.350.000
+tokens de entrada, **4,29 dólares**. Es el módulo más caro del libro y el motivo
+está escrito en la cabecera: cada fila de la tabla central es una auditoría entera
+de `app.py`, no una petición trivial.
+
+Coste de tener el subagente declarado, dos repeticiones por fila e idénticas al
+token:
+
+| Estado | Tokens de entrada |
+|---|---:|
+| Sin ningún subagente | 45.977 |
+| Con uno (descripción de 199 caracteres) | 46.088 |
+| Con seis (1.227 caracteres de descripción) | 46.610 |
+| El mismo de una fila, **más 21.228 caracteres de prompt** | **46.088** |
+| Descripción de 1.536 caracteres | 46.588 |
+| Descripción de 5.616 caracteres | **48.068** |
+
+Y el experimento central, dos repeticiones por condición, contando los fallos 2,
+3 y 4 del guion de doma sobre el informe:
+
+| Quién revisa | Fallo 2 | Fallo 3 | Fallo 4 |
+|---|---|---|---|
+| El agente principal, "revisa app.py" | 2 de 2 | 0 de 2 | 0 de 2 |
+| Subagente con contrato de auditor | 2 de 2 | 0 de 2 | 1 de 2 |
+| Subagente con **criterio de aceptación en tres preguntas** | 2 de 2 | **2 de 2** | **2 de 2** |
+
+**Hallazgos propios del módulo:**
+
+- **El aislamiento no es criterio, y esto desmonta el consejo estándar.** Poner un
+  revisor aparte, por sí solo, no movió la aguja: encontró lo mismo que el
+  principal con más detalle y por el doble de precio. La única variable entre la
+  segunda fila y la tercera es el criterio de aceptación. Hecho canónico nuevo,
+  `EL-AISLAMIENTO-NO-ES-CRITERIO`.
+- **El `CLAUDE.md` del proyecto llega al subagente y le tapa la boca.** Quitando
+  del `CLAUDE.md` del laboratorio el último párrafo y solo ese, **309
+  caracteres**: con él, la clave de pasarela no aparece en el informe **0 de 2** y
+  el revisor escribe por qué; sin él, **2 de 2** como hallazgo bloqueante. Es el
+  hallazgo del módulo y ata el 08 con el 03. Hecho canónico nuevo,
+  `EL-CLAUDE-MD-LLEGA-AL-SUBAGENTE`.
+- **Un subagente compra contexto con dinero.** La ventana del principal revisando
+  él mismo: 146.114 y 244.588 tokens, 0,11 y 0,13 dólares. Delegando: 53.916 y
+  53.513 tokens, 0,28 y 0,24 dólares. **Divide el contexto por tres y multiplica
+  la factura por dos.** Y la ventana del que delega es estable: las dos del
+  principal se separan en cien mil tokens, las dos delegadas en cuatrocientos.
+- **La descripción de un subagente no se corta**, al revés que la de una skill.
+  5.616 caracteres son 2.091 tokens en cada turno, lo segundo más caro que se
+  escribe a mano en todo el libro después del archivo de memoria.
+- **El síntoma clásico no se reprodujo, y va publicado así.** Dos ejecuciones de
+  "escribe un endpoint siguiendo el estilo del archivo y revísate": las dos veces
+  se negó a copiar la inyección SQL, usó consulta parametrizada y dijo que el
+  repositorio no está listo. El visto bueno automático no salió. Lo que sí salió
+  2 de 2 fue "mi cambio es seguro": alcance elegido por la misma cabeza que
+  escribió el código, que es el sesgo de verdad.
+
+**Registro:** ocho entradas nuevas, `SUB-004` a `SUB-011`. Seis se comprueban
+solas, una es manual (`SUB-010`, la frecuencia del bozal del `CLAUDE.md`) y una
+gasta tokens (`SUB-011`).
+
+**Laboratorio:** `gestor-pedidos` gana `AGENTES.md`. **Ningún fallo sembrado
+tocado y ningún archivo del laboratorio modificado**: las pruebas que escriben o
+que alteran el `CLAUDE.md` se hicieron sobre copias en `/tmp`, que se quedan ahí.
+
+**Activos:** `entregables/plantillas/agents/` pasa de tres a **seis subagentes con
+contrato**, que es lo que promete el esqueleto: `revisor`, `auditor-seguridad`,
+`investigador`, `validador`, `probador` y `arqueologo`. El `revisor` se reescribe
+con el criterio de aceptación medido, porque el que tenía es exactamente el de la
+fila que no encontró nada.
+
+**Bookkeeping:** `fabrica/hechos.yaml` y `README.md`, de "7 de 12" a "8 de 12", y
+el recuento del verificador del README, que llevaba en 22 desde julio. Dos hechos
+canónicos nuevos.
+
+### PARA JULIÁN
+
+1. **Hay una frase en el `CLAUDE.md` del laboratorio que apaga al revisor, y
+   quitarla o no es decisión tuya.** Es la última del archivo: "No hace falta que
+   avises de esos fallos en cada respuesta: están inventariados". Sirve para lo
+   que se escribió, que es no leer el mismo aviso veinte veces al día, y a la vez
+   borra la clave de pasarela del informe de auditoría, medido 0 de 2. Las tres
+   salidas que veo, y ninguna es obviamente la buena: **(a)** dejarla y que el
+   contrato del revisor la desobedezca, que es lo que hay hoy y funciona pero
+   depende de que cada contrato lo recuerde; **(b)** quitarla y aceptar el ruido;
+   **(c)** reescribirla en negativo, del tipo "estos fallos están inventariados y
+   **se reportan igual en cualquier auditoría**". Yo no la he tocado. Si eliges la
+   (c), hay que rehacer la tabla de `AGENTES.md` y la del 8.2.3.
+2. **El esqueleto del 08 promete un PASA que solo se cumple con la tercera
+   condición.** Dice "el revisor encuentra los fallos 2, 3 y 4 que el principal
+   había pasado por alto", y eso es cierto **solo** con criterio de aceptación
+   escrito: con un contrato de auditor normal salió 2 de 3 en una ejecución y 1 de
+   3 en la otra. El módulo lo publica así, con la tabla entera, porque es más útil
+   que el resultado limpio. Si quieres que el esqueleto lo diga, la línea sería:
+   "PASA si el revisor encuentra los fallos 2, 3 y 4 **y el lector sabe decir qué
+   parte del contrato los destapó**".
+3. **La fecha de corte, octava vez.** De la 2.1.245 de ayer a la 2.1.246 de hoy.
+   Siete módulos con versión propia y ni una sola coincidencia entre dos. La regla
+   8 lleva ocho módulos funcionando; sigue faltando ratificarla en el módulo 01 y
+   en la portada, que es lo único que queda pendiente de esa decisión.
+
 ## 2026-08-25 · Módulo 07 · Skills y plugins · PUBLICADO
 
 Cerrado `manuscrito/modulo-07-skills-y-plugins.md`, **3.260 palabras**, las seis

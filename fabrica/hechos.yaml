@@ -104,7 +104,7 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 7 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 8 de 12."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
@@ -118,6 +118,24 @@ hechos:
     prohibido:
       - "tool search solo afecta a MCP"
       - "sin servidores MCP da igual tool search"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: EL-CLAUDE-MD-LLEGA-AL-SUBAGENTE
+    valor: "La jerarquía de memoria entera se carga también en cada subagente, salvo en los integrados de exploración y de plan, así que una frase del CLAUDE.md que declare unos fallos ya conocidos los borra del informe del revisor."
+    fuente: "medición propia 26-ago-2026 con la 2.1.246 y Sonnet 5 (SUB-010) y code.claude.com/docs/en/sub-agents.md"
+    prohibido:
+      - "el subagente arranca sin nada de tu sesión"
+      - "un subagente no ve tu CLAUDE.md"
+    excepto:
+      - "fabrica/hechos.yaml"
+
+  - id: EL-AISLAMIENTO-NO-ES-CRITERIO
+    valor: "Un subagente revisor aislado, con contrato de auditor pero sin criterio de aceptación propio, encuentra lo mismo que el agente principal y cuesta el doble; lo que cambia el hallazgo es escribir las preguntas que el informe está obligado a contestar."
+    fuente: "medición propia 26-ago-2026 con la 2.1.246 y Sonnet 5, dos repeticiones por condición"
+    prohibido:
+      - "un subagente revisor da una segunda opinión por sí solo"
+      - "delegar la revisión sale más barato"
     excepto:
       - "fabrica/hechos.yaml"
 
