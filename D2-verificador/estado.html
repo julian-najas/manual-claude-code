@@ -60,19 +60,19 @@
   </header>
 
   <div class="veredicto">
-    <p class="titular">De las 67 afirmaciones comprobables de este libro,
-      <span class="n">67 siguen siendo ciertas</span> hoy.</p>
+    <p class="titular">De las 73 afirmaciones comprobables de este libro,
+      <span class="n">73 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
       Verificado contra <strong>2.1.246 (Claude Code)</strong><br>
-      2026-08-26 05:24:56 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
+      2026-08-26 07:32:08 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">67</span><span class="k">Pasan</span></div>
+    <div class="cifra ok"><span class="v">73</span><span class="k">Pasan</span></div>
     <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
-    <div class="cifra rev"><span class="v">24</span><span class="k">A revisar</span></div>
-    <div class="cifra"><span class="v">3</span><span class="k">Omitidas</span></div>
+    <div class="cifra rev"><span class="v">25</span><span class="k">A revisar</span></div>
+    <div class="cifra"><span class="v">4</span><span class="k">Omitidas</span></div>
     <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
   </div>
 
@@ -177,6 +177,14 @@
 <tr class="ok"><td class="ic">🟢</td><td class="id">SUB-001</td><td>--agents permite definir agentes personalizados en JSON desde la propia llamada.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SUB-002</td><td>claude agents gestiona los agentes que corren en segundo plano.</td><td class="cmd">claude agents --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SUB-003</td><td>--background arranca la sesión como agente en segundo plano y devuelve el control.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-004</td><td>--agent hace que la sesión entera tome el prompt de sistema, las herramientas y el modelo de un agente.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-005</td><td>claude plugin validate revisa un directorio de agentes y avisa del archivo cuyo frontmatter no parsea, sin abrir sesión ni gastar tokens.</td><td class="cmd">claude plugin validate entregables/plantillas/agents</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-006</td><td>Los seis subagentes con contrato del libro existen y son legibles.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-007</td><td>Cada uno de los seis contratos declara name y description, que es lo único obligatorio y lo único sin lo cual Claude Code se salta el archivo en silencio.</td><td class="cmd">python3 -c import pathlib,sys,re; ts=[p.read_text(encoding=&#x27;utf-8&#x27;) for p in pathlib.Path(&#x27;entregables/plantillas/agents&#x27;).glob(&#x27;*.md&#x27;)]; con=[t for t in ts if re.search(&#x27;^name:&#x27;, t, re.M)]; ok=[t for t in con if re.search(&#x27;^description:&#x27;, t, re.M)]; sys.exit(0 if len(ok)==6 and len(con)==6 else 1)</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-008</td><td>El contrato del revisor obliga a contestar tres preguntas, que es la única variable que en la medición del módulo destapó los fallos 3 y 4.</td><td class="cmd">python3 -c import pathlib,sys; t=pathlib.Path(&#x27;entregables/plantillas/agents/revisor.md&#x27;).read_text(encoding=&#x27;utf-8&#x27;); sys.exit(0 if (&#x27;Criterio de aceptacion&#x27; in t or &#x27;Criterio de aceptación&#x27; in t) and &#x27;responsabilidades&#x27; in t and &#x27;valor por defecto&#x27; in t else 1)</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-009</td><td>El laboratorio documenta su subagente en AGENTES.md, incluido lo que el CLAUDE.md le impide reportar.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">SUB-010</td><td>La jerarquía de memoria del proyecto llega al subagente, así que una frase del CLAUDE.md que declare unos fallos ya inventariados los borra del informe del revisor.</td><td class="cmd">Medido el 26-ago-2026 con la 2.1.246 y Sonnet 5, quitando del CLAUDE.md del laboratorio el último párrafo y solo ese, 309 caracteres: con él, la clave de pasarela no aparece en el informe en 2 de 2 ejecuciones y el revisor escribe por qué; sin él aparece como hallazgo bloqueante en 2 de 2. Es una frecuencia de un modelo, no una propiedad del CLI, así que se comprueba a mano en la revisión trimestral y no se automatiza: automatizarla convertiría una tendencia en un rojo intermitente. El procedimiento entero está en el paso 6 del laboratorio del módulo 08.</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">SUB-011</td><td>Declarar un subagente cuesta unos 105 tokens de entrada por turno, y su prompt de sistema cuesta cero mientras no se invoque.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
 <tr class="cap ok"><td colspan="4">09 · Git, CI e IDE</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-001</td><td>-p ejecuta Claude Code sin sesión interactiva, que es la base de cualquier uso en CI.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-002</td><td>claude ultrareview lanza una revisión multiagente de la rama actual.</td><td class="cmd">claude --help</td></tr>
