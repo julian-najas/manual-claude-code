@@ -60,19 +60,19 @@
   </header>
 
   <div class="veredicto">
-    <p class="titular">De las 73 afirmaciones comprobables de este libro,
-      <span class="n">73 siguen siendo ciertas</span> hoy.</p>
+    <p class="titular">De las 82 afirmaciones comprobables de este libro,
+      <span class="n">82 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
-      Verificado contra <strong>2.1.246 (Claude Code)</strong><br>
-      2026-08-26 07:32:08 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
+      Verificado contra <strong>2.1.247 (Claude Code)</strong><br>
+      2026-08-27 07:07:08 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">73</span><span class="k">Pasan</span></div>
+    <div class="cifra ok"><span class="v">82</span><span class="k">Pasan</span></div>
     <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
-    <div class="cifra rev"><span class="v">25</span><span class="k">A revisar</span></div>
-    <div class="cifra"><span class="v">4</span><span class="k">Omitidas</span></div>
+    <div class="cifra rev"><span class="v">27</span><span class="k">A revisar</span></div>
+    <div class="cifra"><span class="v">6</span><span class="k">Omitidas</span></div>
     <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
   </div>
 
@@ -189,6 +189,19 @@
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-001</td><td>-p ejecuta Claude Code sin sesión interactiva, que es la base de cualquier uso en CI.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-002</td><td>claude ultrareview lanza una revisión multiagente de la rama actual.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">CID-003</td><td>claude import trae la configuración de otro agente de codificación.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-004</td><td>--bare salta hooks, sincronización de plugins, auto memoria y el descubrimiento de CLAUDE.md, y en ese modo la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-005</td><td>--max-budget-usd pone un tope de gasto por ejecución, y solo funciona junto a --print.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-006</td><td>--json-schema obliga a que la respuesta case con un esquema, que es lo que convierte una puerta de calidad en un booleano en vez de un párrafo.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-007</td><td>--worktree abre la sesión en un árbol de trabajo de git nuevo, y --background la arranca como agente en segundo plano y devuelve el control.</td><td class="cmd">claude --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-008</td><td>claude ultrareview acepta --json, --timeout y --post, así que se puede lanzar desde un script y esperar sus hallazgos.</td><td class="cmd">claude ultrareview --help</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-009</td><td>El laboratorio tiene un flujo de CI con tres trabajos, y el trabajo que gasta dinero depende de los dos que no gastan.</td><td class="cmd">python3 -c import re,sys,pathlib; t=pathlib.Path(&#x27;D6-repo-feo/gestor-pedidos/.github/workflows/ci.yml&#x27;).read_text(encoding=&#x27;utf-8&#x27;).split(&#x27;jobs:&#x27;)[-1]; j=re.findall(&#x27;^  ([a-z]+):$&#x27;, t, re.M); sys.exit(0 if j==[&#x27;entorno&#x27;,&#x27;pruebas&#x27;,&#x27;puerta&#x27;] and &#x27;needs: pruebas&#x27; in t else 1)</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-010</td><td>El requirements.txt del laboratorio fija el cierre completo: quince paquetes, todos con versión exacta, frente a las tres líneas sin versión que tenía antes.</td><td class="cmd">python3 -c import sys,pathlib; ls=[l.strip() for l in pathlib.Path(&#x27;D6-repo-feo/gestor-pedidos/requirements.txt&#x27;).read_text(encoding=&#x27;utf-8&#x27;).splitlines()]; ls=[l for l in ls if l and not l.startswith(&#x27;#&#x27;)]; sys.exit(0 if len(ls)==15 and all(&#x27;==&#x27; in l for l in ls) else 1)</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-011</td><td>El laboratorio tiene nueve pruebas de caracterización, y cinco de ellas fijan por escrito un comportamiento que está mal en vez de arreglarlo.</td><td class="cmd">python3 -c import re,sys,pathlib; t=pathlib.Path(&#x27;D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py&#x27;).read_text(encoding=&#x27;utf-8&#x27;); sys.exit(0 if len(re.findall(&#x27;^def test_&#x27;, t, re.M))==9 and len(re.findall(&#x27;^def test_hoy_&#x27;, t, re.M))==5 else 1)</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">CID-012</td><td>En modo --bare, una máquina autenticada por suscripción termina con is_error true y Authentication error en el campo result, porque bare no lee ni OAuth ni el llavero.</td><td class="cmd">Medido el 27-ago-2026 con la 2.1.247 en el sandbox de la rutina, autenticado por token de suscripción y sin ANTHROPIC_API_KEY en el entorno: dos ejecuciones, las dos con código de salida 1, is_error true, terminal_reason api_error y el texto Authentication error en result. No se automatiza porque el resultado depende de cómo esté autenticada la máquina que corre el verificador, y en una con ANTHROPIC_API_KEY puesta saldría verde diciendo lo contrario. Se comprueba a mano en la revisión trimestral.</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">CID-013</td><td>Cuando --max-budget-usd corta una ejecución, la salida JSON no trae campo result, así que un consumidor que solo lea result recibe null sin que nada falle.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
+<tr class="ok"><td class="ic">🟢</td><td class="id">CID-014</td><td>El laboratorio documenta su CI en CI.md, incluido lo que esa CI no cubre.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/CI.md</td></tr>
+<tr class="rev"><td class="ic">🟡</td><td class="id">CID-015</td><td>Una ejecución con -p carga y ejecuta los hooks del .claude/settings.json del repositorio aunque nadie haya aceptado el diálogo de confianza, mientras que las entradas de permissions.allow del mismo archivo se ignoran.</td><td class="cmd">Medido el 27-ago-2026 con la 2.1.247 sobre D6-repo-feo/gestor-pedidos, dos ejecuciones idénticas: con --output-format stream-json --verbose --include-hook-events aparece un hook_started y un hook_response de PreToolUse:Read con código de salida 0, o sea que el script del repositorio se ejecutó; y en la salida de error, no en la de datos, aparece Ignoring 3 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Es la combinación que hay que conocer antes de montar una CI: corre el código del repositorio y no aplica sus permisos. No se automatiza porque depende de si la máquina que verifica ha aceptado la confianza del espacio de trabajo, y en una que sí lo haya hecho la segunda mitad no se reproduce.</td></tr>
+<tr class="omi"><td class="ic">⚪</td><td class="id">CID-016</td><td>Un servidor MCP mal declarado no rompe la ejecución: se salta, la ejecución termina limpia, y el único rastro está en mcp_server_errors del evento de inicio.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
 <tr class="cap ok"><td colspan="4">10 · Seguridad y costes</td></tr>
 <tr class="omi"><td class="ic">⚪</td><td class="id">SEG-002</td><td>Una inyección escrita en claro en un archivo del repositorio se detecta y se reporta, pero eso no es un control de seguridad.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
 <tr class="omi"><td class="ic">⚪</td><td class="id">CST-001</td><td>Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada.</td><td class="cmd">gasta tokens, se ejecuta solo con --con-coste</td></tr>
