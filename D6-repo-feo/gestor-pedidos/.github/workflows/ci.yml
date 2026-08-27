@@ -1,0 +1,109 @@
+# CI de gestor-pedidos. Módulo 09 del manual "Claude Code en producción".
+#
+# Tres trabajos y un orden deliberado: lo que no gasta dinero corre primero.
+# Si las dependencias no se instalan o las pruebas fallan, la puerta de Claude
+# no llega a arrancar y el fallo cuesta cero.
+#
+# Escrito contra Claude Code 2.1.247 el 27-ago-2026.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+
+  # ---------------------------------------------------------------------
+  # 1. Que el entorno sea el mismo en todas las máquinas.
+  # ---------------------------------------------------------------------
+  entorno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # --no-deps es lo que convierte requirements.txt en un cierre y no en
+      # una sugerencia: si falta un paquete del árbol, esto revienta aquí en
+      # vez de resolverlo por su cuenta con la versión que haya hoy.
+      - name: Instalar el cierre exacto
+        run: pip install --no-deps -r requirements-dev.txt
+
+      - name: Comprobar que el cierre es coherente
+        run: pip check
+
+  # ---------------------------------------------------------------------
+  # 2. Las pruebas. Con un repositorio sin pruebas, pytest sale con 5.
+  # ---------------------------------------------------------------------
+  pruebas:
+    needs: entorno
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --no-deps -r requirements-dev.txt
+
+      # Sin --exitfirst y sin `|| true`. Un `|| true` aquí es la forma más
+      # rápida de tener una CI verde y cero pruebas durante dos años.
+      - name: pytest
+        run: python -m pytest -q
+
+  # ---------------------------------------------------------------------
+  # 3. La puerta de Claude. Solo en propuestas de cambio y solo sobre el
+  #    diff: leer el repositorio entero en cada push es gasto sin criterio.
+  # ---------------------------------------------------------------------
+  puerta:
+    needs: pruebas
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Instalar Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      # --bare: la CI no carga el CLAUDE.md, ni los hooks, ni el .mcp.json del
+      # repositorio. Es lo que hace que dos ejecuciones en dos máquinas den lo
+      # mismo, y lo que impide que un cambio en el propio repositorio mueva el
+      # criterio de la puerta que lo juzga. Exige ANTHROPIC_API_KEY: en modo
+      # bare no se lee ni OAuth ni el llavero.
+      #
+      # --json-schema: la puerta devuelve un booleano, no un párrafo.
+      # --max-budget-usd: tope por ejecución. Es un freno, no un presupuesto.
+      # --allowedTools "": la puerta lee el diff por la entrada estándar y no
+      # necesita ninguna herramienta. Lo que no puede abrir no lo puede filtrar.
+      - name: Puerta de calidad
+        run: |
+          git diff --no-color "origin/${{ github.base_ref }}...HEAD" \
+            | claude --bare -p "Eres una puerta de calidad de CI. Te llega un diff. Decide si BLOQUEA la fusion. Bloquea solo si el diff introduce un secreto en claro, una credencial, o una dependencia sin version fijada. Todo lo demas pasa." \
+                --output-format json \
+                --json-schema '{"type":"object","properties":{"bloquea":{"type":"boolean"},"motivo":{"type":"string"}},"required":["bloquea","motivo"]}' \
+                --max-budget-usd 0.50 \
+                --allowedTools "" \
+            > veredicto.json
+
+          # Primero si la ejecución fue válida, y solo después qué dijo.
+          # Al revés se aprueba una fusión porque el modelo no llegó a hablar.
+          python3 - <<'FIN'
+          import json, sys
+          d = json.load(open("veredicto.json"))
+          if d.get("is_error") or "result" not in d:
+              print("La puerta no llegó a emitir veredicto:",
+                    d.get("subtype"), d.get("terminal_reason"))
+              sys.exit(1)
+          v = d.get("structured_output") or {}
+          print(v.get("motivo", ""))
+          sys.exit(1 if v.get("bloquea") else 0)
+          FIN

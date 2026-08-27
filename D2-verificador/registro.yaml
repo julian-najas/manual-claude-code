@@ -814,6 +814,117 @@ pruebas:
     comando: ["claude", "--help"]
     espera_patron: 'import'
 
+  # ---------------------------------------------------------------------
+  # Módulo 09. CID-001 a CID-003 son las del esqueleto; las de abajo se
+  # añaden el 27-ago-2026 al escribir el módulo, por la regla de la casa: si
+  # el texto afirma algo comprobable, aquí está el comando que lo comprueba.
+  # ---------------------------------------------------------------------
+
+  - id: CID-004
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "--bare salta hooks, sincronización de plugins, auto memoria y el descubrimiento de CLAUDE.md, y en ese modo la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--bare'
+    nota: "Es la bandera que la documentación recomienda para CI y para el SDK, y la que va a ser el valor por defecto de -p en una versión futura. La segunda mitad de la afirmación es la que muerde: en modo bare no se leen ni las credenciales OAuth ni el llavero, así que una CI que use la suscripción del equipo NO puede usar --bare. Comprobado el efecto en CID-012."
+
+  - id: CID-005
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "--max-budget-usd pone un tope de gasto por ejecución, y solo funciona junto a --print."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--max-budget-usd <amount>'
+    nota: "Es el presupuesto por ejecución del esqueleto. Su comportamiento real está medido en CID-013: el tope se comprueba entre llamadas, así que la ejecución que lo agota ya se lo ha gastado."
+
+  - id: CID-006
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "--json-schema obliga a que la respuesta case con un esquema, que es lo que convierte una puerta de calidad en un booleano en vez de un párrafo."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '--json-schema <schema>'
+
+  - id: CID-007
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "--worktree abre la sesión en un árbol de trabajo de git nuevo, y --background la arranca como agente en segundo plano y devuelve el control."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: '-w, --worktree'
+    nota: "Las dos banderas son el trabajo en paralelo del esqueleto. Se comprueba la de árbol de trabajo, que es la que crea estado en el disco; la de segundo plano ya la cubre SUB-003."
+
+  - id: CID-008
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "claude ultrareview acepta --json, --timeout y --post, así que se puede lanzar desde un script y esperar sus hallazgos."
+    tipo: cli
+    comando: ["claude", "ultrareview", "--help"]
+    espera_salida: 0
+    espera_patron: '--json[\s\S]*--timeout'
+    nota: "El subcomando bloquea hasta que la revisión remota termina, a diferencia de /code-review ultra en una sesión no interactiva, que lanza y no espera. Requiere 2.1.227 o posterior para --post."
+
+  - id: CID-009
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "El laboratorio tiene un flujo de CI con tres trabajos, y el trabajo que gasta dinero depende de los dos que no gastan."
+    tipo: cli
+    directorio: "."
+    comando: ["python3", "-c", "import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/.github/workflows/ci.yml').read_text(encoding='utf-8').split('jobs:')[-1]; j=re.findall('^  ([a-z]+):$', t, re.M); sys.exit(0 if j==['entorno','pruebas','puerta'] and 'needs: pruebas' in t else 1)"]
+    espera_salida: 0
+    nota: "El orden no es estético: si las dependencias no se instalan o las pruebas fallan, la puerta de Claude no llega a arrancar y el fallo cuesta cero. El día que alguien quite el needs, esta prueba falla."
+
+  - id: CID-010
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "El requirements.txt del laboratorio fija el cierre completo: quince paquetes, todos con versión exacta, frente a las tres líneas sin versión que tenía antes."
+    tipo: cli
+    directorio: "."
+    comando: ["python3", "-c", "import sys,pathlib; ls=[l.strip() for l in pathlib.Path('D6-repo-feo/gestor-pedidos/requirements.txt').read_text(encoding='utf-8').splitlines()]; ls=[l for l in ls if l and not l.startswith('#')]; sys.exit(0 if len(ls)==15 and all('==' in l for l in ls) else 1)"]
+    espera_salida: 0
+    nota: "Es el fallo 9 del inventario del repo feo. Tres líneas directas resuelven a quince paquetes: doce decisiones de versión que no tomaba nadie. Si alguien añade una dependencia sin fijar, esta prueba se pone roja."
+
+  - id: CID-011
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "El laboratorio tiene nueve pruebas de caracterización, y cinco de ellas fijan por escrito un comportamiento que está mal en vez de arreglarlo."
+    tipo: cli
+    directorio: "."
+    comando: ["python3", "-c", "import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py').read_text(encoding='utf-8'); sys.exit(0 if len(re.findall('^def test_', t, re.M))==9 and len(re.findall('^def test_hoy_', t, re.M))==5 else 1)"]
+    espera_salida: 0
+    nota: "Es el fallo 14 del inventario. Los enunciados que empiezan por test_hoy_ dicen lo que la aplicación hace, no lo que debería hacer: el día que el módulo 12 arregle el IVA por defecto, tienen que fallar. Que fallen es el trabajo que hacen."
+
+  - id: CID-012
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "En modo --bare, una máquina autenticada por suscripción termina con is_error true y Authentication error en el campo result, porque bare no lee ni OAuth ni el llavero."
+    tipo: manual
+    nota: "Medido el 27-ago-2026 con la 2.1.247 en el sandbox de la rutina, autenticado por token de suscripción y sin ANTHROPIC_API_KEY en el entorno: dos ejecuciones, las dos con código de salida 1, is_error true, terminal_reason api_error y el texto Authentication error en result. No se automatiza porque el resultado depende de cómo esté autenticada la máquina que corre el verificador, y en una con ANTHROPIC_API_KEY puesta saldría verde diciendo lo contrario. Se comprueba a mano en la revisión trimestral."
+
+  - id: CID-013
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "Cuando --max-budget-usd corta una ejecución, la salida JSON no trae campo result, así que un consumidor que solo lea result recibe null sin que nada falle."
+    tipo: cli
+    coste: true
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["claude", "-p", "Lee app.py entero y hazme un resumen exhaustivo funcion por funcion.", "--allowedTools", "Read,Grep,Glob", "--max-budget-usd", "0.01", "--output-format", "json"]
+    espera_patron: 'error_max_budget_usd'
+    nota: "Gasta dinero de verdad. Solo se ejecuta con --con-coste. Medido dos veces el 27-ago-2026 con la 2.1.247: código de salida 1, is_error true, subtype error_max_budget_usd, terminal_reason budget_exhausted y sin clave result. Las dos ejecuciones se pasaron del tope de 0,01 dólares antes de parar, 0,193 y 0,043, porque el tope se comprueba entre llamadas y no antes; la diferencia entre las dos cifras es la caché de prompt, fría la primera vez y caliente la segunda."
+
+  - id: CID-014
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "El laboratorio documenta su CI en CI.md, incluido lo que esa CI no cubre."
+    tipo: fichero
+    ruta: "D6-repo-feo/gestor-pedidos/CI.md"
+
+  - id: CID-015
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "Una ejecución con -p carga y ejecuta los hooks del .claude/settings.json del repositorio aunque nadie haya aceptado el diálogo de confianza, mientras que las entradas de permissions.allow del mismo archivo se ignoran."
+    tipo: manual
+    nota: "Medido el 27-ago-2026 con la 2.1.247 sobre D6-repo-feo/gestor-pedidos, dos ejecuciones idénticas: con --output-format stream-json --verbose --include-hook-events aparece un hook_started y un hook_response de PreToolUse:Read con código de salida 0, o sea que el script del repositorio se ejecutó; y en la salida de error, no en la de datos, aparece Ignoring 3 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Es la combinación que hay que conocer antes de montar una CI: corre el código del repositorio y no aplica sus permisos. No se automatiza porque depende de si la máquina que verifica ha aceptado la confianza del espacio de trabajo, y en una que sí lo haya hecho la segunda mitad no se reproduce."
+
+  - id: CID-016
+    capitulo: "09 · Git, CI e IDE"
+    afirmacion: "Un servidor MCP mal declarado no rompe la ejecución: se salta, la ejecución termina limpia, y el único rastro está en mcp_server_errors del evento de inicio."
+    tipo: cli
+    coste: true
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ["claude", "-p", "Responde solo con la palabra OK.", "--output-format", "stream-json", "--verbose", "--mcp-config", '{"mcpServers":{"roto":{"url":"https://ejemplo.invalido/mcp"}}}']
+    espera_patron: 'url_missing_type'
+    nota: "Gasta dinero de verdad. Solo se ejecuta con --con-coste. Medido el 27-ago-2026 con la 2.1.247: la entrada roto sale en mcp_server_errors con type url_missing_type, el servidor bueno del laboratorio sigue conectado, y la ejecución sale con código 0. El aviso por la salida de error solo se imprime cuando se corre a mano en una terminal: con la salida de error redirigida, que es lo que hace cualquier CI, el dato solo está en ese campo. Requiere 2.1.219 o posterior."
+
   - id: CST-001
     capitulo: "10 · Seguridad y costes"
     afirmacion: "Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada."

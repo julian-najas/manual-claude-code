@@ -1,0 +1,11 @@
+# Lo que hace falta para correr las pruebas, y nada más.
+#
+# Va aparte de requirements.txt a propósito: lo que instala la CI para probar
+# no es lo que se instala en producción, y mezclarlos hace que un paquete de
+# pruebas acabe desplegado sin que nadie lo decida.
+-r requirements.txt
+Pygments==2.21.0
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+pytest==9.1.1

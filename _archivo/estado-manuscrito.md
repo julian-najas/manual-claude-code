@@ -35,6 +35,79 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-08-27 · Módulo 09 · Git, CI e IDE · PUBLICADO
+
+Cerrado `manuscrito/modulo-09-git-ci-e-ide.md`, **3.997 palabras**, las seis
+partes del esqueleto y runbook de una página. Verificador contra la **2.1.247**:
+**80 pasan, 0 fallan, 29 a revisar, 6 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. Quedan tres módulos: 10, 11 y 12.
+
+**Nota de rutina:** el paso 0a funcionó otra vez, el clon venía en el módulo 08.
+Cero diálogos de permisos: **no se escribió nada dentro de ninguna carpeta
+`.claude/`**, los archivos nuevos del laboratorio se escribieron con la
+herramienta de escritura y los temporales de medición se quedaron en `/tmp`.
+
+**Mediciones propias, 2.1.247.** Treinta y una ejecuciones, **1.957.905 tokens
+de entrada** y 4.120 de salida, **1,92 dólares**. La cifra de coste **no la da
+el CLI de una vez**: se saca de las cuarenta y cinco llamadas registradas en
+`~/.claude/projects/`, aplicando las dos tarifas por token que se derivan de dos
+ejecuciones donde el CLI sí devolvió `total_cost_usd` (una con caché fría y otra
+caliente). Está dicho así en el módulo y conviene no olvidarlo al revisar.
+
+Lo medido, todo con dos repeticiones idénticas:
+
+| Qué | Resultado |
+|---|---|
+| Petición trivial en directorio vacío | 44.208 tokens |
+| La misma en `gestor-pedidos`, todo cargado | 45.989 tokens |
+| Con `--strict-mcp-config` | 45.771, o sea **218** de servidor MCP, el mismo número del módulo 06 contra la 2.1.241 |
+| Con `--safe-mode` | 41.924 |
+| **Lo que cuesta la configuración del laboratorio** | **1.781 tokens por turno**, frente a los 1.737 que suman las piezas medidas una a una |
+
+Los dos hallazgos del módulo, los dos nuevos:
+
+1. **En `-p` los hooks del repositorio se ejecutan y sus `permissions.allow` se
+   ignoran.** Sin diálogo de confianza, porque no hay nadie para contestarlo.
+   Confirmado a la vez por los eventos `hook_response` (código 0) y por el
+   `Ignoring 3 permissions.allow entries` de la salida de error. Es `CID-015`.
+2. **`--bare`, el modo que la documentación recomienda para CI, no funciona con
+   la suscripción.** No lee ni OAuth ni el llavero: exige `ANTHROPIC_API_KEY`.
+   Falla con `Authentication error`, que no menciona ninguna de las dos cosas.
+   Es `CID-012`.
+
+Y las dos trampas de la salida JSON, las dos con su prueba: un fallo de
+autenticación devuelve `is_error: true` con **`subtype: success`**, y una
+ejecución cortada por `--max-budget-usd` devuelve un JSON **sin campo `result`**
+(`CID-013`). Las dos aprueban solas cualquier puerta que decida por `subtype` o
+lea `result` a pelo.
+
+**Lo que gana el laboratorio.** `requirements.txt` fijado al cierre completo,
+quince paquetes (fallo 9); `requirements-dev.txt` aparte;
+`tests/test_caracterizacion.py` con nueve pruebas, cinco de ellas
+`test_hoy_` que fijan un comportamiento que está mal (fallo 14);
+`.github/workflows/ci.yml` con tres trabajos ordenados por precio; y `CI.md`.
+Comprobado de punta a punta en un entorno virtual limpio: con el
+`requirements.txt` viejo, `pip check` nombra **doce paquetes que faltan** y sale
+con 1, y `pytest` sale con **5**; con los nuevos, los dos en verde y nueve
+pruebas pasando.
+
+**PARA JULIÁN**
+
+1. **La puerta de CI del laboratorio lleva `--bare`, y `--bare` exige clave de
+   API.** El flujo declara `ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}`.
+   Si Cosas Agénticas va a enseñar esto con la suscripción, hay que decidir si
+   el libro recomienda sacar una clave o si se queda en `--safe-mode` como vía
+   principal. Hoy el módulo cuenta las dos y no elige. **Es decisión tuya.**
+2. **Precios de revisión.** La documentación de hoy dice **15 a 25 $ por
+   revisión** en la forja, no los 5 a 25 que decía la guía-21 en agosto. El
+   módulo publica los de hoy y `M13-cicd-y-revision.md` sigue con los viejos.
+   Si quieres que la guía-21 se corrija, dilo: no la he tocado.
+3. **El flujo del laboratorio no corre nunca.** Vive en
+   `D6-repo-feo/gestor-pedidos/.github/workflows/`, que GitHub no mira porque no
+   está en la raíz. Es a propósito, para no gastar en cada empujón del
+   manuscrito, pero significa que **ese YAML no está probado por una ejecución
+   real de Actions**, solo por sus comandos corridos a mano aquí.
+
 ## 2026-08-26 · Módulo 08 · Subagentes · PUBLICADO
 
 Cerrado `manuscrito/modulo-08-subagentes.md`, **3.997 palabras**, las seis partes

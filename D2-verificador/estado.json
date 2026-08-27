@@ -1,15 +1,15 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.246 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-26 07:32:08 UTC",
+  "cli_verificado": "2.1.247 (Claude Code)",
+  "sistema": "Linux 6.18.44-fc-v21",
+  "python": "3.11.15",
+  "fecha_utc": "2026-08-27 07:04:52 UTC",
   "resumen": {
-    "PASA": 73,
+    "PASA": 80,
     "FALLA": 0,
-    "REVISAR": 25,
-    "OMITIDO": 4
+    "REVISAR": 29,
+    "OMITIDO": 6
   },
   "pruebas": [
     {
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.246 (Claude Code)\n"
+      "salida": "2.1.247 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.246)\nCommit: 1ba9d2211ae1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.246\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.247)\nCommit: 89c726188daf\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.246)\nCommit: 1ba9d2211ae1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.246\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nRemote Control requires a claude.ai subscription. Run claude auth login to sign in with your claude.ai ac"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.247)\nCommit: 89c726188daf\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nRemote Control\nInside a cloud session — Remote Control is unavailable here. Use it from the local session instead.\n\n3 warnings found\n- Ru"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.246)\nCommit: 1ba9d2211ae1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.246\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.247)\nCommit: 89c726188daf\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.246)\nCommit: 1ba9d2211ae1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.246\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.247)\nCommit: 89c726188daf\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "PRM-007",
@@ -389,7 +389,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -399,7 +399,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -419,7 +419,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.246)\nCommit: 1ba9d2211ae1\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.246\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/runner/work/manual-claude-code/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.247)\nCommit: 89c726188daf\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-esquema/.claude/settings.json › hooks.PreToolUse: Hook event \"PreTo"
     },
     {
       "id": "HOK-010",
@@ -739,7 +739,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
       "salida": ""
     },
     {
@@ -809,7 +809,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/skills/LEEME.md",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/skills/LEEME.md",
       "salida": ""
     },
     {
@@ -870,7 +870,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude plugin validate entregables/plantillas/agents",
-      "salida": "Validating components in: /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents\n\n✔ Validation passed\n"
+      "salida": "Validating components in: /home/user/manual-claude-code/entregables/plantillas/agents\n\n√ Validation passed\n"
     },
     {
       "id": "SUB-006",
@@ -879,7 +879,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/agents",
       "salida": ""
     },
     {
@@ -909,7 +909,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md",
       "salida": ""
     },
     {
@@ -963,6 +963,136 @@
       "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
     },
     {
+      "id": "CID-004",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "--bare salta hooks, sincronización de plugins, auto memoria y el descubrimiento de CLAUDE.md, y en ese modo la autenticación es estrictamente ANTHROPIC_API_KEY o apiKeyHelper.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-005",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "--max-budget-usd pone un tope de gasto por ejecución, y solo funciona junto a --print.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-006",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "--json-schema obliga a que la respuesta case con un esquema, que es lo que convierte una puerta de calidad en un booleano en vez de un párrafo.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-007",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "--worktree abre la sesión en un árbol de trabajo de git nuevo, y --background la arranca como agente en segundo plano y devuelve el control.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "CID-008",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "claude ultrareview acepta --json, --timeout y --post, así que se puede lanzar desde un script y esperar sus hallazgos.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude ultrareview --help",
+      "salida": "Usage: claude ultrareview [options] [target]\n\nRun a cloud-hosted multi-agent code review of the current branch (or a PR number\n/ base branch) and print the findings\n\nOptions:\n  -h, --help           Display help for command\n  --json               Print the raw bugs.json payload instead of formatted\n                       findings\n  --no-post            Do not post the findings to the PR (the defaul"
+    },
+    {
+      "id": "CID-009",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "El laboratorio tiene un flujo de CI con tres trabajos, y el trabajo que gasta dinero depende de los dos que no gastan.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/.github/workflows/ci.yml').read_text(encoding='utf-8').split('jobs:')[-1]; j=re.findall('^  ([a-z]+):$', t, re.M); sys.exit(0 if j==['entorno','pruebas','puerta'] and 'needs: pruebas' in t else 1)",
+      "salida": ""
+    },
+    {
+      "id": "CID-010",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "El requirements.txt del laboratorio fija el cierre completo: quince paquetes, todos con versión exacta, frente a las tres líneas sin versión que tenía antes.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import sys,pathlib; ls=[l.strip() for l in pathlib.Path('D6-repo-feo/gestor-pedidos/requirements.txt').read_text(encoding='utf-8').splitlines()]; ls=[l for l in ls if l and not l.startswith('#')]; sys.exit(0 if len(ls)==15 and all('==' in l for l in ls) else 1)",
+      "salida": ""
+    },
+    {
+      "id": "CID-011",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "El laboratorio tiene nueve pruebas de caracterización, y cinco de ellas fijan por escrito un comportamiento que está mal en vez de arreglarlo.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "python3 -c import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py').read_text(encoding='utf-8'); sys.exit(0 if len(re.findall('^def test_', t, re.M))==9 and len(re.findall('^def test_hoy_', t, re.M))==5 else 1)",
+      "salida": ""
+    },
+    {
+      "id": "CID-012",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "En modo --bare, una máquina autenticada por suscripción termina con is_error true y Authentication error en el campo result, porque bare no lee ni OAuth ni el llavero.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 27-ago-2026 con la 2.1.247 en el sandbox de la rutina, autenticado por token de suscripción y sin ANTHROPIC_API_KEY en el entorno: dos ejecuciones, las dos con código de salida 1, is_error true, terminal_reason api_error y el texto Authentication error en result. No se automatiza porque el resultado depende de cómo esté autenticada la máquina que corre el verificador, y en una con ANTHROPIC_API_KEY puesta saldría verde diciendo lo contrario. Se comprueba a mano en la revisión trimestral.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CID-013",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "Cuando --max-budget-usd corta una ejecución, la salida JSON no trae campo result, así que un consumidor que solo lea result recibe null sin que nada falle.",
+      "tipo": "cli",
+      "resultado": "OMITIDO",
+      "motivo": "gasta tokens, se ejecuta solo con --con-coste",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CID-014",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "El laboratorio documenta su CI en CI.md, incluido lo que esa CI no cubre.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/CI.md",
+      "salida": ""
+    },
+    {
+      "id": "CID-015",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "Una ejecución con -p carga y ejecuta los hooks del .claude/settings.json del repositorio aunque nadie haya aceptado el diálogo de confianza, mientras que las entradas de permissions.allow del mismo archivo se ignoran.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 27-ago-2026 con la 2.1.247 sobre D6-repo-feo/gestor-pedidos, dos ejecuciones idénticas: con --output-format stream-json --verbose --include-hook-events aparece un hook_started y un hook_response de PreToolUse:Read con código de salida 0, o sea que el script del repositorio se ejecutó; y en la salida de error, no en la de datos, aparece Ignoring 3 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Es la combinación que hay que conocer antes de montar una CI: corre el código del repositorio y no aplica sus permisos. No se automatiza porque depende de si la máquina que verifica ha aceptado la confianza del espacio de trabajo, y en una que sí lo haya hecho la segunda mitad no se reproduce.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CID-016",
+      "capitulo": "09 · Git, CI e IDE",
+      "afirmacion": "Un servidor MCP mal declarado no rompe la ejecución: se salta, la ejecución termina limpia, y el único rastro está en mcp_server_errors del evento de inicio.",
+      "tipo": "cli",
+      "resultado": "OMITIDO",
+      "motivo": "gasta tokens, se ejecuta solo con --con-coste",
+      "comando": "",
+      "salida": ""
+    },
+    {
       "id": "CST-001",
       "capitulo": "10 · Seguridad y costes",
       "afirmacion": "Una llamada mínima con un CLAUDE.md grande ya consume decenas de miles de tokens de entrada.",
@@ -1007,20 +1137,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

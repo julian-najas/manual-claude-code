@@ -4,3 +4,5 @@ secretos/pasarela.env
 datos/*.db
 __pycache__/
 *.pyc
+# Desde el módulo 09, que es cuando este repositorio tuvo pruebas por primera vez.
+.pytest_cache/
