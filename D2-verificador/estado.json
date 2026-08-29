@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.250 (Claude Code)",
+  "cli_verificado": "2.1.251 (Claude Code)",
   "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-08-28 17:00:09 UTC",
+  "fecha_utc": "2026-08-29 11:25:34 UTC",
   "resumen": {
     "PASA": 82,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.250 (Claude Code)\n"
+      "salida": "2.1.251 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.250)\nCommit: 2f71b9f41af6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.250\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.250)\nCommit: 2f71b9f41af6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.250\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
     },
     {
       "id": "CLI-005",
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.250)\nCommit: 2f71b9f41af6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.250\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.250)\nCommit: 2f71b9f41af6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.250\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
     },
     {
       "id": "PRM-007",
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.250)\nCommit: 2f71b9f41af6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.250\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
     },
     {
       "id": "HOK-010",
