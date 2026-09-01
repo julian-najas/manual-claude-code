@@ -1,14 +1,14 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.251 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-08-31 06:51:13 UTC",
+  "cli_verificado": "2.1.252 (Claude Code)",
+  "sistema": "Linux 6.18.44-fc-v22",
+  "python": "3.11.15",
+  "fecha_utc": "2026-09-01 06:57:29 UTC",
   "resumen": {
-    "PASA": 83,
+    "PASA": 86,
     "FALLA": 0,
-    "REVISAR": 32,
+    "REVISAR": 40,
     "OMITIDO": 6
   },
   "pruebas": [
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.251 (Claude Code)\n"
+      "salida": "2.1.252 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): checking… (fetch in progress; re-run in a moment)\n\nRemote Control\nInside a cloud session — Remote Control is un"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nRemote Control\nInside a cloud session — Remote Control is unavailable he"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-es"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-es"
     },
     {
       "id": "PRM-007",
@@ -389,7 +389,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -399,7 +399,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -419,7 +419,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.251)\nCommit: 37534ac596d8\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.251\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-es"
     },
     {
       "id": "HOK-010",
@@ -739,7 +739,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
       "salida": ""
     },
     {
@@ -809,7 +809,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/skills/LEEME.md",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/skills/LEEME.md",
       "salida": ""
     },
     {
@@ -870,7 +870,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude plugin validate entregables/plantillas/agents",
-      "salida": "Validating components in: /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents\n\n✔ Validation passed\n"
+      "salida": "Validating components in: /home/user/manual-claude-code/entregables/plantillas/agents\n\n√ Validation passed\n"
     },
     {
       "id": "SUB-006",
@@ -879,7 +879,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/agents",
       "salida": ""
     },
     {
@@ -909,7 +909,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md",
       "salida": ""
     },
     {
@@ -1069,7 +1069,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/CI.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/CI.md",
       "salida": ""
     },
     {
@@ -1183,6 +1183,116 @@
       "salida": ""
     },
     {
+      "id": "TRB-003",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "El CLI puede escribir su registro de depuración a un archivo, que es la única vía de depurar en modo no interactivo.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "claude --help",
+      "salida": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the cur"
+    },
+    {
+      "id": "TRB-004",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "En modo no interactivo, --debug no imprime nada de depuración por ningún canal, mientras que --debug-file escribe el registro completo.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 1-sep-2026 con la 2.1.252 sobre D6-repo-feo/gestor-pedidos, dos repeticiones por fila. La misma petición trivial con \"claude -p ... --debug\" deja una línea en la salida estándar (la respuesta) y una en la de error (el aviso de confianza del espacio de trabajo), y cero líneas de depuración, tanto en modo texto como con --output-format json. El mismo comando con \"--debug-file /tmp/x.log\" escribe 211 líneas en las dos repeticiones: 205 DEBUG, 3 INFO, 2 ERROR y 1 WARN. Las dos ERROR y la WARN no aparecen en la salida estándar, ni en la de error, ni en ninguno de los 26 campos del JSON de resultado. Es la razón por la que el paso \"arráncalo con --debug\" no sirve en CI ni en un script.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-005",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "Un hook PreToolUse que sale con código 1 no bloquea la herramienta y no deja rastro en el JSON de resultado; uno que sale con 2 bloquea y aparece en permission_denials.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 1-sep-2026 con la 2.1.252 sobre una copia del laboratorio en /tmp, dos repeticiones por fila, con un hook de tres líneas colgado de PreToolUse con matcher \"Read\". Con exit 1 y un mensaje en la salida de error: la lectura se ejecuta, el JSON trae is_error false, subtype success, permission_denials vacío y el proceso sale con 0. El evento existe y solo se ve con --output-format stream-json --include-hook-events, donde el hook_response trae exit_code 1, outcome error y el stderr del hook. Con exit 2: la lectura se bloquea, permission_denials trae una entrada con tool_name Read y el file_path, y el modelo lo cuenta en la respuesta nombrando el hook. El proceso sale con 0 en los dos casos, así que el código de salida no distingue. permission_denials es el campo que hay que vigilar desde CI.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-006",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "El valor console de OTEL_LOGS_EXPORTER se descarta sin error: la telemetría queda activada, con cero exportadores creados, y los eventos se tiran.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 1-sep-2026 con la 2.1.252, dos repeticiones por valor, leyendo el archivo de --debug-file. Con OTEL_LOGS_EXPORTER=console: isTelemetryEnabled=true, getOtlpLogExporters types=[], \"Created 0 log exporter(s)\" y un WARN por cada evento, \"Event dropped (no event logger initialized)\". Con OTEL_LOGS_EXPORTER=otlp y el mismo endpoint: types=[\"otlp\"], \"Created 1 log exporter(s)\" y ningún evento tirado. Cierra el pendiente que el módulo 10 dejó abierto el 31-ago-2026, cuando seis ejecuciones con el exportador de consola no produjeron ningún evento y no se pudo decir por qué: la telemetría no estaba rota, el valor console no entra en la lista de tipos. Nada de esto sale por la salida estándar ni por la de error: solo por --debug-file.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-007",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "claude doctor sale con código 0 aunque encuentre avisos, así que un script que decida por el código de salida da por sana una instalación con problemas.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 1-sep-2026 con la 2.1.252, dos repeticiones. La salida termina en 3 warnings found, con el método de instalación desconocido, un ejecutable roto en ~/.local/bin y una instalación npm sobrante, y el proceso sale con 0. El número de avisos depende de la máquina, por eso es manual: lo que se publica es que el código de salida no los refleja. CLI-002 comprueba aparte que el comando existe y sale con 0.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-008",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "La documentación oficial mantiene un catálogo de errores indexado por mensaje literal, y pasa del centenar de entradas.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"^### \"",
+      "salida": "106\n"
+    },
+    {
+      "id": "TRB-009",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "El except desnudo que se tragaba los fallos de aviso ya no existe en el laboratorio.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -nE \"except:\\s*($|#)\" app.py; test $? -eq 1",
+      "salida": ""
+    },
+    {
+      "id": "TRB-010",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "El laboratorio tiene una prueba que se pone roja si alguien vuelve a tragarse un error sin traza.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/tests/test_diagnostico.py",
+      "salida": ""
+    },
+    {
+      "id": "TRB-011",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "El aviso de que los permisos allow del proyecto se están ignorando sale solo por la salida de error, y no aparece en ninguno de los campos del JSON de resultado.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 1-sep-2026 con la 2.1.252 sobre el laboratorio, cinco repeticiones. El JSON de --output-format json trae 26 campos de primer nivel y ninguno menciona el aviso: is_error false, subtype success, permission_denials vacío, código de salida 0. El texto va íntegro por la salida de error, incluida la ruta exacta de la clave projects que habría que poner en ~/.claude.json. Un \"2>/dev/null\" o un pipe sin redirección de la salida de error lo borra sin dejar constancia. La documentación lo recoge como Workspace has not been trusted, y confirma que deny y ask no se ven afectados. El módulo 09 lo midió contra la 2.1.247 y sigue igual quince versiones de parche después.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-012",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "El modo seguro descarta la configuración del proyecto pero no silencia el aviso de confianza del espacio de trabajo.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 1-sep-2026 con la 2.1.252 sobre el laboratorio, dos repeticiones por fila, con la misma petición trivial. Sin banderas, 41.292 tokens de entrada; con --safe-mode, 37.103. La diferencia son 4.189 tokens, que es lo que el laboratorio entero cuesta por turno contra esta versión; el módulo 09 midió 4.065 contra la 2.1.247 con el mismo método. Las dos filas emiten el mismo aviso de confianza por la salida de error, palabra por palabra: el modo seguro apaga CLAUDE.md, skills, plugins, hooks, servidores MCP y comandos, y no toca los permisos, así que el aviso sobre permissions.allow sigue siendo pertinente y sigue saliendo.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "TRB-013",
+      "capitulo": "11 · Troubleshooting",
+      "afirmacion": "Cuando ves un error del CLI, los reintentos que le tocaban ya se han hecho.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"retries transient failures up to 10 times\"",
+      "salida": "1\n"
+    },
+    {
       "id": "REPO-001",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El repositorio del manual está público, como se decidió el 13 de agosto de 2026.",
@@ -1197,20 +1307,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",

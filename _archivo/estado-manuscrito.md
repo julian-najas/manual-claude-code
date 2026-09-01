@@ -35,6 +35,101 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-01 · Módulo 11 · Troubleshooting · PUBLICADO
+
+Cerrado `manuscrito/modulo-11-troubleshooting.md`, **3.997 palabras**, las seis
+partes del esqueleto y runbook de una página. Verificador contra la **2.1.252**:
+**86 pasan, 0 fallan, 40 a revisar, 6 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. Queda un módulo: el 12.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`; los experimentos destructivos (hook que falla, `settings.json`
+manipulado) se hicieron sobre una copia del laboratorio en `/tmp/lab11`, y nada
+volvió de `/tmp` al repositorio. Lo que el módulo aporta al laboratorio, a
+propósito: el arreglo del `except:` desnudo en `app.py`,
+`tests/test_diagnostico.py` y `DIAGNOSTICO.md`.
+
+**La tesis del módulo, y sale medida.** El `except:` desnudo del repositorio y el
+aviso que sale por la salida de error son **el mismo fallo en dos capas**. Con la
+salida de error apartada, el JSON de resultado trae **26 campos de primer nivel y
+ninguno menciona que se acaban de ignorar tres reglas de `permissions.allow`**:
+`is_error: false`, `subtype: success`, código 0, cinco repeticiones.
+
+**El hallazgo que más va a doler al lector.** Un hook `PreToolUse` que **sale con
+1 no bloquea nada y no deja rastro** en el JSON: `permission_denials` vacío,
+`is_error` falso, proceso con 0. Con `exit 2` sí bloquea y sí aparece. Dos de dos
+por fila. Un veto roto puede llevar semanas sin vetar y todo lo demás sigue
+diciendo que va bien. La única forma de verlo es
+`--output-format stream-json --verbose --include-hook-events`.
+
+**Y el pendiente del módulo 10 queda cerrado, que era el punto 5 de su "PARA
+JULIÁN".** La telemetría **no estaba rota**. Con `--debug-file`, el registro dice
+`isTelemetryEnabled=true`, y después `getOtlpLogExporters: types=[]` y
+`Created 0 log exporter(s)`, con un `[WARN] Event dropped (no event logger
+initialized)` por evento. Con `OTEL_LOGS_EXPORTER=otlp` en vez de `console`:
+`types=["otlp"]` y **1 exportador**, sin eventos tirados. Dos repeticiones por
+valor. **El valor `console` se descarta sin decirlo.** No hace falta la máquina
+con colector de verdad que se pedía: ya es una cifra.
+
+Lo medido, todo con dos repeticiones como mínimo, contra la **2.1.252**:
+
+| Qué | Resultado |
+|---|---|
+| Campos del JSON que mencionan el aviso de confianza | **0 de 26** |
+| Líneas de depuración con `--debug` en modo `-p` | **0** |
+| Líneas con `--debug-file`, mismo comando | **211** (205 DEBUG, 3 INFO, 2 ERROR, 1 WARN) |
+| Hook `exit 1`: ¿bloquea? ¿deja rastro? | **no y no** |
+| Hook `exit 2`: ¿bloquea? ¿`permission_denials`? | sí y sí |
+| `OTEL_LOGS_EXPORTER=console` | tipos `[]`, **0 exportadores**, eventos tirados |
+| `OTEL_LOGS_EXPORTER=otlp` | tipos `["otlp"]`, **1 exportador** |
+| `claude doctor` con 3 avisos: código de salida | **0** |
+| Entradas del catálogo de `errors.md` | **106** (eran 83 el 12-ago) |
+| Impuesto de contexto del laboratorio (`--safe-mode`) | **4.189 tokens** (4.065 el 27-ago con la 2.1.247) |
+| El `except:` desnudo: HTTP, pedido guardado, líneas de registro | **200, sí, 0** |
+| `test_diagnostico.py` contra el código viejo y contra el nuevo | **falla y pasa** |
+| Pruebas del laboratorio | 9 → **11**, las nueve viejas sin tocar |
+
+**La factura del laboratorio, 2.1.252.** Treinta y una invocaciones del CLI,
+quince con el JSON conservado: **947.086 tokens de entrada** y **2.025 de
+salida**, **0,61 dólares**, por debajo de 0,70 €. De la entrada, **845.049
+servidos desde caché (89,2 %)**. Relación entrada salida **467,7 a 1**, contra el
+90,5 del módulo 10 y el 24 de `D4-factura/`. **Diagnosticar es la actividad más
+desequilibrada que hemos medido**: se relee la configuración entera para obtener
+dos palabras. Y otra vez la caché: la misma pregunta, dos veces seguidas y sin
+cambiar nada, 0,205 $ y 0,037 $.
+
+### PARA JULIÁN
+
+1. **El catálogo de `errors.md` ha crecido un 28 % en veinte días**, de 83
+   entradas a 106, y la página de 223.030 a 347.515 bytes. `guia-21/M18` publica
+   el recuento viejo con su fecha y su versión, que es correcto para lo que dice.
+   **No he tocado la guía-21**, como en los módulos 09 y 10. Decide si se
+   reescribe la tabla 14 o si se le pone una nota de "recuento del 12-ago-2026".
+2. **`TRB-001` del esqueleto es floja y la he dejado como estaba.** Dice "claude
+   update comprueba e instala actualizaciones" y se comprueba con un patrón sobre
+   `--help`. No es falsa, pero no aporta nada al módulo y no aparece en el texto.
+   Las once entradas nuevas (`TRB-003` a `TRB-013`) son las que sostienen lo que
+   se publica. **Si quieres retirar `TRB-001`, dilo; no borro entradas del
+   esqueleto por mi cuenta.**
+3. **El arreglo del `except:` toca `app.py`, que es material sembrado.** El fallo
+   5 del inventario queda cazado, como manda `guion-de-doma.md`, y la decisión de
+   2019 se conserva: el pedido sigue adelante si falla el aviso. **Lo que no he
+   hecho es actualizar el inventario del guion de doma para marcar el 5 como
+   cerrado**, porque el resto de módulos tampoco marcan los suyos y no quiero
+   inventar una convención. Si la quieres, es una columna más en esa tabla.
+4. **`--debug` no imprime nada en modo `-p`, y eso puede ser un fallo del CLI.**
+   Cero líneas en texto y en JSON, dos repeticiones cada una, mientras
+   `--debug-file` escribe 211 en el mismo comando. El módulo lo publica como
+   medición, no como diagnóstico del CLI. **Si quieres que se reporte, el reporte
+   sale de aquí en cinco minutos**, pero antes hay que decidir qué transcripción
+   se manda: se retienen cinco años y la clave de pasarela está en el repositorio
+   que el agente ha leído.
+5. **Este entorno sigue sin la confianza del espacio de trabajo aceptada**, así
+   que los `permissions.allow` del laboratorio se ignoran en todas las
+   mediciones. Es lo que hace posible medir el aviso, así que hoy ha jugado a
+   favor. Conviene seguir sabiéndolo antes de publicar cualquier cifra de
+   permisos.
+
 ## 2026-08-31 · Módulo 10 · Seguridad y costes · PUBLICADO
 
 Cerrado `manuscrito/modulo-10-seguridad-y-costes.md`, **4.007 palabras**, las

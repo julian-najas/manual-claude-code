@@ -992,6 +992,98 @@ pruebas:
     nota: "Requiere una máquina limpia. Se comprueba en la revisión trimestral."
 
   # ---------------------------------------------------------------------
+  # Módulo 11. Las dos de arriba son las del esqueleto; las de abajo se
+  # añaden el 1-sep-2026 al escribir el módulo. El hilo que las une es el
+  # mismo: un fallo que no llega a ningún canal que alguien lea es un fallo
+  # que no existe hasta que cuesta una tarde.
+  # ---------------------------------------------------------------------
+
+  - id: TRB-003
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "El CLI puede escribir su registro de depuración a un archivo, que es la única vía de depurar en modo no interactivo."
+    tipo: cli
+    comando: ["claude", "--help"]
+    espera_patron: 'debug-file'
+    nota: "La bandera es --debug-file <ruta> y activa el modo depuración de forma implícita. Se comprueba que existe, no su comportamiento: eso lo mide TRB-004, que gasta tokens."
+
+  - id: TRB-004
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "En modo no interactivo, --debug no imprime nada de depuración por ningún canal, mientras que --debug-file escribe el registro completo."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 1-sep-2026 con la 2.1.252 sobre D6-repo-feo/gestor-pedidos, dos repeticiones por fila. La misma petición trivial con "claude -p ... --debug" deja una línea en la salida estándar (la respuesta) y una en la de error (el aviso de confianza del espacio de trabajo), y cero líneas de depuración, tanto en modo texto como con --output-format json. El mismo comando con "--debug-file /tmp/x.log" escribe 211 líneas en las dos repeticiones: 205 DEBUG, 3 INFO, 2 ERROR y 1 WARN. Las dos ERROR y la WARN no aparecen en la salida estándar, ni en la de error, ni en ninguno de los 26 campos del JSON de resultado. Es la razón por la que el paso "arráncalo con --debug" no sirve en CI ni en un script.'
+
+  - id: TRB-005
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "Un hook PreToolUse que sale con código 1 no bloquea la herramienta y no deja rastro en el JSON de resultado; uno que sale con 2 bloquea y aparece en permission_denials."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 1-sep-2026 con la 2.1.252 sobre una copia del laboratorio en /tmp, dos repeticiones por fila, con un hook de tres líneas colgado de PreToolUse con matcher "Read". Con exit 1 y un mensaje en la salida de error: la lectura se ejecuta, el JSON trae is_error false, subtype success, permission_denials vacío y el proceso sale con 0. El evento existe y solo se ve con --output-format stream-json --include-hook-events, donde el hook_response trae exit_code 1, outcome error y el stderr del hook. Con exit 2: la lectura se bloquea, permission_denials trae una entrada con tool_name Read y el file_path, y el modelo lo cuenta en la respuesta nombrando el hook. El proceso sale con 0 en los dos casos, así que el código de salida no distingue. permission_denials es el campo que hay que vigilar desde CI.'
+
+  - id: TRB-006
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "El valor console de OTEL_LOGS_EXPORTER se descarta sin error: la telemetría queda activada, con cero exportadores creados, y los eventos se tiran."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 1-sep-2026 con la 2.1.252, dos repeticiones por valor, leyendo el archivo de --debug-file. Con OTEL_LOGS_EXPORTER=console: isTelemetryEnabled=true, getOtlpLogExporters types=[], "Created 0 log exporter(s)" y un WARN por cada evento, "Event dropped (no event logger initialized)". Con OTEL_LOGS_EXPORTER=otlp y el mismo endpoint: types=["otlp"], "Created 1 log exporter(s)" y ningún evento tirado. Cierra el pendiente que el módulo 10 dejó abierto el 31-ago-2026, cuando seis ejecuciones con el exportador de consola no produjeron ningún evento y no se pudo decir por qué: la telemetría no estaba rota, el valor console no entra en la lista de tipos. Nada de esto sale por la salida estándar ni por la de error: solo por --debug-file.'
+
+  - id: TRB-007
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "claude doctor sale con código 0 aunque encuentre avisos, así que un script que decida por el código de salida da por sana una instalación con problemas."
+    tipo: manual
+    nota: "Medido el 1-sep-2026 con la 2.1.252, dos repeticiones. La salida termina en 3 warnings found, con el método de instalación desconocido, un ejecutable roto en ~/.local/bin y una instalación npm sobrante, y el proceso sale con 0. El número de avisos depende de la máquina, por eso es manual: lo que se publica es que el código de salida no los refleja. CLI-002 comprueba aparte que el comando existe y sale con 0."
+
+  - id: TRB-008
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "La documentación oficial mantiene un catálogo de errores indexado por mensaje literal, y pasa del centenar de entradas."
+    tipo: cli
+    comando: ['bash', '-c', 'D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "^### "']
+    espera_salida: 0
+    red: true
+    espera_patron: '^\s*(9[0-9]|[1-9][0-9][0-9]+|SIN-RED)\s*$'
+    nota: "El 1-sep-2026 daban 106 entradas repartidas en 15 categorías, con una tabla de 205 filas que indexa por mensaje literal. La guía contó 83 el 12-ago-2026 contra la 2.1.228: veinte días, veintitrés entradas más y 124 KB más de página. El umbral es 90 para que la prueba mida la afirmación del libro, que el catálogo pasa del centenar y crece, y no el recuento exacto de un día."
+
+  - id: TRB-009
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "El except desnudo que se tragaba los fallos de aviso ya no existe en el laboratorio."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ['bash', '-c', 'grep -nE "except:\s*($|#)" app.py; test $? -eq 1']
+    espera_salida: 0
+    nota: "Es el fallo 5 del inventario del guion de doma, y el que cierra el laboratorio del módulo 11. grep sale con 1 cuando no encuentra nada, que es lo que se quiere: si alguien repone el except desnudo, la prueba se pone roja. El comportamiento de 2019 se conserva a propósito, el pedido sigue adelante si falla el aviso; lo que cambia es que queda escrito."
+
+  - id: TRB-010
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "El laboratorio tiene una prueba que se pone roja si alguien vuelve a tragarse un error sin traza."
+    tipo: fichero
+    ruta: "D6-repo-feo/gestor-pedidos/tests/test_diagnostico.py"
+    nota: "Dos pruebas. La primera fija la decisión de 2019, que un aviso fallido no tumba el pedido, y pasaba también contra el código viejo. La segunda comprueba que queda una entrada de nivel ERROR y que lleva exc_info, que es lo que distingue log.exception de log.error. Comprobado el 1-sep-2026 contra las dos versiones del archivo: contra el except desnudo falla en la primera aserción con la lista de registros vacía, contra el código de hoy pasa. Se registra como fichero y no como cli porque ejecutarla necesita flask y pytest instalados, y una dependencia ausente daría FALLA por el motivo equivocado."
+
+  - id: TRB-011
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "El aviso de que los permisos allow del proyecto se están ignorando sale solo por la salida de error, y no aparece en ninguno de los campos del JSON de resultado."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 1-sep-2026 con la 2.1.252 sobre el laboratorio, cinco repeticiones. El JSON de --output-format json trae 26 campos de primer nivel y ninguno menciona el aviso: is_error false, subtype success, permission_denials vacío, código de salida 0. El texto va íntegro por la salida de error, incluida la ruta exacta de la clave projects que habría que poner en ~/.claude.json. Un "2>/dev/null" o un pipe sin redirección de la salida de error lo borra sin dejar constancia. La documentación lo recoge como Workspace has not been trusted, y confirma que deny y ask no se ven afectados. El módulo 09 lo midió contra la 2.1.247 y sigue igual quince versiones de parche después.'
+
+  - id: TRB-012
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "El modo seguro descarta la configuración del proyecto pero no silencia el aviso de confianza del espacio de trabajo."
+    tipo: manual
+    coste: true
+    nota: "Medido el 1-sep-2026 con la 2.1.252 sobre el laboratorio, dos repeticiones por fila, con la misma petición trivial. Sin banderas, 41.292 tokens de entrada; con --safe-mode, 37.103. La diferencia son 4.189 tokens, que es lo que el laboratorio entero cuesta por turno contra esta versión; el módulo 09 midió 4.065 contra la 2.1.247 con el mismo método. Las dos filas emiten el mismo aviso de confianza por la salida de error, palabra por palabra: el modo seguro apaga CLAUDE.md, skills, plugins, hooks, servidores MCP y comandos, y no toca los permisos, así que el aviso sobre permissions.allow sigue siendo pertinente y sigue saliendo."
+
+  - id: TRB-013
+    capitulo: "11 · Troubleshooting"
+    afirmacion: "Cuando ves un error del CLI, los reintentos que le tocaban ya se han hecho."
+    tipo: cli
+    comando: ['bash', '-c', 'D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "retries transient failures up to 10 times"']
+    espera_salida: 0
+    red: true
+    espera_patron: '^\s*([1-9][0-9]*|SIN-RED)\s*$'
+    nota: "Diez reintentos con retroceso exponencial antes de enseñar un error. La página separa además qué fallos reciben el presupuesto completo, cuáles uno menor y cuáles ninguno; los de certificado TLS no se reintentan a propósito, para que se vean a la primera. Es la afirmación que hace inútil el relanzar a ver si esta vez pilla."
+
+  # ---------------------------------------------------------------------
   # Gobierno del propio proyecto.
   #
   # Estas dos no comprueban Claude Code: comprueban que este proyecto sigue

@@ -7,9 +7,20 @@
 
 import sqlite3
 import os
+import logging
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
+
+# Módulo 11 del manual. Antes de esto no había registro de ninguna clase: el
+# except: desnudo de procesar_pedido() se tragaba los fallos de aviso y no
+# quedaba rastro en ningún sitio. Nivel por entorno, para que en una prueba se
+# pueda subir sin tocar el código.
+logging.basicConfig(
+    level=os.environ.get("NIVEL_LOG", "INFO"),
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+log = logging.getLogger("gestor-pedidos")
 
 API_KEY_PASARELA = "PSP-LIVE-9f2b41c7a8e3d6104b5f7e29"  # clave de produccion
 DB = "datos/pedidos.db"
@@ -94,8 +105,15 @@ def procesar_pedido():
     if d.get("email"):
         try:
             enviar_email(d["email"], pid, total)
-        except:            # si falla el email no bloqueamos el pedido
-            pass
+        except Exception:
+            # La decisión de 2019 sigue en pie: si falla el aviso no se bloquea
+            # el pedido. Lo que cambia es que ahora se entera alguien. Con
+            # .exception() la traza entera va al registro, y el pedido continúa.
+            log.exception(
+                "fallo al enviar el aviso del pedido %s a %s; el pedido sigue adelante",
+                pid,
+                d["email"],
+            )
 
     # facturar
     if total > 0:
