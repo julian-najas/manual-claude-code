@@ -1,14 +1,14 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.252 (Claude Code)",
-  "sistema": "Linux 6.17.0-1022-azure",
-  "python": "3.12.3",
-  "fecha_utc": "2026-09-01 07:00:21 UTC",
+  "cli_verificado": "2.1.258 (Claude Code)",
+  "sistema": "Linux 6.18.44-fc-v22",
+  "python": "3.11.15",
+  "fecha_utc": "2026-09-02 06:48:17 UTC",
   "resumen": {
-    "PASA": 88,
+    "PASA": 93,
     "FALLA": 0,
-    "REVISAR": 38,
+    "REVISAR": 45,
     "OMITIDO": 6
   },
   "pruebas": [
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.252 (Claude Code)\n"
+      "salida": "2.1.258 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.252\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.258)\nCommit: b3cd543a1f6f\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nRemote Control\nInside a cloud session — Remote Control is unavailable he"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.252\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nRemote Control\nRemote Control requ"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.258)\nCommit: b3cd543a1f6f\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nRemote Control\nInside a cloud session — Remote Control is unavailable he"
     },
     {
       "id": "CLI-005",
@@ -80,7 +80,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c L=\"$HOME/.local/bin/claude\"; if [ -L \"$L\" ]; then readlink \"$L\" | grep -q \"/.local/share/claude/versions/\" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi",
-      "salida": "LANZADOR-ES-ENLACE-A-VERSIONS\n"
+      "salida": "NO-APLICA-SIN-INSTALACION-NATIVA\n"
     },
     {
       "id": "CLI-008",
@@ -195,22 +195,22 @@
     {
       "id": "CTX-006",
       "capitulo": "03 · Memoria y contexto",
-      "afirmacion": "El CLAUDE.md del laboratorio declara por escrito que no hay ningún archivo de configuración en uso, que es la respuesta correcta y no la intuitiva.",
+      "afirmacion": "El CLAUDE.md del laboratorio declara por escrito cuál es el archivo de configuración que manda, y lo que declara es verdad.",
       "tipo": "cli",
       "resultado": "PASA",
       "motivo": "comprobado",
-      "comando": "grep -q No hay archivo de configuración en uso CLAUDE.md",
+      "comando": "grep -q Manda `config.py`, y `app.py` lo importa de verdad CLAUDE.md",
       "salida": ""
     },
     {
       "id": "CTX-007",
       "capitulo": "03 · Memoria y contexto",
-      "afirmacion": "En gestor-pedidos ningún archivo importa config, settings ni utils: los tres módulos están muertos y app.py fija sus valores a mano.",
+      "afirmacion": "En gestor-pedidos utils.py sigue muerto: nadie lo importa, calcular_iva() incluida.",
       "tipo": "cli",
       "resultado": "PASA",
       "motivo": "comprobado",
-      "comando": "bash -c n=$(grep -rlE \"^(import|from) (config|settings|utils)\" --include=*.py . | wc -l); [ \"$n\" = \"0\" ] && echo NADIE-IMPORTA-LOS-TRES || echo ALGUIEN-LOS-IMPORTA",
-      "salida": "NADIE-IMPORTA-LOS-TRES\n"
+      "comando": "bash -c n=$(grep -rlE \"^(import|from) utils\" --include=*.py . | wc -l); [ \"$n\" = \"0\" ] && echo NADIE-IMPORTA-UTILS || echo ALGUIEN-LO-IMPORTA",
+      "salida": "NADIE-IMPORTA-UTILS\n"
     },
     {
       "id": "CTX-008",
@@ -299,7 +299,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/.claude",
+      "comando": "test -e /root/.claude",
       "salida": ""
     },
     {
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.252\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.258)\nCommit: b3cd543a1f6f\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-es"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.252\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.258)\nCommit: b3cd543a1f6f\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-es"
     },
     {
       "id": "PRM-007",
@@ -389,7 +389,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/permisos",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/permisos",
       "salida": ""
     },
     {
@@ -399,7 +399,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/devcontainer/devcontainer.json",
       "salida": ""
     },
     {
@@ -419,7 +419,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/PERMISOS.md",
       "salida": ""
     },
     {
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.252)\nCommit: c0778c45886d\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.252\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\n\nInvalid settings\n- /home/runner/wo"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.258)\nCommit: b3cd543a1f6f\nPlatform: linux-x64\nPath: /opt/claude-code/bin/claude\nConfig install method: unknown\nSearch: OK (/usr/bin/rg)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): none configured for this organization\n\nInvalid settings\n- /home/user/manual-claude-code/D2-verificador/sonda-es"
     },
     {
       "id": "HOK-010",
@@ -739,7 +739,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/SKILLS.md",
       "salida": ""
     },
     {
@@ -809,7 +809,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/skills/LEEME.md",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/skills/LEEME.md",
       "salida": ""
     },
     {
@@ -870,7 +870,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude plugin validate entregables/plantillas/agents",
-      "salida": "Validating components in: /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents\n\n✔ Validation passed\n"
+      "salida": "Validating components in: /home/user/manual-claude-code/entregables/plantillas/agents\n\n√ Validation passed\n"
     },
     {
       "id": "SUB-006",
@@ -879,7 +879,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/agents",
+      "comando": "test -e /home/user/manual-claude-code/entregables/plantillas/agents",
       "salida": ""
     },
     {
@@ -909,7 +909,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/AGENTES.md",
       "salida": ""
     },
     {
@@ -1035,11 +1035,11 @@
     {
       "id": "CID-011",
       "capitulo": "09 · Git, CI e IDE",
-      "afirmacion": "El laboratorio tiene nueve pruebas de caracterización, y cinco de ellas fijan por escrito un comportamiento que está mal en vez de arreglarlo.",
+      "afirmacion": "El laboratorio conserva pruebas de caracterización que fijan por escrito un comportamiento que está mal en vez de arreglarlo, y las que fijaban un fallo ya arreglado se sustituyeron en vez de editarse.",
       "tipo": "cli",
       "resultado": "PASA",
       "motivo": "comprobado",
-      "comando": "python3 -c import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py').read_text(encoding='utf-8'); sys.exit(0 if len(re.findall('^def test_', t, re.M))==9 and len(re.findall('^def test_hoy_', t, re.M))==5 else 1)",
+      "comando": "python3 -c import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py').read_text(encoding='utf-8'); sys.exit(0 if len(re.findall('^def test_', t, re.M))==11 and len(re.findall('^def test_hoy_', t, re.M))==2 else 1)",
       "salida": ""
     },
     {
@@ -1069,7 +1069,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/CI.md",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/CI.md",
       "salida": ""
     },
     {
@@ -1240,7 +1240,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"^### \"",
-      "salida": "106\n"
+      "salida": "107\n"
     },
     {
       "id": "TRB-009",
@@ -1259,7 +1259,7 @@
       "tipo": "fichero",
       "resultado": "PASA",
       "motivo": "existe",
-      "comando": "test -e /home/runner/work/manual-claude-code/manual-claude-code/D6-repo-feo/gestor-pedidos/tests/test_diagnostico.py",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/tests/test_diagnostico.py",
       "salida": ""
     },
     {
@@ -1307,20 +1307,20 @@
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El companion público sigue publicado: si dejara de serlo, GitHub Pages dejaría de servir las 156 páginas.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 -o /dev/null -w %{http_code} https://github.com/julian-najas/claude-code-companion",
-      "salida": "200"
+      "salida": "403"
     },
     {
       "id": "REPO-003",
       "capitulo": "00 · Gobierno del proyecto",
       "afirmacion": "El sitio del companion responde y sirve el índice por síntoma.",
       "tipo": "cli",
-      "resultado": "PASA",
-      "motivo": "comprobado",
+      "resultado": "REVISAR",
+      "motivo": "sin salida a Internet desde esta máquina: la afirmación no se ha podido comprobar, que no es lo mismo que ser falsa",
       "comando": "curl -sS --max-time 25 https://julian-najas.github.io/claude-code-companion/",
-      "salida": "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Índice por síntoma · Claude Code en producción</title>\n<meta name=\"description\" content=\"155 síntomas reales de Claude Code con su causa, y 155 con el procedimiento completo y su comprobación: skills que no se activan, contexto que se agota, hooks que no disparan, "
+      "salida": "curl: (56) CONNECT tunnel failed, response 403\n"
     },
     {
       "id": "SEG-001",
@@ -1329,6 +1329,126 @@
       "tipo": "cli",
       "resultado": "OMITIDO",
       "motivo": "prueba destructiva, documentada pero nunca ejecutada",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CAS-001",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "procesar_pedido() ya no hace ocho cosas: las siete responsabilidades están extraídas a funciones propias y el endpoint solo las ordena.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -c \"^def \\(validar\\|subtotal_lineas\\|aplicar_iva\\|descuento_cliente_antiguo\\|guardar\\|notificar\\|facturar\\)(\" app.py",
+      "salida": "7\n"
+    },
+    {
+      "id": "CAS-002",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "En el laboratorio ya no hay tipo de IVA por defecto: los tipos viven en una tabla por país y lo que no está en ella se rechaza.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -q \"IVA_POR_PAIS\" config.py && grep -q \"raise PaisSinTipoDeIVA\" app.py && echo OK",
+      "salida": "OK\n"
+    },
+    {
+      "id": "CAS-003",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "El laboratorio tiene un sitio con nombre donde consta qué se decidió, por qué, y qué sigue sin decidirse.",
+      "tipo": "fichero",
+      "resultado": "PASA",
+      "motivo": "existe",
+      "comando": "test -e /home/user/manual-claude-code/D6-repo-feo/gestor-pedidos/DECISIONES.md",
+      "salida": ""
+    },
+    {
+      "id": "CAS-004",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "Cuando la decisión de negocio no está escrita en el repositorio, el agente la toma él para poder terminar la tarea.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 2-sep-2026 con la 2.1.258 sobre copias del laboratorio en /tmp, con herramientas Read, Glob, Grep, Edit y Write y sin Bash. Cinco ejecuciones de cinco, en dos formulaciones distintas (tres pidiendo solo el IVA, dos pidiendo los tres casos del módulo a la vez), fijaron el IVA de los países que no son ES ni PT en el 0 por ciento, sin que nadie se lo dijera y sin marcarlo como pendiente. Dos de las cinco borraron además el comentario # revisar con gestoria, que era el único sitio del repositorio donde constaba que la pregunta seguía abierta. Ninguna se equivocó en lo que se le pidió, ninguna rompió nada y las cinco tocaron solo los archivos pertinentes: el problema no es la calidad del cambio, es que contestaron una pregunta que no se les hizo. La prueba se marca como manual porque el resultado depende del modelo y de la versión, y lo que se publica es el patrón, no el 0 por ciento concreto.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CAS-005",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "Una frase que prohíbe tomar la decisión de negocio hace que el agente no edite nada, y además sale más barata que dejarle terminar.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 2-sep-2026 con la 2.1.258 sobre copias del laboratorio, dos repeticiones por fila, misma petición y mismas herramientas, cambiando UNA sola cosa: añadir al final \"Si el arreglo necesita una decision de negocio que no esta escrita en el repositorio, NO la tomes tu: no edites nada y dime cual es la decision que falta\". Sin la frase: edita app.py, 239.730 y 234.954 tokens de entrada, 0,1131 y 0,1069 dólares, y las dos pruebas test_hoy_ del IVA se ponen rojas. Con la frase: cero archivos tocados, 140.948 y 139.740 tokens, 0,0888 y 0,0847 dólares, las once pruebas pasando y una respuesta que nombra la decisión que falta. Un 41 por ciento menos de tokens de entrada, porque un agente que se para antes de editar se ahorra el ciclo entero de escribir, releer y comprobar.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CAS-006",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "Una refactorización que solo mueve código es repetible entre ejecuciones y conserva el comportamiento; la que necesita una decisión, no.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 2-sep-2026 con la 2.1.258, dos repeticiones por tarea sobre copias limpias del laboratorio. Desmontar procesar_pedido(): las dos ejecuciones extrajeron siete funciones con los mismos nombres salvo una (calcular_subtotal_lineas frente a calcular_total_lineas), tocaron solo app.py, y las once pruebas de entonces siguieron pasando las dos veces. Arreglar el IVA: las dos ejecuciones también coincidieron, y en lo que coincidieron fue en tomar una decisión de negocio que nadie les dio. La conclusión operativa del módulo sale de comparar las dos filas: lo mecánico se delega y se verifica, lo que decide no.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CAS-007",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "Una refactorización correcta que conserva el comportamiento puede arrancar la costura por la que las pruebas agarran la aplicación, y entonces no hay fallos sino errores de montaje.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 2-sep-2026 con la 2.1.258. Misma petición dos veces, unificar config.py y settings.py, sobre copias limpias. Las dos conservaron el comportamiento de la aplicación y los valores en ejecución (MAX_LINEAS en 50 y no el 100 del archivo nuevo). La primera dejó DB = config.DB_PATH como nombre de módulo y las once pruebas pasaron. La segunda metió config.DB_PATH directamente dentro de conexion(), que es más limpio, y las once dieron ERROR en el montaje con AttributeError: module app has no attribute DB, porque el fixture de tests/ hace monkeypatch de app.DB. Es la única medición del módulo cuyas dos repeticiones no coincidieron, y la discrepancia es el hallazgo. Consecuencia para CI: once errores de montaje producen CERO apariciones de la palabra failed en la salida de pytest, así que un paso que busque failed aprueba el commit que acaba de dejar la red de pruebas colgando.",
+      "comando": "",
+      "salida": ""
+    },
+    {
+      "id": "CAS-008",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "El repositorio del laboratorio ya no tiene dos archivos de configuración que se contradigan: settings.py no existe y config.py se importa de verdad.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c test ! -e settings.py && grep -q \"^import config\" app.py && echo OK",
+      "salida": "OK\n"
+    },
+    {
+      "id": "CAS-009",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "Las pruebas del laboratorio cubren los cuatro países de la tabla de IVA, más el país que no está en ella y el pedido sin país.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -c \"^def test_\" tests/test_caracterizacion.py",
+      "salida": "11\n"
+    },
+    {
+      "id": "CAS-010",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "La decisión sobre si los dos descuentos por cantidad se acumulan está tomada y escrita, y su prueba ya no dice hoy.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c grep -q \"DESCUENTO_MAS_DE_100\" config.py && grep -q \"^def test_los_dos_descuentos_de_cantidad_se_acumulan_a_proposito\" tests/test_caracterizacion.py && echo OK",
+      "salida": "OK\n"
+    },
+    {
+      "id": "CAS-011",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "La receta oficial de refactorización pide conservar el comportamiento, y la de pruebas termina en un paso que sobre una red de caracterización es el movimiento equivocado.",
+      "tipo": "cli",
+      "resultado": "PASA",
+      "motivo": "comprobado",
+      "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/common-workflows.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"maintaining the same behavior\"",
+      "salida": "1\n"
+    },
+    {
+      "id": "CAS-012",
+      "capitulo": "12 · Casos completos",
+      "afirmacion": "Lo que el módulo 12 añade al repositorio cuesta diecisiete tokens por turno, y el archivo de decisiones no cuesta ninguno.",
+      "tipo": "manual",
+      "resultado": "REVISAR",
+      "motivo": "Medido el 2-sep-2026 con la 2.1.258 sobre el laboratorio, dos repeticiones por fila con la misma petición trivial y las cifras idénticas al token en las dos. Un directorio vacío, 42.540 tokens de entrada. El laboratorio antes del módulo 12, 44.319, o sea 1.779 de impuesto. El laboratorio después, 44.336, o sea 1.796. La diferencia son 17 tokens y son de la tabla reescrita del CLAUDE.md: DECISIONES.md no aparece en el contexto porque no es memoria, es un archivo que se abre bajo demanda. El módulo 09 midió 1.781 con el mismo método contra la 2.1.247 y el 11 midió 4.189 para lo que quita --safe-mode, número que hoy sale idéntico. Once versiones de parche y dos tokens de diferencia sobre mil setecientos: el impuesto de contexto se puede presupuestar.",
       "comando": "",
       "salida": ""
     }

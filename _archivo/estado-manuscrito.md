@@ -35,6 +35,102 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-02 · Módulo 12 · Casos completos · PUBLICADO · ULTIMO MODULO
+
+Cerrado `manuscrito/modulo-12-casos-completos.md`, **3.998 palabras**, las seis
+partes del esqueleto y runbook de una página. Verificador contra la **2.1.258**:
+**93 pasan, 0 fallan, 45 a revisar, 6 omitidas**. Coherencia y
+`construir.py --comprobar`, las dos en verde. **Con esto están escritos los doce
+módulos.** Lo que queda del producto no son módulos: son los preliminares y el
+cierre que el esqueleto lista como pendientes (portada, "cómo leer este libro",
+glosario) y el modo escéptico, que ya está escrito.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`. Los cinco experimentos con el agente editando se hicieron
+sobre copias del laboratorio en `/tmp/run-*`, creadas con `tar` desde el
+repositorio hacia `/tmp`, y **nada volvió de `/tmp` al repositorio**: lo que
+entró se escribió con Write. Una ejecución del "todo junto" se pasó de los 120 s
+del primer plano y hubo que relanzarla en segundo plano; el JSON de la cortada
+se completó después y se usó igual, pero el `pytest` que corrí sobre ella a
+mitad de vuelo no valía y se repitió.
+
+**La tesis del módulo, y sale medida.** Dentro de cada tarea hay dos trabajos y
+solo uno se puede delegar. Lo mecánico es repetible: dos ejecuciones
+independientes desmontaron `procesar_pedido()` en **las mismas siete funciones**,
+con una sola diferencia de nombre, y las once pruebas siguieron pasando las dos
+veces. Lo que necesita una decisión, no: **cinco ejecuciones de cinco, en dos
+formulaciones distintas, fijaron el IVA de fuera de ES y PT en el 0 %** sin que
+nadie se lo dijera, y dos borraron el comentario `# revisar con gestoria` que
+era el único rastro de que la pregunta seguía abierta. No se equivocó ninguna:
+contestaron una pregunta que no se les hizo, porque para terminar la que sí se
+les hizo tenían que contestarla.
+
+**El hallazgo que ahorra dinero.** Añadir una frase prohibiendo tomar la
+decisión de negocio deja **cero archivos tocados** y **un 41 % menos de tokens
+de entrada** (140.948 y 139.740 frente a 239.730 y 234.954), dos de dos. Es la
+única vez en el libro que la instrucción que quita riesgo es también la que
+quita gasto: un agente que se para antes de editar se ahorra el ciclo de
+escribir, releer y comprobar.
+
+**El hallazgo que más va a doler al lector.** Es la única medida del módulo
+cuyas dos repeticiones **no coincidieron**, y la discrepancia es el hallazgo.
+Misma petición para unificar la configuración: las dos conservaron el
+comportamiento y los valores en ejecución, pero la segunda metió
+`config.DB_PATH` dentro de `conexion()` y borró el nombre `app.DB`, del que
+cuelga el `monkeypatch` del fixture. Resultado: **11 pasan frente a 11 ERROR**.
+Y el remate para CI: **once errores de montaje dan cero `failed`**, así que un
+paso que haga `grep failed` aprueba el commit que acaba de dejar la red de
+pruebas colgando.
+
+**Aportación al laboratorio, a propósito:** `procesar_pedido()` desmontada en
+siete funciones más el endpoint que las ordena; `config.IVA_POR_PAIS` con cuatro
+países y sin tipo por defecto (un país fuera de la tabla devuelve 400 con el
+país en el cuerpo); `settings.py` **borrado** y `config.py` importado de verdad;
+`DECISIONES.md` nuevo con cuatro entradas; `CLAUDE.md` reescrito en el mismo
+commit que el código; y las pruebas de 9 a 11, con las dos `test_hoy_` del IVA
+sustituidas por seis y la del descuento renombrada. **13 en verde.**
+
+**Tres entradas del registro cambiaron de contenido, y estaba previsto.**
+`CTX-006`, `CTX-007` y `CID-011` se pusieron rojas al arreglar el laboratorio.
+La nota de `CID-011` decía desde el 27-ago que el día que el módulo 12 arreglara
+el IVA tenían que fallar. Se actualizaron al estado de hoy dejando escrito en la
+nota qué comprobaban antes y por qué cambió. Igual el hecho canónico
+`CONFIG-NINGUNO-SE-USA`, que ahora describe las dos épocas: el punto de partida
+de los módulos 01 a 11 y lo que dejó el 12.
+
+### PARA JULIAN
+
+Cuatro decisiones, y ninguna la he tomado yo. Están todas en
+`D6-repo-feo/gestor-pedidos/DECISIONES.md` marcadas como pendientes:
+
+1. **Qué países van en `IVA_POR_PAIS` y con qué tipo.** He puesto cuatro (ES,
+   PT, FR, IT) porque el contrato del esqueleto pide que las pruebas cubran
+   cuatro países, y he dejado escrito en el archivo y en el módulo que **el
+   manual no certifica tipos impositivos**: son un dato de negocio. Si prefieres
+   otros cuatro, o que la tabla del laboratorio lleve valores obviamente ficticios
+   para que nadie los copie a producción, es cambiar `config.py` y cuatro
+   números literales en las pruebas.
+2. **Si un pedido sin campo `pais` debe rechazarse.** Hoy lo rechazo, porque el
+   código no puede distinguir "no sé" de "España" y esa confusión era el fallo 4.
+   Consecuencia real y escrita: **todo pedido que llegue sin `pais` deja de
+   crearse**. Si crees que el módulo debe enseñar la ventana de transición
+   (aceptar `ES` por defecto con fecha de caducidad) en vez del corte limpio,
+   dilo y lo cambio: es media página del caso B.
+3. **Si los dos descuentos por cantidad deben seguir acumulándose.** He
+   congelado el comportamiento de 2019 a propósito, con el argumento de que un
+   cambio de precios no se cuela dentro de una refactorización. La decisión de
+   negocio sigue sin tomarse y está marcada como tal.
+4. **Si el fallo 8 debe quedar arreglado en el repositorio que se entrega.** El
+   módulo 12 lo arregla porque el esqueleto se lo pide, pero eso deja el
+   laboratorio del módulo 03 describiendo un estado que el lector ya no se
+   encuentra si clona el repo al final. Las opciones son dejarlo así y decirlo
+   en el guion de doma, o entregar dos etiquetas del repositorio, una de partida
+   y otra de llegada. **Yo no elijo esto: cambia cómo se empaqueta el producto.**
+
+Y una quinta, que es del libro y no del laboratorio: **ahora que están los doce,
+hay que decidir el orden de los preliminares y quién escribe la portada.** El
+esqueleto los lista pendientes desde el principio.
+
 ## 2026-09-01 · Módulo 11 · Troubleshooting · PUBLICADO
 
 Cerrado `manuscrito/modulo-11-troubleshooting.md`, **3.997 palabras**, las seis

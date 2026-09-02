@@ -170,22 +170,22 @@ pruebas:
 
   - id: CTX-006
     capitulo: "03 · Memoria y contexto"
-    afirmacion: "El CLAUDE.md del laboratorio declara por escrito que no hay ningún archivo de configuración en uso, que es la respuesta correcta y no la intuitiva."
+    afirmacion: "El CLAUDE.md del laboratorio declara por escrito cuál es el archivo de configuración que manda, y lo que declara es verdad."
     tipo: cli
-    comando: ["grep", "-q", "No hay archivo de configuración en uso", "CLAUDE.md"]
+    comando: ["grep", "-q", "Manda `config.py`, y `app.py` lo importa de verdad", "CLAUDE.md"]
     directorio: "D6-repo-feo/gestor-pedidos"
     espera_salida: 0
-    nota: "Es el criterio PASA del módulo. Si alguien reescribe el CLAUDE.md diciendo que manda settings.py, esta prueba se pone roja, que es exactamente lo que queremos."
+    nota: "Es el criterio PASA del módulo 03, y sigue siendo el mismo: que el CLAUDE.md diga la verdad sobre la configuración. Lo que cambió el 2-sep-2026 es la verdad, no el criterio. Hasta ese día esta prueba buscaba la frase 'No hay archivo de configuración en uso', que era la respuesta correcta y la no intuitiva: había dos archivos que se contradecían y no se importaba ninguno. El módulo 12 unificó la configuración en config.py y borró settings.py, y el CLAUDE.md se reescribió en el mismo commit que el código. Si alguien vuelve a dejar el CLAUDE.md describiendo el repositorio de la semana pasada, esta prueba se pone roja, que es exactamente lo que queremos."
 
   - id: CTX-007
     capitulo: "03 · Memoria y contexto"
-    afirmacion: "En gestor-pedidos ningún archivo importa config, settings ni utils: los tres módulos están muertos y app.py fija sus valores a mano."
+    afirmacion: "En gestor-pedidos utils.py sigue muerto: nadie lo importa, calcular_iva() incluida."
     tipo: cli
-    comando: ['bash', '-c', 'n=$(grep -rlE "^(import|from) (config|settings|utils)" --include=*.py . | wc -l); [ "$n" = "0" ] && echo NADIE-IMPORTA-LOS-TRES || echo ALGUIEN-LOS-IMPORTA']
+    comando: ['bash', '-c', 'n=$(grep -rlE "^(import|from) utils" --include=*.py . | wc -l); [ "$n" = "0" ] && echo NADIE-IMPORTA-UTILS || echo ALGUIEN-LO-IMPORTA']
     directorio: "D6-repo-feo/gestor-pedidos"
     espera_salida: 0
-    espera_patron: 'NADIE-IMPORTA-LOS-TRES'
-    nota: "Sostiene el hecho canónico CONFIG-NINGUNO-SE-USA. La guía de doma lo lista como fallo 8 y se queda corta: utils.py entero está muerto, calcular_iva() incluida."
+    espera_patron: 'NADIE-IMPORTA-UTILS'
+    nota: "Hasta el 2-sep-2026 esta prueba comprobaba que no se importaba NINGUNO de los tres, config, settings ni utils, y sostenía el hecho canónico CONFIG-NINGUNO-SE-USA. El módulo 12 unificó la configuración: app.py importa config de verdad y settings.py ya no existe, lo cual comprueba CAS-008. Lo que no ha cambiado es utils.py, que sigue entero sin que nadie lo llame, y su calcular_iva() se ha quedado además sin Francia ni Italia el día que la tabla buena pasó a config.py. La duplicación del fallo 11 del inventario no se resolvió unificando: se resolvió dejando muerta la copia mala, y por eso conviene que siga habiendo una prueba que avise si alguien la resucita."
 
   - id: CTX-008
     capitulo: "03 · Memoria y contexto"
@@ -876,12 +876,12 @@ pruebas:
 
   - id: CID-011
     capitulo: "09 · Git, CI e IDE"
-    afirmacion: "El laboratorio tiene nueve pruebas de caracterización, y cinco de ellas fijan por escrito un comportamiento que está mal en vez de arreglarlo."
+    afirmacion: "El laboratorio conserva pruebas de caracterización que fijan por escrito un comportamiento que está mal en vez de arreglarlo, y las que fijaban un fallo ya arreglado se sustituyeron en vez de editarse."
     tipo: cli
     directorio: "."
-    comando: ["python3", "-c", "import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py').read_text(encoding='utf-8'); sys.exit(0 if len(re.findall('^def test_', t, re.M))==9 and len(re.findall('^def test_hoy_', t, re.M))==5 else 1)"]
+    comando: ["python3", "-c", "import re,sys,pathlib; t=pathlib.Path('D6-repo-feo/gestor-pedidos/tests/test_caracterizacion.py').read_text(encoding='utf-8'); sys.exit(0 if len(re.findall('^def test_', t, re.M))==11 and len(re.findall('^def test_hoy_', t, re.M))==2 else 1)"]
     espera_salida: 0
-    nota: "Es el fallo 14 del inventario. Los enunciados que empiezan por test_hoy_ dicen lo que la aplicación hace, no lo que debería hacer: el día que el módulo 12 arregle el IVA por defecto, tienen que fallar. Que fallen es el trabajo que hacen."
+    nota: "Es el fallo 14 del inventario. Los enunciados que empiezan por test_hoy_ dicen lo que la aplicación hace, no lo que debería hacer. El 27-ago-2026 eran nueve pruebas y cinco test_hoy_; el 2-sep-2026 son once y dos, y esa resta es el módulo 12 haciendo su trabajo: dos se pusieron rojas al arreglar el IVA y se sustituyeron por seis nuevas sin editar su aserción, y una tercera perdió el prefijo hoy cuando el descuento acumulado pasó de accidente heredado a decisión escrita. Las dos que quedan fijan fallos que siguen sin arreglarse: el apóstrofo que tumba /buscar y el pedido inexistente que responde 200 con null."
 
   - id: CID-012
     capitulo: "09 · Git, CI e IDE"
@@ -1134,3 +1134,113 @@ pruebas:
     destructivo: true
     comando: ["rm", "-rf", "."]
     nota: "Documentado en el libro como ejemplo de por qué existe el hook de veto. Nunca se ejecuta."
+
+  # ---------------------------------------------------------------------
+  # Módulo 12. El manual no tenía IDs asignadas en el esqueleto para este
+  # módulo, así que se abre el prefijo CAS el 2-sep-2026. El hilo que las une:
+  # un agente al que le falta una decisión para terminar la tarea la toma, y
+  # la red de pruebas dice que el comportamiento cambió pero no si el nuevo
+  # es el correcto.
+  # ---------------------------------------------------------------------
+
+  - id: CAS-001
+    capitulo: "12 · Casos completos"
+    afirmacion: "procesar_pedido() ya no hace ocho cosas: las siete responsabilidades están extraídas a funciones propias y el endpoint solo las ordena."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ['bash', '-c', 'grep -c "^def \(validar\|subtotal_lineas\|aplicar_iva\|descuento_cliente_antiguo\|guardar\|notificar\|facturar\)(" app.py']
+    espera_salida: 0
+    espera_patron: '^\s*7\s*$'
+    nota: "Es el fallo 3 del inventario del guion de doma. Dos ejecuciones independientes del CLI el 2-sep-2026 con la 2.1.258 extrajeron las mismas siete, con una sola diferencia de nombre entre ellas, y las once pruebas de entonces siguieron pasando. Los nombres que se fijan aquí son los del laboratorio, no los que devuelva el modelo: si alguien renombra una función, la prueba se pone roja y hay que decidir si el nombre nuevo es mejor."
+
+  - id: CAS-002
+    capitulo: "12 · Casos completos"
+    afirmacion: "En el laboratorio ya no hay tipo de IVA por defecto: los tipos viven en una tabla por país y lo que no está en ella se rechaza."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ['bash', '-c', 'grep -q "IVA_POR_PAIS" config.py && grep -q "raise PaisSinTipoDeIVA" app.py && echo OK']
+    espera_salida: 0
+    espera_patron: '^OK$'
+    nota: 'Es el fallo 4 del inventario. Antes, el else del bloque # iva aplicaba el 1.21 español a cualquier país y a los pedidos sin país, con el comentario # revisar con gestoria al lado. El cambio de comportamiento está documentado en D6-repo-feo/gestor-pedidos/DECISIONES.md, entrada D1, incluido lo que rompe: un pedido sin el campo pais deja de crearse. Los tipos concretos de la tabla son un dato de negocio que fija la gestoría; el manual no certifica tipos impositivos y la prueba comprueba la forma, no los valores.'
+
+  - id: CAS-003
+    capitulo: "12 · Casos completos"
+    afirmacion: "El laboratorio tiene un sitio con nombre donde consta qué se decidió, por qué, y qué sigue sin decidirse."
+    tipo: fichero
+    ruta: "D6-repo-feo/gestor-pedidos/DECISIONES.md"
+    nota: "Cuatro entradas el 2-sep-2026: el país sin tipo de IVA, los descuentos acumulados, la unificación de la configuración y la costura de app.DB. Dos de las cuatro no cambian una sola línea de comportamiento, y son las que más falta hacían: convierten un accidente heredado de 2019 en una decisión escrita de 2026. No paga impuesto de contexto porque no es memoria: es un archivo que el agente abre cuando le hace falta."
+
+  - id: CAS-004
+    capitulo: "12 · Casos completos"
+    afirmacion: "Cuando la decisión de negocio no está escrita en el repositorio, el agente la toma él para poder terminar la tarea."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 2-sep-2026 con la 2.1.258 sobre copias del laboratorio en /tmp, con herramientas Read, Glob, Grep, Edit y Write y sin Bash. Cinco ejecuciones de cinco, en dos formulaciones distintas (tres pidiendo solo el IVA, dos pidiendo los tres casos del módulo a la vez), fijaron el IVA de los países que no son ES ni PT en el 0 por ciento, sin que nadie se lo dijera y sin marcarlo como pendiente. Dos de las cinco borraron además el comentario # revisar con gestoria, que era el único sitio del repositorio donde constaba que la pregunta seguía abierta. Ninguna se equivocó en lo que se le pidió, ninguna rompió nada y las cinco tocaron solo los archivos pertinentes: el problema no es la calidad del cambio, es que contestaron una pregunta que no se les hizo. La prueba se marca como manual porque el resultado depende del modelo y de la versión, y lo que se publica es el patrón, no el 0 por ciento concreto.'
+
+  - id: CAS-005
+    capitulo: "12 · Casos completos"
+    afirmacion: "Una frase que prohíbe tomar la decisión de negocio hace que el agente no edite nada, y además sale más barata que dejarle terminar."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 2-sep-2026 con la 2.1.258 sobre copias del laboratorio, dos repeticiones por fila, misma petición y mismas herramientas, cambiando UNA sola cosa: añadir al final "Si el arreglo necesita una decision de negocio que no esta escrita en el repositorio, NO la tomes tu: no edites nada y dime cual es la decision que falta". Sin la frase: edita app.py, 239.730 y 234.954 tokens de entrada, 0,1131 y 0,1069 dólares, y las dos pruebas test_hoy_ del IVA se ponen rojas. Con la frase: cero archivos tocados, 140.948 y 139.740 tokens, 0,0888 y 0,0847 dólares, las once pruebas pasando y una respuesta que nombra la decisión que falta. Un 41 por ciento menos de tokens de entrada, porque un agente que se para antes de editar se ahorra el ciclo entero de escribir, releer y comprobar.'
+
+  - id: CAS-006
+    capitulo: "12 · Casos completos"
+    afirmacion: "Una refactorización que solo mueve código es repetible entre ejecuciones y conserva el comportamiento; la que necesita una decisión, no."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 2-sep-2026 con la 2.1.258, dos repeticiones por tarea sobre copias limpias del laboratorio. Desmontar procesar_pedido(): las dos ejecuciones extrajeron siete funciones con los mismos nombres salvo una (calcular_subtotal_lineas frente a calcular_total_lineas), tocaron solo app.py, y las once pruebas de entonces siguieron pasando las dos veces. Arreglar el IVA: las dos ejecuciones también coincidieron, y en lo que coincidieron fue en tomar una decisión de negocio que nadie les dio. La conclusión operativa del módulo sale de comparar las dos filas: lo mecánico se delega y se verifica, lo que decide no.'
+
+  - id: CAS-007
+    capitulo: "12 · Casos completos"
+    afirmacion: "Una refactorización correcta que conserva el comportamiento puede arrancar la costura por la que las pruebas agarran la aplicación, y entonces no hay fallos sino errores de montaje."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 2-sep-2026 con la 2.1.258. Misma petición dos veces, unificar config.py y settings.py, sobre copias limpias. Las dos conservaron el comportamiento de la aplicación y los valores en ejecución (MAX_LINEAS en 50 y no el 100 del archivo nuevo). La primera dejó DB = config.DB_PATH como nombre de módulo y las once pruebas pasaron. La segunda metió config.DB_PATH directamente dentro de conexion(), que es más limpio, y las once dieron ERROR en el montaje con AttributeError: module app has no attribute DB, porque el fixture de tests/ hace monkeypatch de app.DB. Es la única medición del módulo cuyas dos repeticiones no coincidieron, y la discrepancia es el hallazgo. Consecuencia para CI: once errores de montaje producen CERO apariciones de la palabra failed en la salida de pytest, así que un paso que busque failed aprueba el commit que acaba de dejar la red de pruebas colgando.'
+
+  - id: CAS-008
+    capitulo: "12 · Casos completos"
+    afirmacion: "El repositorio del laboratorio ya no tiene dos archivos de configuración que se contradigan: settings.py no existe y config.py se importa de verdad."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ['bash', '-c', 'test ! -e settings.py && grep -q "^import config" app.py && echo OK']
+    espera_salida: 0
+    espera_patron: '^OK$'
+    nota: "Es el fallo 8 del inventario, y era el que sostenía el laboratorio del módulo 03: dos archivos que se contradecían y que no se importaba ninguno. Los valores que se conservan son los que la aplicación tenía en ejecución, no los del archivo más nuevo, y el porqué está en DECISIONES.md entrada D3. Unificar no es elegir el archivo más reciente: poner MAX_LINEAS a 100 porque lo decía settings.py habría sido un cambio de producto disfrazado de limpieza."
+
+  - id: CAS-009
+    capitulo: "12 · Casos completos"
+    afirmacion: "Las pruebas del laboratorio cubren los cuatro países de la tabla de IVA, más el país que no está en ella y el pedido sin país."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ['bash', '-c', 'grep -c "^def test_" tests/test_caracterizacion.py']
+    espera_salida: 0
+    espera_patron: '^\s*11\s*$'
+    nota: "Once pruebas de caracterización más las dos de diagnóstico del módulo 11 son trece, todas en verde el 2-sep-2026. Las dos que se llamaban test_hoy_a_francia_se_le_cobra_el_iva_espanol y test_hoy_sin_pais_tambien_se_cobra_el_iva_espanol se pusieron rojas al arreglar el IVA, que era el trabajo que hacían desde el módulo 09, y se borraron y se sustituyeron por seis nuevas. No se editó su aserción: una prueba reescrita a mano hasta que vuelve a pasar no comprueba nada. Se registra como cli con un recuento y no ejecutando pytest porque correrlas necesita flask y pytest instalados, y una dependencia ausente daría FALLA por el motivo equivocado, como en TRB-010."
+
+  - id: CAS-010
+    capitulo: "12 · Casos completos"
+    afirmacion: "La decisión sobre si los dos descuentos por cantidad se acumulan está tomada y escrita, y su prueba ya no dice hoy."
+    tipo: cli
+    directorio: "D6-repo-feo/gestor-pedidos"
+    comando: ['bash', '-c', 'grep -q "DESCUENTO_MAS_DE_100" config.py && grep -q "^def test_los_dos_descuentos_de_cantidad_se_acumulan_a_proposito" tests/test_caracterizacion.py && echo OK']
+    espera_salida: 0
+    espera_patron: '^OK$'
+    nota: "Se acumulan: una línea de más de 100 unidades pasa por 0,95 y por 0,90. El comentario original de app.py decía literalmente que nadie lo sabía. La decisión no es que acumular sea lo correcto, es que era lo que llevaba pasando desde 2019 y un cambio de precios no se cuela dentro de una refactorización. Está en DECISIONES.md entrada D2. Lo único que cambió en la prueba es el nombre, y el nombre es la mitad de su valor: dice si lo que fija es lo que pasa o lo que queremos que pase."
+
+  - id: CAS-011
+    capitulo: "12 · Casos completos"
+    afirmacion: "La receta oficial de refactorización pide conservar el comportamiento, y la de pruebas termina en un paso que sobre una red de caracterización es el movimiento equivocado."
+    tipo: cli
+    comando: ['bash', '-c', 'D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/common-workflows.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf "%s" "$D" | grep -c "maintaining the same behavior"']
+    espera_salida: 0
+    red: true
+    espera_patron: '^\s*([1-9][0-9]*|SIN-RED)\s*$'
+    nota: 'Consultada el 2-sep-2026 contra la 2.1.258. La receta de refactorización son cuatro pasos y el tercero dice "refactor utils.js to use ES2024 features while maintaining the same behavior", que es exactamente lo que este módulo pide. Dos secciones más abajo, la receta de pruebas termina en "run the new tests and fix any failures". Sobre una prueba de caracterización ese paso es el equivocado, porque el fallo es el entregable: arreglar la aserción hasta que vuelva a pasar borra la única prueba de que el cambio ocurrió. La prueba fija la primera frase, que es la citada en el libro; la segunda se comprueba en la revisión trimestral porque la documentación reordena secciones a menudo.'
+
+  - id: CAS-012
+    capitulo: "12 · Casos completos"
+    afirmacion: "Lo que el módulo 12 añade al repositorio cuesta diecisiete tokens por turno, y el archivo de decisiones no cuesta ninguno."
+    tipo: manual
+    coste: true
+    nota: 'Medido el 2-sep-2026 con la 2.1.258 sobre el laboratorio, dos repeticiones por fila con la misma petición trivial y las cifras idénticas al token en las dos. Un directorio vacío, 42.540 tokens de entrada. El laboratorio antes del módulo 12, 44.319, o sea 1.779 de impuesto. El laboratorio después, 44.336, o sea 1.796. La diferencia son 17 tokens y son de la tabla reescrita del CLAUDE.md: DECISIONES.md no aparece en el contexto porque no es memoria, es un archivo que se abre bajo demanda. El módulo 09 midió 1.781 con el mismo método contra la 2.1.247 y el 11 midió 4.189 para lo que quita --safe-mode, número que hoy sale idéntico. Once versiones de parche y dos tokens de diferencia sobre mil setecientos: el impuesto de contexto se puede presupuestar.'

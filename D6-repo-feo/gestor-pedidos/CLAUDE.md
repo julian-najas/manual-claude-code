@@ -5,36 +5,39 @@ proceso. Escrita en 2019 por alguien que ya no está.
 
 <!--
 Nota para quien mantenga este archivo, no cuesta tokens:
-lo de abajo se comprobó leyendo app.py el 18-ago-2026, no el README ni los
+lo de abajo se comprobó leyendo app.py el 2-sep-2026, no el README ni los
 comentarios del código. Si tocas app.py, vuelve a comprobarlo.
+Reescrito ese día: hasta el módulo 12 este apartado decía que no había
+configuración en uso, y era verdad. Dejó de serlo con el código, no después.
 -->
 
 ## La verdad sobre la configuración
 
-**No hay archivo de configuración en uso.** `config.py` y `settings.py` existen,
-se contradicen entre sí, y **ninguno de los dos se importa en ningún sitio**.
-`app.py` fija sus valores a mano:
+**Manda `config.py`, y `app.py` lo importa de verdad.** Hasta el 2-sep-2026 no
+era así: había dos archivos que se contradecían y **no se importaba ninguno**.
+`settings.py` ya no existe.
 
-| Valor | Dónde está de verdad | Qué dicen los archivos muertos |
+| Valor | Dónde está | Cuidado |
 |---|---|---|
-| Ruta de la base de datos | `app.py`, constante `DB` | `settings.py` dice `/var/lib/pedidos/pedidos.db` |
-| Modo depuración | `app.py`, constante `DEBUG`, en `True` | `settings.py` dice `False` |
-| IVA de España | `app.py`, literal `1.21` dentro del bloque `# iva` de `procesar_pedido()`, y otra vez en el `else` | `config.py` dice `IVA = 0.21` |
-| IVA de Portugal | `app.py`, literal `1.23` en la rama `pais == "PT"` de `procesar_pedido()` | `settings.py` dice `IVA_PT = 0.23` |
-| Tope de líneas por pedido | `app.py`, literal `50` en la validación de `procesar_pedido()` | `settings.py` dice `100` |
+| Ruta de la base de datos | `config.DB_PATH` | `app.py` lo reexpone como `DB`, y las pruebas dependen de ese nombre |
+| Modo depuración | `config.DEBUG`, en `True` | Sigue en `True`: es el fallo 7, no se ha arreglado |
+| Tipos de IVA | `config.IVA_POR_PAIS`, cuatro países | **No hay tipo por defecto.** Un país fuera de la tabla se rechaza con 400 |
+| Tope de líneas por pedido | `config.MAX_LINEAS`, en 50 | Cincuenta, que es lo que se estaba validando |
+| Descuentos por cantidad | `config.DESCUENTO_MAS_DE_10` y `..._DE_100` | **Se acumulan**, a propósito y por escrito |
 
 Las referencias van por función y por literal, no por número de línea: los
 números de línea de este archivo envejecen en el primer commit y mandan al
 agente al sitio equivocado con la autoridad de estar escritos.
 
-**Para cambiar cualquiera de esos valores hay que editar `app.py`.** Editar
-`config.py` o `settings.py` no tiene ningún efecto sobre la aplicación.
+**El porqué de cada uno de esos valores está en `DECISIONES.md`.** Antes de
+cambiar cualquiera, léelo: varios son decisiones de negocio congeladas a
+propósito, no descuidos pendientes de arreglar.
 
 ## Código muerto. No proponer cambios aquí
 
 - `utils.py` entero. **Nadie lo importa.** Incluye `calcular_iva()`, que parece
-  la función buena del IVA y no la llama nadie.
-- `config.py` y `settings.py`, por lo dicho arriba.
+  la función buena del IVA, no la llama nadie, y además se quedó sin Francia ni
+  Italia el día que la tabla buena pasó a `config.py`.
 - El endpoint `GET /pedido_old/<id>`, que lee la tabla `pedidos_2019`. Sigue
   expuesto y nadie lo llama desde 2019.
 

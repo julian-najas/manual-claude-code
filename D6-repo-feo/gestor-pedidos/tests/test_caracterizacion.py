@@ -45,7 +45,17 @@ def procesar(c, **campos):
     return c.post("/procesar", json=campos)
 
 
-# --- IVA. Fallo 4 del inventario ------------------------------------------
+# --- IVA. Fallo 4 del inventario, arreglado en el módulo 12 ----------------
+#
+# Las dos que decían `test_hoy_a_francia...` y `test_hoy_sin_pais...` vivieron
+# aquí desde el módulo 09 fijando el fallo. El 2-sep-2026 se pusieron rojas,
+# que era su trabajo, y se sustituyeron por estas seis. No se editó su
+# aserción: se borró la prueba y se escribió la del comportamiento decidido.
+#
+# Los cuatro números literales salen de config.IVA_POR_PAIS. Están escritos a
+# mano a propósito: si alguien cambia un tipo, esta prueba se pone roja y dice
+# cuánto cambia la factura. Una prueba que calcule el esperado leyendo la misma
+# tabla que la aplicación no comprueba nada.
 
 def test_iva_espanol(cliente):
     r = procesar(cliente, pais="ES")
@@ -57,24 +67,42 @@ def test_iva_portugues(cliente):
     assert r.json["total"] == pytest.approx(123.0)
 
 
-def test_hoy_a_francia_se_le_cobra_el_iva_espanol(cliente):
-    """Fallo 4. Hoy Francia paga el 21 % español, sin error y sin registro."""
+def test_iva_frances(cliente):
     r = procesar(cliente, pais="FR")
-    assert r.json["total"] == pytest.approx(121.0)
+    assert r.json["total"] == pytest.approx(120.0)
 
 
-def test_hoy_sin_pais_tambien_se_cobra_el_iva_espanol(cliente):
-    """Fallo 4. La rama `else` no distingue "no lo sé" de "es España"."""
+def test_iva_italiano(cliente):
+    r = procesar(cliente, pais="IT")
+    assert r.json["total"] == pytest.approx(122.0)
+
+
+def test_un_pais_sin_tipo_se_rechaza_y_lo_dice(cliente):
+    """Lo contrario de lo que hacía antes: ni cobra ni calla."""
+    r = procesar(cliente, pais="MA")
+    assert r.status_code == 400
+    assert r.json["error"] == "pais sin tipo de IVA"
+    assert r.json["pais"] == "MA"
+
+
+def test_un_pedido_sin_pais_ya_no_pasa_por_espanol(cliente):
+    """"No sé de qué país es" dejó de ser un sinónimo de "es de España"."""
     r = procesar(cliente)
-    assert r.json["total"] == pytest.approx(121.0)
+    assert r.status_code == 400
+    assert r.json["pais"] is None
 
 
 # --- Descuentos por cantidad ----------------------------------------------
 
-def test_hoy_los_dos_descuentos_de_cantidad_se_acumulan(cliente):
-    """El comentario del código dice que nadie lo sabe. Ya se sabe: se acumulan.
+def test_los_dos_descuentos_de_cantidad_se_acumulan_a_proposito(cliente):
+    """El comentario del código decía que nadie lo sabía. Ya se sabe.
 
     150 x 1 EUR = 150, por 0,95 y por 0,90 son 128,25, y con el 21 % 155,1825.
+
+    Se llamaba `test_hoy_...` hasta el 2-sep-2026, cuando dejó de ser un
+    accidente heredado y pasó a ser una decisión escrita en config.py. Lo único
+    que cambió es el nombre, y el nombre es la mitad del valor de la prueba:
+    dice si lo que fija es lo que pasa o lo que queremos que pase.
     """
     r = procesar(cliente, pais="ES", lineas=[{"precio": 1, "cantidad": 150}])
     assert r.json["total"] == pytest.approx(155.1825)

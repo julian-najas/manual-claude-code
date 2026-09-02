@@ -104,7 +104,7 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. El manual guiado de 12 módulos está en obra: 11 de 12."
+    valor: "La guía de referencia de 21 módulos está terminada. Los doce módulos del manual guiado están escritos: 12 de 12. Quedan los preliminares y el cierre que el esqueleto lista como pendientes (portada, cómo leer este libro, glosario), así que el producto todavía no está terminado."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"
@@ -179,8 +179,8 @@ hechos:
       - "fabrica/hechos.yaml"
 
   - id: CONFIG-NINGUNO-SE-USA
-    valor: "En el laboratorio gestor-pedidos ni config.py ni settings.py se importan: app.py fija sus valores a mano. La respuesta a 'cuál manda' es ninguno de los dos."
-    fuente: "lectura del código y prueba de realidad, evidencias/EXP-003, 13-ago-2026"
+    valor: "El laboratorio gestor-pedidos arranca con config.py y settings.py contradiciéndose y sin que se importe ninguno: app.py fija sus valores a mano, y la respuesta a 'cuál manda' es ninguno de los dos. Ese es el punto de partida de los módulos 01 a 11 y el laboratorio del 03. El módulo 12 lo unificó el 2-sep-2026: manda config.py, app.py lo importa de verdad y settings.py ya no existe. Lo que no cambió es utils.py, que sigue muerto."
+    fuente: "lectura del código y prueba de realidad, evidencias/EXP-003, 13-ago-2026; unificación verificada por CAS-008 el 2-sep-2026"
     prohibido:
       - "La configuración efectiva es `settings.py`"
       - "la configuración efectiva es settings.py"
