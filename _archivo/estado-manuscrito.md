@@ -35,6 +35,68 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-03 · Sin módulo · No queda ninguno por escribir
+
+**La rutina disparó, hizo la comprobación y no escribió módulo, porque no hay
+módulo pendiente.** Los doce están escritos desde ayer. El paso 1 de la rutina
+dice que si ya existen los doce y están completos no hay trabajo, y es el caso:
+los doce archivos están, los doce llevan las seis partes del esqueleto en orden
+y los doce cierran con su runbook.
+
+Comprobado, no supuesto. Verificador contra la **2.1.259**, que es versión nueva
+de hoy y no la 2.1.258 de ayer: **93 pasan, 0 fallan, 45 a revisar, 6 omitidas**.
+`comprobar-coherencia.py`, sin contradicciones sobre 19 hechos canónicos y 80
+archivos. `construir.py --comprobar`, todas las salidas al día, huella
+`43b9c8d2`. Es decir: el salto de versión del CLI no ha roto ninguna afirmación
+publicada. `git status --short` sale vacío.
+
+**Por qué hay entrada de diario si no hay módulo.** Porque sin ella el latido
+de las 21:00 UTC abriría una incidencia `rutina-callada` esta noche, y sería
+mentira: la sesión no se murió ni se colgó en ningún diálogo de permisos, corrió
+entera y encontró el trabajo hecho. `latido-rutina.py` va con tolerancia 0 y solo
+mira si alguien escribió algo hoy, no si ese algo era un módulo. Escribir esta
+entrada es lo que distingue "la rutina terminó y no había nada" de "la rutina
+desapareció", que es justo lo que el latido existe para separar.
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos ya dicen
+12 de 12 y las dos ya dicen que faltan los preliminares. No hay recuento nuevo
+que apuntar.
+
+**Nota de rutina:** cero diálogos de permisos. No se ha escrito nada dentro de
+ninguna carpeta `.claude/`, no se ha tocado el laboratorio y no ha entrado nada
+desde `/tmp`. Lo único que cambia este commit es este diario.
+
+### PARA JULIÁN
+
+Una sola decisión, y no la tomo yo: **la rutina se ha quedado sin trabajo y a
+partir de hoy va a repetir esto cada mañana.** Mientras siga en pie va a
+despertar a las 08:00, comprobar, no escribir módulo y anotar una entrada como
+esta. No es dañino, pero es ruido diario y consume presupuesto para no producir
+manuscrito.
+
+Las tres salidas, sin recomendación disfrazada de hecho:
+
+1. **Pararla**, en el panel `trig_01RzL9eHhTvWuejJYqBLgV7Z`. Ojo con el efecto
+   de segundo orden: **el latido sigue corriendo a las 21:00 y empezaría a abrir
+   `rutina-callada` todos los días** desde el primero sin entrada. Si paras la
+   rutina hay que parar o ajustar también el latido, o queda una alarma que
+   suena para siempre por un silencio que decidiste tú.
+2. **Reapuntarla a los preliminares** (portada no, que es diseño tuyo, pero
+   "cómo leer este libro" y el glosario sí, y la página de verificación que el
+   esqueleto ya marca como "redactable ya"). Eso es un prompt nuevo: el actual
+   está escrito entero alrededor de "escribe UN módulo" y de la estructura de
+   seis partes, que a un glosario no se le aplica.
+3. **Dejarla como guardia de regresión**, un pase diario que solo corre
+   verificador, coherencia y construcción contra la versión del CLI de ese día
+   y avisa cuando algo pase a FALLA. Hoy ese pase ha tenido valor real: ha
+   confirmado que la 2.1.259 no rompe nada. Pero entonces conviene que el prompt
+   lo diga, porque el de hoy no lo dice y el trabajo de comprobar quedó como
+   efecto lateral de buscar módulo pendiente.
+
+Lo que no he hecho, a propósito: ni tocar la rutina, ni tocar el latido, ni
+empezar un preliminar. Las tres cosas son decisión tuya y ninguna estaba en el
+encargo de hoy.
+
 ## 2026-09-02 · Módulo 12 · Casos completos · PUBLICADO · ULTIMO MODULO
 
 Cerrado `manuscrito/modulo-12-casos-completos.md`, **3.998 palabras**, las seis
