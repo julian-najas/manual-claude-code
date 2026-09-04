@@ -35,6 +35,67 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-04 · Sin módulo · Segundo día sin trabajo pendiente
+
+**La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
+Los doce están escritos. No lo doy por bueno porque lo dijera la entrada de
+ayer: he vuelto a mirar los doce archivos uno a uno y los doce llevan las seis
+partes del esqueleto en orden, cabecera con factura del laboratorio y marca de
+versión, y runbook de cierre.
+
+Verificador contra la **2.1.260**, versión nueva de hoy y tercer salto en tres
+días (2.1.258 el 2, 2.1.259 el 3, 2.1.260 hoy): **93 pasan, 0 fallan, 45 a
+revisar, 6 omitidas**. `comprobar-coherencia.py`, sin contradicciones sobre 19
+hechos canónicos y 80 archivos. `construir.py --comprobar`, todas las salidas al
+día, huella `43b9c8d2`, la misma de ayer. Ningún salto de versión del CLI ha
+roto todavía una afirmación publicada.
+
+**Los dos REVISAR nuevos son de la máquina, no del libro, y conviene dejarlo
+escrito para que nadie los "arregle".** El `estado.json` que había en el
+repositorio decía 95 pasan y 43 a revisar; hoy salen 93 y 45. Los dos que se
+mueven son `REPO-002` y `REPO-003`, los dos con `red: true`. Este entorno saca
+el HTTPS por un proxy que responde **403** a la URL del companion, y así sale en
+el registro: `REPO-002` con `403` y `REPO-003` con `curl: (56) CONNECT tunnel
+failed`. Lo comprobé a mano con el mismo `curl` del registro, fuera del
+verificador, y devuelve 403 igual. `REPO-001`, que apunta a este repositorio,
+sigue devolviendo **200** desde la misma máquina. Es decir: no hay ningún indicio
+de que el companion se haya cerrado, solo de que esta máquina no llega hasta él.
+El `red: true` hizo justo su trabajo, degradar a REVISAR en vez de a FALLA.
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos ya dicen
+12 de 12 y las dos ya dicen que faltan los preliminares. No hay recuento nuevo.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, laboratorio sin tocar y nada copiado desde `/tmp`. Lo único
+que cambia este commit es este diario y el sello del propio verificador.
+
+### PARA JULIÁN
+
+Sigue viva la decisión de ayer y hoy se le suma una segunda, más pequeña y de
+manuscrito. Ninguna de las dos la tomo yo.
+
+1. **La rutina lleva dos días sin trabajo y va a repetir esto cada mañana.**
+   Las tres salidas están escritas enteras en la entrada de ayer y no las repito
+   aquí: pararla (y entonces hay que parar o ajustar el latido, o queda una
+   alarma sonando para siempre), reapuntarla a los preliminares (prompt nuevo,
+   el actual está escrito entero alrededor de "escribe UN módulo"), o dejarla
+   como guardia de regresión (y entonces que el prompt lo diga). Lo que sí
+   añado es un dato a favor de la tercera: hoy ha vuelto a tener valor real,
+   porque ha confirmado que la 2.1.260 no rompe nada y ha explicado un cambio
+   de cifras que si no habría asustado a la sesión de mañana.
+
+2. **El módulo 01 se queda por debajo del mínimo de palabras y nadie lo había
+   apuntado.** `modulo-01-fundamentos.md` tiene **2.492 palabras** y el
+   invariante del esqueleto pide entre 3.000 y 4.000. No le falta estructura:
+   tiene las seis partes, la cabecera y el runbook. Le falta cuerpo, y se
+   entiende por qué, es el primero que se escribió, contra la 2.1.228 el 12 de
+   agosto, seguramente antes de que el mínimo quedara fijado. Los otros once
+   van de 3.260 a 3.998. **No lo he tocado**, por dos motivos: ampliar un
+   módulo ya publicado y verificado no es "escribir el módulo pendiente" que
+   pide el encargo de hoy, y tocar su texto mueve afirmaciones que ya tienen
+   ID en el registro. Si quieres que se amplíe, es un encargo propio y conviene
+   decir a qué sección van esas 500 palabras largas.
+
 ## 2026-09-03 · Sin módulo · No queda ninguno por escribir
 
 **La rutina disparó, hizo la comprobación y no escribió módulo, porque no hay
