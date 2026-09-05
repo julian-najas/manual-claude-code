@@ -35,6 +35,56 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-05 · Sin módulo · Tercer día sin trabajo pendiente
+
+**La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
+Tampoco esta vez lo doy por bueno porque lo dijera la entrada de ayer. Los dos
+días anteriores la comprobación de estructura se hizo leyendo los doce archivos;
+hoy la he hecho contando marcas sobre los doce a la vez, que es más aburrido y
+menos falible: los doce llevan las seis partes del esqueleto (Síntoma, Modelo
+mental, Receta, Laboratorio, Prueba, Coste), una y solo una de cada, y los doce
+cierran con `## Runbook`. Las cabeceras declaran versiones que van de la
+**2.1.228** del módulo 01 a la **2.1.258** del módulo 12, cada una la del día en
+que se escribió, que es la regla 8 del esqueleto funcionando como se pensó.
+
+Verificador contra la **2.1.261**, versión nueva de hoy y cuarto salto en cuatro
+días (2.1.258 el 2, 2.1.259 el 3, 2.1.260 el 4, 2.1.261 hoy): **93 pasan, 0
+fallan, 45 a revisar, 6 omitidas**. Mismas cifras que ayer, incluidos los dos
+REVISAR de red que la entrada de ayer explica y que nadie debe "arreglar".
+`comprobar-coherencia.py`, sin contradicciones sobre 19 hechos canónicos y 80
+archivos. `construir.py --comprobar`, todas las salidas al día, huella
+`43b9c8d2`, la misma desde el día 3. `git status --short` sale vacío.
+
+**Cuatro versiones del CLI en cuatro días y ninguna afirmación publicada rota.**
+Ese es, a estas alturas, el único producto que deja la rutina cada mañana, y
+conviene decirlo con el número delante: 93 afirmaciones con comando propio
+siguen pasando contra una versión que no existía cuando se escribieron.
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos dicen ya
+12 de 12 y las dos dicen ya que faltan los preliminares. No hay recuento nuevo.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, laboratorio sin tocar y nada copiado desde `/tmp`. Lo único
+que cambia este commit es este diario y el sello del propio verificador.
+
+### PARA JULIÁN
+
+Las dos decisiones de ayer siguen abiertas y no las tomo yo. No las repito
+enteras, están escritas en las dos entradas anteriores; anoto solo lo que ha
+cambiado hoy en cada una.
+
+1. **La rutina lleva tres días sin trabajo.** Las tres salidas siguen siendo las
+   mismas (pararla y ajustar el latido, reapuntarla a los preliminares, o
+   dejarla como guardia de regresión con un prompt que lo diga). El dato nuevo
+   a favor de la tercera es el del párrafo de arriba: cuatro saltos de versión
+   seguidos y cero FALLA. El dato en contra es que hoy la sesión ha gastado
+   presupuesto de escritura para no escribir, por tercera vez.
+2. **El módulo 01 sigue en 2.492 palabras**, por debajo del mínimo de 3.000 del
+   esqueleto. Sin cambios: no lo he tocado, por los mismos dos motivos de ayer
+   (no es el módulo pendiente que pide el encargo, y su texto tiene afirmaciones
+   con ID en el registro). Sigue siendo un encargo propio, y sigue conviniendo
+   decir a qué sección van esas 500 palabras largas.
+
 ## 2026-09-04 · Sin módulo · Segundo día sin trabajo pendiente
 
 **La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
