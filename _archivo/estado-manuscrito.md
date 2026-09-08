@@ -35,6 +35,60 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-08 · Sin módulo · Sexto día, y el segundo seguido sin versión nueva
+
+**La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
+Sexto día igual, y tampoco hoy lo doy por bueno porque lo dijera la entrada de
+ayer. La comprobación de estructura de hoy vuelve a correr entera sobre los doce
+y sale igual: los doce llevan las seis partes del esqueleto en su orden
+(Síntoma, Modelo mental, Receta, Laboratorio, Prueba, Coste), una y solo una de
+cada, los doce cierran con `## Runbook`, y el manuscrito entero sigue con **cero
+guiones largos** en los doce archivos.
+
+Verificador contra la **2.1.263**: **93 pasan, 0 fallan, 45 a revisar, 6
+omitidas**. `comprobar-coherencia.py`, sin contradicciones sobre 19 hechos
+canónicos y 80 archivos. `construir.py --comprobar`, todas las salidas al día,
+huella `43b9c8d2`, la misma desde el día 3. `git status --short` solo trae el
+sello del propio verificador.
+
+**El dato de hoy: la 2.1.263 es la misma versión por segundo día seguido.** El
+recorrido de versiones se paró ayer (2.1.258 el día 2, 259 el 3, 260 el 4, 261
+el 5, 263 el 6, y desde ahí quieta). Es decir que hoy el verificador ha repetido
+por tercera vez el mismo trabajo sobre el mismo binario y las mismas
+afirmaciones. Ayer esto era un dato de un solo día y podía ser casualidad; con
+dos seguidos ya es el caso normal, no la excepción. **La única salida de esta
+sesión vuelve a ser esta entrada de diario.**
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos dicen ya
+12 de 12 y las dos dicen ya que faltan los preliminares. No hay recuento nuevo.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, laboratorio sin tocar y nada copiado desde `/tmp`. Lo único
+que cambia este commit es este diario y el sello del verificador.
+
+### PARA JULIÁN
+
+Las dos decisiones siguen abiertas y no las tomo yo. Están escritas enteras en
+las entradas del 4 al 7 de septiembre; anoto solo lo que ha cambiado hoy.
+
+1. **Sexto día sin trabajo, y el segundo seguido en que la sesión no comprueba
+   nada nuevo.** Las tres salidas siguen siendo las mismas (pararla y ajustar el
+   latido, reapuntarla a los preliminares, o dejarla como guardia de regresión
+   con un prompt que lo diga y que no gaste presupuesto de escritura). Lo que
+   cambia hoy es que el argumento de ayer ya no depende de un solo día: **dos
+   mañanas seguidas de presupuesto de redacción gastadas en reverificar un
+   binario que no se ha movido.** Mantengo la recomendación y no la subo más de
+   tono porque ya está arriba: **reapúntala a los preliminares**, que son
+   trabajo real, pendiente y del tamaño de un módulo al día (portada, cómo leer
+   este libro, glosario). Si lo que quieres es la guardia de regresión, que la
+   haga `verificar.yml` a las 05:00, que ya corre y ya la hizo hoy, y que esta
+   rutina se pare.
+2. **El módulo 01 sigue en 2.492 palabras**, por debajo del mínimo de 3.000 del
+   esqueleto. Sin cambios y sin tocarlo, por los dos motivos de siempre: no es
+   el módulo pendiente que pide el encargo y su texto tiene afirmaciones con ID
+   en el registro. Sigue haciendo falta que digas a qué sección van esas 500
+   palabras largas antes de que nadie las escriba.
+
 ## 2026-09-07 · Sin módulo · Quinto día, y el primero que no aporta nada
 
 **La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
