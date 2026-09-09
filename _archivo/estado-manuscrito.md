@@ -35,6 +35,68 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-09 · Sin módulo · Séptimo día, y el CLI se movió tres versiones de golpe
+
+**La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
+Séptimo día igual. Tampoco hoy lo doy por bueno porque lo dijera la entrada de
+ayer: la comprobación de estructura vuelve a correr entera sobre los doce y sale
+igual. Los doce llevan las seis partes del esqueleto en su orden (Síntoma,
+Modelo mental, Receta, Laboratorio, Prueba, Coste), una y solo una de cada, los
+doce cierran con `## Runbook`, y el manuscrito entero sigue con **cero guiones
+largos** en los doce archivos.
+
+Verificador contra la **2.1.266**: **93 pasan, 0 fallan, 45 a revisar, 6
+omitidas**. `comprobar-coherencia.py`, sin contradicciones sobre 19 hechos
+canónicos y 80 archivos. `construir.py --comprobar`, todas las salidas al día,
+huella `43b9c8d2`, la misma desde el día 3. `git status --short` solo trae el
+sello del propio verificador.
+
+**El dato de hoy corrige el de ayer: el CLI sí se ha movido, y tres versiones de
+golpe.** Veníamos de 2.1.263 clavada tres días (días 6, 7 y 8 de septiembre) y
+hoy sale **2.1.266**. Las 93 afirmaciones publicadas siguen pasando contra ese
+binario nuevo, así que hoy la sesión sí ha comprobado algo que no estaba
+comprobado ayer: que tres saltos de parche no rompen nada de lo escrito. Eso es
+exactamente el valor que se le supone a una guardia de regresión, y conviene
+apuntarlo con la misma honestidad con la que anoté los dos días en que ese valor
+fue cero.
+
+Lo que **no** cambia es el fondo: **son siete mañanas de presupuesto de
+redacción y cero palabras de manuscrito**. Que hoy el guardián haya servido no
+convierte a la rutina de redacción en el sitio donde debe vivir ese guardián.
+Sigue siendo trabajo que `verificar.yml` ya hace a las 05:00 UTC, y de hecho hoy
+ya lo hizo antes que yo.
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos dicen ya
+12 de 12 y las dos dicen ya que faltan los preliminares. No hay recuento nuevo.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, laboratorio sin tocar y nada copiado desde `/tmp`. Lo único
+que cambia este commit es este diario y el sello del verificador.
+
+### PARA JULIÁN
+
+Las dos decisiones siguen abiertas y no las tomo yo. Están escritas enteras en
+las entradas del 4 al 8 de septiembre; anoto solo lo que ha cambiado hoy.
+
+1. **Séptima mañana sin trabajo de redacción, y hoy con el argumento contrario
+   sobre la mesa.** Las tres salidas siguen siendo las mismas (pararla y ajustar
+   el latido, reapuntarla a los preliminares, o dejarla como guardia de
+   regresión con un prompt que lo diga y que no gaste presupuesto de escritura).
+   Hoy toca decir lo que juega en contra de mi propia recomendación: **el salto
+   de 2.1.263 a 2.1.266 es justo el caso en el que la guardia gana su sueldo**, y
+   ayer y anteayer avisé de que ese caso no se sabe de antemano cuándo llega.
+   Pues llegó. Aun así **mantengo la recomendación: reapúntala a los
+   preliminares**, porque la guardia no necesita esta rutina para existir. La
+   tercera salida no está mal por inútil, está mal por duplicada: `verificar.yml`
+   corre a las 05:00 UTC, ya la hizo hoy, y llegó antes. Lo que no tiene a nadie
+   haciéndolo son los preliminares, que son trabajo real, pendiente y del tamaño
+   de un módulo al día (portada, cómo leer este libro, glosario).
+2. **El módulo 01 sigue en 2.492 palabras**, por debajo del mínimo de 3.000 del
+   esqueleto. Sin cambios y sin tocarlo, por los dos motivos de siempre: no es
+   el módulo pendiente que pide el encargo y su texto tiene afirmaciones con ID
+   en el registro. Sigue haciendo falta que digas a qué sección van esas 500
+   palabras largas antes de que nadie las escriba.
+
 ## 2026-09-08 · Sin módulo · Sexto día, y el segundo seguido sin versión nueva
 
 **La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
