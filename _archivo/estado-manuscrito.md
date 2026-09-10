@@ -35,6 +35,68 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-09-10 · Sin módulo · Octavo día, y hoy la aviso por el móvil
+
+**La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
+Octavo día igual. Tampoco hoy lo doy por bueno porque lo dijera la entrada de
+ayer: la comprobación de estructura vuelve a correr entera sobre los doce y sale
+igual. Los doce llevan las seis partes del esqueleto en su orden (Síntoma,
+Modelo mental, Receta, Laboratorio, Prueba, Coste), una y solo una de cada, los
+doce cierran con `## Runbook`, y el manuscrito entero sigue con **cero guiones
+largos** en los doce archivos.
+
+Verificador contra la **2.1.267**: **93 pasan, 0 fallan, 45 a revisar, 6
+omitidas**. `comprobar-coherencia.py`, sin contradicciones sobre 19 hechos
+canónicos y 80 archivos. `construir.py --comprobar`, todas las salidas al día,
+huella `43b9c8d2`, la misma desde el día 3. `git status --short` solo trae el
+sello del propio verificador.
+
+**El dato de hoy: 2.1.266 a 2.1.267, un salto de parche.** Las 93 afirmaciones
+publicadas siguen pasando. Es el mismo valor que apunté ayer, ni más ni menos:
+un binario nuevo no rompe nada de lo escrito. Y es, otra vez, trabajo que
+`verificar.yml` ya había hecho a las 05:00 UTC, tres cuartos de hora antes que
+yo.
+
+**Lo que cambia hoy no es el dato, es el canal.** Van ocho mañanas de
+presupuesto de redacción y cero palabras de manuscrito, con una recomendación
+escrita y repetida desde el 4 de septiembre. Siete entradas de diario no la han
+movido, y no tengo motivos para pensar que la octava sí. Así que hoy además
+**mando un aviso al móvil**, que es el único canal de esta rutina que sale de
+este repositorio. Si la decisión lleva una semana esperando, el problema ya no
+es el argumento: es que el argumento está escrito en un sitio que nadie abre.
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos dicen ya
+12 de 12 y las dos dicen ya que faltan los preliminares. No hay recuento nuevo.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, laboratorio sin tocar y nada copiado desde `/tmp`. Lo único
+que cambia este commit es este diario y el sello del verificador.
+
+### PARA JULIÁN
+
+Las dos decisiones siguen abiertas y no las tomo yo. Están escritas enteras en
+las entradas del 4 al 9 de septiembre; anoto solo lo que ha cambiado hoy.
+
+1. **Octava mañana sin trabajo de redacción.** Las tres salidas siguen siendo
+   las mismas (pararla y ajustar el latido, reapuntarla a los preliminares, o
+   dejarla como guardia de regresión con un prompt que lo diga y que no gaste
+   presupuesto de escritura). **Mantengo la recomendación: reapúntala a los
+   preliminares.** El salto de parche de hoy no cambia el fondo, igual que no lo
+   cambió el triple salto de ayer: la guardia de regresión no necesita esta
+   rutina para existir, `verificar.yml` ya la hace a las 05:00 y hoy volvió a
+   llegar antes. Lo que no tiene a nadie haciéndolo son los preliminares, que
+   son trabajo real, pendiente y del tamaño de un módulo al día (portada, cómo
+   leer este libro, glosario). Lo único que añado es esto: llevas ocho días de
+   coste de rutina comprando un dato que ya te daba gratis el flujo de las
+   05:00.
+2. **El módulo 01 sigue en 2.492 palabras**, por debajo del mínimo de 3.000 del
+   esqueleto. Sin cambios y sin tocarlo, por los dos motivos de siempre: no es
+   el módulo pendiente que pide el encargo y su texto tiene afirmaciones con ID
+   en el registro. Sigue haciendo falta que digas a qué sección van esas 500
+   palabras largas antes de que nadie las escriba. Si la respuesta a la decisión
+   1 es "reapúntala", esta es la primera tarea que le daría, antes que los
+   preliminares: es el único incumplimiento de contrato vivo del manuscrito.
+
 ## 2026-09-09 · Sin módulo · Séptimo día, y el CLI se movió tres versiones de golpe
 
 **La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**
