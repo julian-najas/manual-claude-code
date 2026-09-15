@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.270 (Claude Code)",
+  "cli_verificado": "2.1.272 (Claude Code)",
   "sistema": "Linux 6.17.0-1022-azure",
   "python": "3.12.3",
-  "fecha_utc": "2026-09-13 09:53:36 UTC",
+  "fecha_utc": "2026-09-15 09:42:09 UTC",
   "resumen": {
     "PASA": 95,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.270 (Claude Code)\n"
+      "salida": "2.1.272 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.270)\nCommit: 97ecbf7abeb4\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.270\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.272)\nCommit: 013cad548b76\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.272\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.270)\nCommit: 97ecbf7abeb4\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.270\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.272)\nCommit: 013cad548b76\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.272\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "CLI-005",
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.270)\nCommit: 97ecbf7abeb4\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.270\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.272)\nCommit: 013cad548b76\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.272\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.270)\nCommit: 97ecbf7abeb4\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.270\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.272)\nCommit: 013cad548b76\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.272\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "PRM-007",
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.270)\nCommit: 97ecbf7abeb4\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.270\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.272)\nCommit: 013cad548b76\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.272\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "HOK-010",
