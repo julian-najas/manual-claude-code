@@ -28,9 +28,9 @@
   h2{font-size:1.25rem}
   p{margin:0}
   .eyebrow{font-family:var(--mono);font-size:.71rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
-  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--ok);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
+  .veredicto{background:var(--surface);border:1px solid var(--rule);border-top:3px solid var(--mal);padding:26px 24px;display:flex;flex-direction:column;gap:16px}
   .titular{font-family:var(--serif);font-size:clamp(1.4rem,4.4vw,1.9rem);line-height:1.2}
-  .titular .n{color:var(--ok)}
+  .titular .n{color:var(--mal)}
   .meta{font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.8}
   .cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
   .cifra{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
@@ -61,19 +61,19 @@
 
   <div class="veredicto">
     <p class="titular">De las 95 afirmaciones comprobables de este libro,
-      <span class="n">95 siguen siendo ciertas</span> hoy.</p>
+      <span class="n">94 siguen siendo ciertas</span> hoy.</p>
     <p class="meta">
-      Verificado contra <strong>2.1.280 (Claude Code)</strong><br>
-      2026-09-23 09:38:57 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
+      Verificado contra <strong>2.1.281 (Claude Code)</strong><br>
+      2026-09-24 09:38:20 UTC · Linux 6.17.0-1022-azure · versión del libro v2026.08
     </p>
   </div>
 
   <div class="cifras">
-    <div class="cifra ok"><span class="v">95</span><span class="k">Pasan</span></div>
-    <div class="cifra mal"><span class="v">0</span><span class="k">Fallan</span></div>
+    <div class="cifra ok"><span class="v">94</span><span class="k">Pasan</span></div>
+    <div class="cifra mal"><span class="v">1</span><span class="k">Fallan</span></div>
     <div class="cifra rev"><span class="v">43</span><span class="k">A revisar</span></div>
     <div class="cifra"><span class="v">6</span><span class="k">Omitidas</span></div>
-    <div class="cifra"><span class="v">100%</span><span class="k">Vigencia</span></div>
+    <div class="cifra"><span class="v">99%</span><span class="k">Vigencia</span></div>
   </div>
 
   <section>
@@ -173,8 +173,8 @@
 <tr class="ok"><td class="ic">🟢</td><td class="id">SKL-010</td><td>Los cuatro comandos de equipo del módulo están escritos y los cuatro impiden que el modelo los dispare por su cuenta.</td><td class="cmd">python3 -c import sys; c=[&#x27;revisar-cambio&#x27;,&#x27;preparar-release&#x27;,&#x27;postmortem&#x27;,&#x27;poner-al-dia&#x27;]; ok=all(&#x27;disable-model-invocation: true&#x27; in open(f&#x27;entregables/plantillas/skills/{n}/SKILL.md&#x27;).read() for n in c); sys.exit(0 if ok else 1)</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SKL-011</td><td>La biblioteca de skills del módulo está escrita y documentada.</td><td class="cmd">test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/skills/LEEME.md</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SKL-012</td><td>En la plantilla de plugin, dentro de .claude-plugin solo vive plugin.json.</td><td class="cmd">python3 -c import os,sys; d=os.listdir(&#x27;entregables/plantillas/plugin/.claude-plugin&#x27;); sys.exit(0 if d==[&#x27;plugin.json&#x27;] else 1)</td></tr>
-<tr class="cap ok"><td colspan="4">08 · Subagentes</td></tr>
-<tr class="ok"><td class="ic">🟢</td><td class="id">SUB-001</td><td>--agents permite definir agentes personalizados en JSON desde la propia llamada.</td><td class="cmd">claude --help</td></tr>
+<tr class="cap mal"><td colspan="4">08 · Subagentes</td></tr>
+<tr class="mal"><td class="ic">🔴</td><td class="id">SUB-001</td><td>--agents permite definir agentes personalizados en JSON desde la propia llamada.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SUB-002</td><td>claude agents gestiona los agentes que corren en segundo plano.</td><td class="cmd">claude agents --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SUB-003</td><td>--background arranca la sesión como agente en segundo plano y devuelve el control.</td><td class="cmd">claude --help</td></tr>
 <tr class="ok"><td class="ic">🟢</td><td class="id">SUB-004</td><td>--agent hace que la sesión entera tome el prompt de sistema, las herramientas y el modelo de un agente.</td><td class="cmd">claude --help</td></tr>

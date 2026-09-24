@@ -1,11 +1,11 @@
 # Estado de verificación · Claude Code en producción
 
 **Versión del libro:** v2026.08  
-**Verificado contra:** `2.1.280 (Claude Code)`  
+**Verificado contra:** `2.1.281 (Claude Code)`  
 **Sistema:** Linux 6.17.0-1022-azure  
-**Fecha:** 2026-09-23 09:38:57 UTC
+**Fecha:** 2026-09-24 09:38:20 UTC
 
-🟢 95 pasan · 🔴 0 fallan · 🟡 43 a revisar · ⚪ 6 omitidas
+🟢 94 pasan · 🔴 1 fallan · 🟡 43 a revisar · ⚪ 6 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -90,7 +90,7 @@
 | 🟢 | SKL-010 | 07 · Skills y plugins | Los cuatro comandos de equipo del módulo están escritos y los cuatro impiden que el modelo los dispare por su cuenta. | `python3 -c import sys; c=['revisar-cambio','preparar-release','postmortem','poner-al-dia']; ok=all('disable-model-invocation: true' in open(f'entregables/plantillas/skills/{n}/SKILL.md').read() for n in c); sys.exit(0 if ok else 1)` |
 | 🟢 | SKL-011 | 07 · Skills y plugins | La biblioteca de skills del módulo está escrita y documentada. | `test -e /home/runner/work/manual-claude-code/manual-claude-code/entregables/plantillas/skills/LEEME.md` |
 | 🟢 | SKL-012 | 07 · Skills y plugins | En la plantilla de plugin, dentro de .claude-plugin solo vive plugin.json. | `python3 -c import os,sys; d=os.listdir('entregables/plantillas/plugin/.claude-plugin'); sys.exit(0 if d==['plugin.json'] else 1)` |
-| 🟢 | SUB-001 | 08 · Subagentes | --agents permite definir agentes personalizados en JSON desde la propia llamada. | `claude --help` |
+| 🔴 | SUB-001 | 08 · Subagentes | --agents permite definir agentes personalizados en JSON desde la propia llamada. | `claude --help` |
 | 🟢 | SUB-002 | 08 · Subagentes | claude agents gestiona los agentes que corren en segundo plano. | `claude agents --help` |
 | 🟢 | SUB-003 | 08 · Subagentes | --background arranca la sesión como agente en segundo plano y devuelve el control. | `claude --help` |
 | 🟢 | SUB-004 | 08 · Subagentes | --agent hace que la sesión entera tome el prompt de sistema, las herramientas y el modelo de un agente. | `claude --help` |
