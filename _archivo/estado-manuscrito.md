@@ -35,6 +35,98 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-10 · Sin módulo · La rotura que llevaba 16 días abierta era del verificador, no del libro
+
+**La rutina disparó, no escribió módulo porque no hay módulo pendiente, y se
+encontró con una FALLA viva que ninguna entrada anterior había visto.** Los doce
+siguen escritos. El módulo 01 sigue en 2.492 palabras, por debajo del mínimo de
+3.000, y sigue sin tocarse por los dos motivos de siempre: no es un módulo
+pendiente y ampliarlo es un encargo propio que necesita que digas a qué sección
+van esas 500 palabras largas.
+
+**Lo que ha aparecido hoy.** El verificador abrió con **93 pasan, 1 falla**. La
+que fallaba era `SUB-001`, del módulo 08: "--agents permite definir agentes
+personalizados en JSON desde la propia llamada", con motivo "no aparece el
+patrón /--agents <json>/". Viene fallando desde la **2.1.281**, el 24 de
+septiembre, y ha abierto **16 incidencias duplicadas**, de la #6 a la #21, una
+por día, todas la misma.
+
+**No estaba roto el libro, estaba roto el patrón.** La afirmación del módulo 08
+es cierta hoy igual que el día que se escribió. Lo que cambió fue cómo el CLI
+anuncia la bandera en su propia ayuda: hasta la 2.1.280 era `--agents <json>` y
+desde la 2.1.281 es `--agents <json-or-file>`, porque la bandera empezó a
+aceptar además la ruta de un archivo con el JSON cuando se usa con `--print`. El
+patrón estaba atado al nombre del marcador, no a la afirmación, así que se cayó
+solo. Lo he comprobado dos veces contra la ayuda de la 2.1.296 y contra la
+documentación oficial descargada hoy, que lo dice con la versión exacta: la
+forma de archivo "requiere Claude Code v2.1.281 o posterior", que es justo la
+versión en la que empezó la FALLA. Las dos fuentes coinciden.
+
+**Arreglo, y lo que no he arreglado.** El patrón de `SUB-001` pasa a
+`--agents <json`, sin el cierre del marcador, con una nota que explica por qué
+va abierto. **El capítulo 08 no se toca**: su afirmación nunca dejó de ser
+cierta, y cambiar texto publicado mueve afirmaciones que ya tienen ID. No he
+cerrado las 16 incidencias: su plantilla manda corregir el capítulo, subir
+versión, anotar changelog y mandarlo al boletín, y eso estaba escrito para una
+rotura de verdad, que aquí no ha habido. Queda abajo.
+
+Verificador contra la **2.1.296**: **93 pasan, 0 fallan, 45 a revisar, 6
+omitidas**, dos pasadas idénticas. `comprobar-coherencia.py`, sin
+contradicciones sobre 19 hechos canónicos y 80 archivos. `construir.py
+--comprobar`, todas las salidas al día, huella `43b9c8d2`, la misma desde el día
+3. `git status --short` trae el sello del verificador y el registro.
+
+**El otro dato, y no es bueno.** La entrada anterior de este diario es del
+**10 de septiembre**. Hoy es el 10 de octubre: **treinta días sin una sola
+entrada**, y en medio una FALLA que estuvo dieciséis días abierta sin que
+ninguna sesión la contara. El flujo de las 05:00 siguió sellando a diario, así
+que el repositorio parecía vivo por los commits mientras el diario estaba
+parado. No sé si la rutina disparó y murió cada día o si estuvo apagada, y no lo
+invento: el hecho comprobable es que no dejó entrada.
+
+Sin cambios en `DOS-PRODUCTOS` ni en la tabla del `README.md`: las dos dicen ya
+12 de 12 y las dos dicen ya que faltan los preliminares. No hay recuento nuevo.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, laboratorio sin tocar, nada copiado desde `/tmp`.
+
+### PARA JULIÁN
+
+1. **Las 16 incidencias #6 a #21 se pueden cerrar en bloque y no las he
+   cerrado.** Las 16 son la misma causa y la causa ya está arreglada, así que
+   mañana el flujo no abrirá la #22. Mi lectura, para que decidas: **no hay nada
+   que corregir en el capítulo, nada que subir de versión y nada que mandar al
+   boletín**, porque no se publicó ninguna afirmación falsa. Lo que falló fue la
+   comprobación. Si estás de acuerdo, es un cierre en bloque con un comentario.
+2. **Tres patrones más tienen la misma fragilidad y los he dejado pasando.**
+   `SUB-004` con `--agent <agent>`, y los de `--max-budget-usd <amount>` y
+   `--json-schema <schema>`. Hoy pasan los tres, así que no los he tocado, pero
+   están atados al nombre del marcador de la ayuda igual que el que se cayó. De
+   60 patrones, esos tres son los que pueden repetir el episodio. Si quieres,
+   es media hora de encargo: abrirlos como he abierto este.
+3. **Treinta días sin entrada en el diario, y el latido no sirvió para avisar.**
+   El latido comenta sobre la incidencia #5, que está abierta desde el 27 de
+   agosto, en vez de abrir una nueva. Es lo que se diseñó para no abrir una al
+   día, pero el efecto es que un mes de silencio no levanta ninguna alarma
+   nueva: queda enterrado en comentarios de una incidencia vieja que nadie
+   reabre. Si la rutina sigue, esto hay que cambiarlo, porque es justo el fallo
+   que el latido existía para cazar.
+4. **La decisión de siempre sigue abierta, y hoy tiene un argumento nuevo a
+   favor de la tercera salida.** Las tres siguen siendo pararla, reapuntarla a
+   los preliminares, o dejarla como guardia de regresión con un prompt que lo
+   diga. Lo que añade hoy: **la guardia de regresión acaba de ganarse el sueldo
+   por primera vez en condiciones**. El flujo de las 05:00 detectó la rotura 16
+   veces y no la entendió ninguna; abrió 16 incidencias idénticas y no arregló
+   nada. Hoy ha hecho falta una sesión que leyera la ayuda, bajara la
+   documentación, viera que el libro tenía razón y el verificador no, y tocara
+   el patrón correcto. Eso el flujo no lo hace. Sigo pensando que los
+   preliminares son el trabajo más valioso que tienes sin hacer, pero ya no
+   diría que esta rutina no aporta nada: aporta cuando algo se rompe, y hoy se
+   había roto.
+5. **Módulo 01, sin cambios.** Sigue en 2.492 palabras y sigue siendo el único
+   incumplimiento de contrato vivo del manuscrito. Hace falta que digas a qué
+   sección van las 500 palabras largas.
+
 ## 2026-09-10 · Sin módulo · Octavo día, y hoy la aviso por el móvil
 
 **La rutina disparó, comprobó y no escribió módulo, porque sigue sin haberlo.**

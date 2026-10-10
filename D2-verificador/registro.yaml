@@ -704,7 +704,8 @@ pruebas:
     afirmacion: "--agents permite definir agentes personalizados en JSON desde la propia llamada."
     tipo: cli
     comando: ["claude", "--help"]
-    espera_patron: '--agents <json>'
+    espera_patron: '--agents <json'
+    nota: 'Patron sin el cierre del marcador a proposito. La 2.1.281 cambio "--agents <json>" por "--agents <json-or-file>" al aceptar tambien la ruta de un archivo con --print, y el patron cerrado dio FALLA 16 dias sin que la afirmacion dejara de ser cierta. Se comprueba que la bandera existe y toma JSON, que es lo que dice el capitulo, no como se llame el marcador.'
 
   - id: SUB-002
     capitulo: "08 · Subagentes"
