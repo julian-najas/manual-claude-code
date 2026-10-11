@@ -35,6 +35,130 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-11 · Módulo 01 · El incumplimiento que llevaba cinco semanas esperando una decisión que no hacía falta
+
+**Hoy hubo módulo, y era el 01.** Los doce seguían escritos, pero el 01 no
+estaba completo: **2.492 palabras contra el mínimo de 3.000** del esqueleto, y
+**cero marcas de versión al margen** cuando los otros once llevan entre dos y
+catorce. Son dos invariantes incumplidos, no una cuestión de gusto, así que el
+módulo pendiente de número más bajo era el 01. Queda en **3.989 palabras** y con
+cinco marcas al margen.
+
+**La decisión que seis entradas de diario dejaron abierta no hacía falta
+tomarla.** Del 4-sep al 10-oct este diario repitió que ampliar el 01 necesitaba
+que Julián dijera a qué sección iban las 500 palabras largas. El esqueleto ya lo
+dice: asigna extensión por parte, y midiendo las siete partes de los once
+módulos conformes sale el déficit por sección sin que nadie opine. Modelo mental
+**-544**, Coste **-266**, Runbook **-251**, Laboratorio **-160**, Prueba **-92**,
+y Síntoma y Receta ya en norma. Ahí fueron las palabras y en ese orden. No había
+criterio propio que aplicar, había una medición que nadie había hecho.
+
+**Lo que se añadió.** El bucle agéntico de tres fases en 1.2.1, que era el
+párrafo más flaco del módulo y es la pieza que explica por qué esto no es un
+chat, con la frase que importa: la calidad de la fase de verificar la pone el
+lector, y si el repositorio no tiene nada contra lo que verificar el bucle se
+queda en dos fases. La fusión de comandos y skills en 1.2.2, con marca de
+versión, porque es la pieza del árbol que peor ha envejecido. Un **1.2.5 nuevo,
+"Señales de que elegiste mal"**, que estaba en la fuente canónica de la Lámina 1
+(`D1-skill/.../arbol-decision.md`) y no había llegado al manuscrito. La **1.3.1
+etiquetada por fin como Lámina 1**, que el esqueleto la lista como activo del
+módulo y no aparecía con ese nombre en ninguna parte. Y el runbook, de 126
+palabras a 377, que era el más corto de los doce.
+
+**La factura del laboratorio estaba mal, y por un factor de tres.** Decía
+"~40.000 tokens, estimados". Medidos hoy con la 2.1.296: **147.176**. El error
+no fue de cálculo, fue de método, y por eso está contado dentro del módulo en vez
+de corregido en silencio: se estimó contando lo que pesa el repositorio en vez de
+medir lo que cuesta mirarlo. El laboratorio se midió sobre los siete archivos del
+estado de partida, **reconstruidos en el borrador desde el historial**, porque el
+repositorio vivo es el estado posterior al módulo 12 y ya no tiene `settings.py`.
+
+**Las cifras, con el método.** Suelo del arnés con petición trivial: **35.458**
+en el laboratorio y **35.460** en un directorio vacío, dos repeticiones idénticas
+cada uno. Dos tokens de diferencia, o sea que un repositorio de 5.830 bytes no
+cuesta nada por estar ahí: lo que cuesta es mirarlo. De los 147.176, **35.458 son
+suelo y 111.718 exploración**, nueve lecturas y diez turnos. Y la varianza, que es
+el hallazgo que no esperaba: **tres pasadas de cuatro dieron 147.176 al token** y
+la cuarta 111.165, un 32 % menos, porque tomó otro camino. En tres de ellas el
+agente intentó leer los siete archivos de una vez con un comando de consola, se lo
+denegaron, y los leyó de uno en uno gastando un turno más. Entre dos pasadas
+idénticas lo que varía no es lo que sabe, es por dónde lo busca. El coste que
+devuelve el CLI para la misma ejecución va de **0,04 a 0,09 dólares** según el
+estado de la caché, y eso también está dicho en el módulo: una cifra de coste que
+no dice cómo estaba la caché cuenta media historia.
+
+**Dos fichas nuevas, y una vieja que se movió.** El módulo 01 nació sin ninguna
+afirmación en el registro, porque el esqueleto lo declara conceptual, pero
+publica dos cosas comprobables. Alta de **FUN-001** (el agente contrasta el
+README con el código y dice cuál miente: tres de tres con la 2.1.228, cuatro de
+cuatro hoy) y de **FUN-002** (el suelo y la factura, con el método). Las dos
+manuales y trimestrales, porque dependen del modelo y de la máquina.
+
+Y **SEG-002 se ha movido otra vez**, que es lo más interesante del día. Afirma
+que el agente nombre la inyección escondida en el README es inestable: tres de
+tres el 12-ago con la 2.1.228, **cero de diez** el 31-ago con la 2.1.251. Hoy, con
+la 2.1.296, **cuatro de cuatro la nombraron** y ninguna la obedeció. Ha vuelto.
+No cambio nada publicado por esto: la ficha ya dice que va y viene, y el ir y
+venir es justo lo que sostiene. Le he anotado la medición de hoy y nada más. El
+módulo 01 usa esa historia, en la caja "esto va a cambiar", como el ejemplo de por
+qué coincidir dos trimestres no convierte una observación en garantía.
+
+**Un arreglo pequeño que llevaba tiempo de prestado.** El runbook del 01 decía
+"Solo dos piezas se pagan en cada turno: CLAUDE.md y MCP". Pasaba la comprobación
+de coherencia por los pelos, porque el patrón prohibido de `MCP-DIFERIDO` está
+redactado de otra manera, pero contradecía el hecho canónico y el propio 1.2.4 del
+mismo módulo. Ahora dice lo que es: el `CLAUDE.md` se paga entero y MCP solo los
+nombres, que los esquemas van diferidos.
+
+Verificador contra la **2.1.296**: **93 pasan, 0 fallan, 47 a revisar, 6
+omitidas**. Los dos REVISAR nuevos son FUN-001 y FUN-002.
+`comprobar-coherencia.py`, sin contradicciones sobre 19 hechos canónicos y 80
+archivos. `construir.py --comprobar`, todas las salidas al día, huella
+`43b9c8d2`. `git status --short` trae el módulo 01, el registro, `hechos.yaml`,
+el `README.md` y el sello del verificador. **El laboratorio, intacto**, que
+`git status --short D6-repo-feo/` sale vacío.
+
+`DOS-PRODUCTOS` y la tabla del `README.md` actualizados: siguen diciendo 12 de 12
+y siguen diciendo que faltan los preliminares, pero ahora dicen además que los
+doce cumplen la extensión del esqueleto, y llevan el recuento, 46.545 palabras.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, nada copiado desde `/tmp`, el laboratorio sin tocar y las
+mediciones en el borrador de la sesión.
+
+### PARA JULIÁN
+
+1. **Desde hoy la rutina no tiene módulo que escribir, y esta vez de verdad.**
+   Hasta ayer quedaba el 01 por debajo del contrato y era la respuesta a "¿hay
+   trabajo pendiente?". Ya no: los doce están escritos y los doce están dentro
+   del rango. **La decisión que llevas abierta desde el 4 de septiembre ya no
+   tiene una tarea de redacción detrás que la aplace.** Las tres salidas siguen
+   siendo pararla, reapuntarla a los preliminares, o dejarla como guardia de
+   regresión con un prompt que lo diga. **Mantengo la recomendación de las
+   entradas anteriores: reapúntala a los preliminares** (portada, cómo leer este
+   libro, glosario), que es el trabajo real que te queda y tiene el tamaño de un
+   módulo al día. Si mañana dispara con el prompt de hoy, encontrará los doce en
+   regla y no escribirá nada.
+2. **El vaivén de SEG-002 merece tu lectura, no la mía.** De tres de tres a cero
+   de diez a cuatro de cuatro, en tres versiones, sobre el mismo repositorio y la
+   misma pregunta. Yo solo le he anotado la medición. Lo que no he tocado es el
+   módulo 10, que apoya su laboratorio en que no se puede construir una política
+   encima de ese comportamiento: mi lectura es que hoy queda **más** sostenido que
+   antes, porque la tercera medición demuestra el vaivén mejor que la segunda.
+   Pero toca texto publicado y la decisión es tuya.
+3. **Las 16 incidencias #6 a #21 siguen abiertas.** Sin cambios respecto a ayer:
+   son la misma causa, la causa está arreglada y mi lectura sigue siendo que no
+   hay nada que corregir en el capítulo ni que mandar al boletín. Es un cierre en
+   bloque con un comentario cuando lo decidas.
+4. **Los tres patrones frágiles siguen frágiles.** `SUB-004` con `--agent <agent>`,
+   `--max-budget-usd <amount>` y `--json-schema <schema>`. Hoy pasan los tres. Sin
+   cambios respecto a ayer: media hora de encargo si quieres abrirlos como se abrió
+   el de `SUB-001`.
+5. **El latido sigue sin servir para avisar.** Sin cambios respecto a ayer:
+   comenta sobre la #5, abierta desde el 27 de agosto, así que un mes de silencio
+   no levanta ninguna alarma nueva. Si la rutina sigue viva en cualquiera de sus
+   tres formas, esto hay que cambiarlo.
+
 ## 2026-10-10 · Sin módulo · La rotura que llevaba 16 días abierta era del verificador, no del libro
 
 **La rutina disparó, no escribió módulo porque no hay módulo pendiente, y se

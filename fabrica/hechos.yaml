@@ -104,7 +104,7 @@ hechos:
     prohibido: []
 
   - id: DOS-PRODUCTOS
-    valor: "La guía de referencia de 21 módulos está terminada. Los doce módulos del manual guiado están escritos: 12 de 12. Quedan los preliminares y el cierre que el esqueleto lista como pendientes (portada, cómo leer este libro, glosario), así que el producto todavía no está terminado."
+    valor: "La guía de referencia de 21 módulos está terminada. Los doce módulos del manual guiado están escritos: 12 de 12, 46.545 palabras, y desde el 11-oct-2026 los doce cumplen también la extensión que pide el esqueleto. Quedan los preliminares y el cierre que el esqueleto lista como pendientes (portada, cómo leer este libro, glosario), así que el producto todavía no está terminado."
     fuente: "estado del repositorio"
     prohibido:
       - "el manual profesional está terminado"

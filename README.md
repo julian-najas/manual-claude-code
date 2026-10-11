@@ -29,12 +29,15 @@ Este repositorio no está afiliado, patrocinado ni respaldado por Anthropic.
 | | Qué es | Estado |
 |---|---|---|
 | **Guía de referencia** · `guia-21/` | 21 módulos ordenados por materia, para consultar. 44.717 palabras, 15 tablas, 3 diagramas | **Terminada** |
-| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 € | **12 de 12 módulos escritos.** Faltan preliminares y cierre |
+| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 €. 46.545 palabras | **12 de 12 escritos, y los doce dentro del contrato.** Faltan preliminares y cierre |
 
 La guía alimenta al manual; el manual no repite la guía. **Lo terminado es la
-guía.** Los doce módulos del manual están escritos desde el 2-sep-2026, pero
-llamar terminado al producto sería falso: el esqueleto sigue listando como
-pendientes la portada, el "cómo leer este libro" y el glosario.
+guía.** Los doce módulos del manual están escritos desde el 2-sep-2026 y desde
+el 11-oct-2026 los doce cumplen además la extensión que pide el esqueleto: el
+módulo 01 se quedaba en 2.492 palabras, por debajo del mínimo de 3.000, y era el
+último incumplimiento de contrato que quedaba vivo. Aun así, llamar terminado al
+producto sería falso: el esqueleto sigue listando como pendientes la portada, el
+"cómo leer este libro" y el glosario.
 
 Para instalar la guía completa como skill: `entregables/skill-guia/instalar.sh`.
 La skill de `D1-skill/` es la del **manual**, que es más pequeña y aún está en obra.
