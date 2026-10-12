@@ -35,6 +35,78 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-12 · Sin módulo · Los doce en regla, y la rutina sin nada que escribir
+
+**Hoy no hubo módulo, y es el resultado correcto.** Ayer el diario lo dejó
+escrito: "si mañana dispara con el prompt de hoy, encontrará los doce en regla y
+no escribirá nada". Ha disparado y eso es exactamente lo que ha pasado. No es un
+fallo de la rutina ni una sesión muerta: es el primer día en que el paso 1 del
+prompt, coger el módulo pendiente de número más bajo, no tiene candidato.
+
+**Lo que se auditó antes de decirlo.** No basta con que existan los doce
+archivos, que existían también el 4 de septiembre con el 01 incumpliendo dos
+invariantes. Se comprobaron los doce contra el contrato del esqueleto, uno a uno:
+
+- **Extensión:** los doce entre 3.000 y 4.000 palabras. El más corto es el 07 con
+  3.260 y el más largo el 12 con 3.998. Total 46.547.
+- **Las seis partes, en orden:** Síntoma, Modelo mental, Receta, Laboratorio,
+  Prueba y Coste. Los doce, en ese orden y sin saltos.
+- **Marcas de versión al margen:** entre 2 (el 02) y 14 (el 04, el 08 y el 09).
+  Ninguno a cero, que era justo el incumplimiento del 01 hasta ayer.
+- **Factura del laboratorio en cabecera:** los doce abren con tokens y euros.
+- **Versión del CLI y fecha declaradas:** los doce.
+- **Caja "esto va a cambiar":** presente en los doce.
+- **Cierre en runbook:** los doce terminan en su runbook y no en prosa.
+- **Guiones largos:** cero en los doce.
+
+**El verificador, limpio.** `93 pasan · 0 fallan · 47 a revisar · 6 omitidas`,
+contra la 2.1.296, que es la que hay hoy en el entorno. Cero FALLA, que es el
+criterio. `comprobar-coherencia.py` sin contradicciones sobre 19 hechos canónicos
+y 80 archivos, y `construir.py --comprobar` con todas las salidas al día, huella
+`43b9c8d2`.
+
+**Lo único que se ha escrito hoy es esta entrada, y por una razón concreta.** El
+latido lee la fecha del encabezado más reciente del diario y a las 21:00 UTC
+daba `viva: false` con un día de silencio. Una sesión que corre bien y no
+escribe nada deja el repositorio idéntico a una que se muere en un diálogo de
+permisos: ese es el problema que el latido existe para detectar y no sabe
+distinguir los dos casos. Sin esta entrada, el día habría quedado registrado
+como silencio. Con ella queda registrado como lo que fue: la rutina corrió,
+auditó y no tenía trabajo. No se ha tocado el manuscrito, ni el laboratorio, ni
+`hechos.yaml`, ni el README: no hay módulo nuevo que contar y el recuento no ha
+cambiado.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, nada copiado desde `/tmp`, el laboratorio intacto.
+
+### PARA JULIÁN
+
+1. **La rutina ya no tiene trabajo y a partir de hoy gastará un día entero en
+   confirmarlo.** Esto ya no es una previsión, es lo que acaba de pasar. Cada
+   mañana a las 08:00 va a clonar, auditar los doce, encontrarlos en regla y
+   escribir una entrada diciendo que no hay nada que hacer. **Es la decisión que
+   llevas abierta desde el 4 de septiembre y hoy es el primer día que cuesta
+   dinero sin producir texto.** Las tres salidas siguen siendo las mismas:
+   pararla, reapuntarla a los preliminares, o dejarla como guardia de regresión
+   con un prompt que lo diga en vez de uno que le pide escribir un módulo.
+   **Mantengo la recomendación: reapúntala a los preliminares** (portada, cómo
+   leer este libro, glosario), que es el trabajo que queda para cerrar el
+   producto y tiene el tamaño de un módulo al día. Si eliges guardia de
+   regresión, el prompt tiene que cambiar: el de hoy dice "escribe UN módulo,
+   entero" y eso ya no describe el trabajo.
+2. **El vaivén de SEG-002 sigue esperando tu lectura.** Sin cambios respecto a
+   ayer. Toca el módulo 10, que es texto publicado, y la decisión es tuya.
+3. **Las 16 incidencias #6 a #21 siguen abiertas.** Sin cambios: misma causa, ya
+   arreglada, cierre en bloque con un comentario cuando lo decidas.
+4. **Los tres patrones frágiles de `SUB-004` siguen frágiles.** Hoy pasan los
+   tres. Sin cambios respecto a ayer.
+5. **El latido avisa mal, y hoy se ha visto por qué.** Comenta sobre la #5,
+   abierta desde el 27 de agosto, así que no levanta alarma nueva. Pero el
+   problema de fondo es otro: no distingue "la rutina se murió" de "la rutina
+   corrió y no había trabajo". A partir de hoy, que el segundo caso es el normal,
+   esa distinción es la única que importa. Si dejas la rutina viva en cualquier
+   forma, esto hay que cambiarlo.
+
 ## 2026-10-11 · Módulo 01 · El incumplimiento que llevaba cinco semanas esperando una decisión que no hacía falta
 
 **Hoy hubo módulo, y era el 01.** Los doce seguían escritos, pero el 01 no
