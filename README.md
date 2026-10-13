@@ -29,7 +29,7 @@ Este repositorio no está afiliado, patrocinado ni respaldado por Anthropic.
 | | Qué es | Estado |
 |---|---|---|
 | **Guía de referencia** · `guia-21/` | 21 módulos ordenados por materia, para consultar. 44.717 palabras, 15 tablas, 3 diagramas | **Terminada** |
-| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 €. 46.545 palabras | **12 de 12 escritos, y los doce dentro del contrato.** Faltan preliminares y cierre |
+| **Manual guiado** · `manuscrito/` | 12 módulos con laboratorios sobre un repositorio real, el producto de 149 €. 46.547 palabras | **12 de 12 escritos, y los doce dentro del contrato.** Faltan preliminares y cierre |
 
 La guía alimenta al manual; el manual no repite la guía. **Lo terminado es la
 guía.** Los doce módulos del manual están escritos desde el 2-sep-2026 y desde

@@ -35,6 +35,93 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-13 · Sin módulo · Segundo día sin trabajo, y el primero que ya no es noticia
+
+**Tampoco hoy hubo módulo, y vuelve a ser el resultado correcto.** Es el segundo
+día consecutivo en que el paso 1 del prompt, coger el módulo pendiente de número
+más bajo, no tiene candidato. Ayer fue un hallazgo; hoy es el régimen normal de
+la rutina. Lo escribo así de seco a propósito: a partir de ahora estas entradas
+van a parecerse todas, y eso es justo el argumento de la decisión que sigue
+abierta.
+
+**La auditoría se repitió entera y de cero, sin fiarse de la de ayer.** Que el
+diario de ayer diga que los doce estaban en regla no es prueba de que lo estén
+hoy: el repositorio ha recibido un commit desde entonces y el criterio es el
+estado actual, no el apunte. Los doce contra el contrato del esqueleto, uno a
+uno:
+
+- **Extensión:** los doce entre 3.000 y 4.000. El más corto el 07 con 3.260, el
+  más largo el 12 con 3.998.
+- **Las seis partes, en orden:** Síntoma, Modelo mental, Receta, Laboratorio,
+  Prueba y Coste. Los doce, sin saltos.
+- **Marcas de versión al margen:** entre 2 (el 02) y 14 (el 04, el 08 y el 09).
+  Ninguno a cero.
+- **Factura del laboratorio en cabecera:** los doce abren con tokens y euros.
+- **Versión del CLI y fecha declaradas:** los doce.
+- **Caja "esto va a cambiar":** presente en los doce.
+- **Cierre en runbook:** los doce terminan en `## Runbook · Módulo NN` y no en
+  prosa. Comprobado por el último encabezado de cada archivo, no por si la
+  palabra aparece suelta en alguna parte.
+- **Guiones largos:** cero en los doce.
+
+**El verificador y los dos comprobadores, limpios.** `93 pasan · 0 fallan · 47 a
+revisar · 6 omitidas`, contra la 2.1.296, que es la que hay hoy en el entorno y
+la misma de ayer. Cero FALLA, que es el criterio. `comprobar-coherencia.py` sin
+contradicciones sobre 19 hechos canónicos y 80 archivos, y `construir.py
+--comprobar` con todas las salidas al día, huella `43b9c8d2`, idéntica a la de
+ayer. Mirado con stderr aparte, como pide el prompt.
+
+**Se corrigió una cifra publicada, de dos palabras.** El README y
+`DOS-PRODUCTOS` en `hechos.yaml` decían **46.545 palabras**; el recuento real de
+los doce es **46.547**. El desajuste viene del 11-oct: aquel día el diario anotó
+el módulo 01 en 3.989 palabras y hoy `wc -w` da 3.991, así que la suma publicada
+se quedó dos palabras corta. La auditoría de ayer ya midió 46.547 y lo dejó
+escrito en el diario, pero no tocó las dos cifras publicadas, que es donde las
+lee un comprador. Medido dos veces y por dos caminos (`cat` de los doce a `wc
+-w`, y la suma archivo a archivo): 46.547 las dos. No hay en `fabrica/` ningún
+contador canónico de palabras, así que el método es `wc -w` y la cifra honesta es
+la suya. Es el único cambio de contenido del día y está contado aquí porque la
+regla de la casa es cero cifras sin fuente, no cero correcciones.
+
+**Por qué se escribe esta entrada si no hubo módulo.** El latido lee la fecha del
+encabezado más reciente de este diario y a las 21:00 UTC daría `viva: false` con
+un día de silencio. Una sesión que corre bien y no escribe nada deja el
+repositorio igual que una que se muere en un diálogo de permisos. Sin esta
+entrada, el día queda registrado como silencio; con ella, como lo que fue. No se
+ha tocado el manuscrito ni el laboratorio: no hay módulo nuevo que contar.
+
+**Nota de rutina:** cero diálogos de permisos. Nada escrito dentro de ninguna
+carpeta `.claude/`, nada copiado desde `/tmp`, el laboratorio intacto y
+`git status --short` limpio salvo los tres archivos de esta entrada.
+
+### PARA JULIÁN
+
+1. **La decisión ya no es una previsión que cuesta dinero: es una factura con dos
+   días.** Ayer fue el primer día que la rutina gastó una sesión entera en
+   confirmar que no tenía trabajo. Hoy el segundo, y la auditoría completa es
+   obligada cada mañana precisamente porque no puede fiarse del apunte del día
+   anterior: el coste no baja con la costumbre. Las tres salidas siguen siendo
+   las mismas: pararla, reapuntarla a los preliminares, o dejarla como guardia de
+   regresión con un prompt que lo diga. **Mantengo la recomendación: reapúntala a
+   los preliminares** (portada, cómo leer este libro, glosario), que es el
+   trabajo que queda para cerrar el producto y tiene el tamaño de un módulo al
+   día. Si eliges guardia de regresión, el prompt tiene que cambiar: el de hoy
+   dice "escribe UN módulo, entero", y eso ya no describe el trabajo que hay. **No
+   lo decido yo, pero conviene saber que cada día que pasa la respuesta cuesta
+   una sesión.**
+2. **El vaivén de SEG-002 sigue esperando tu lectura.** Sin cambios. Toca el
+   módulo 10, que es texto publicado, y la decisión es tuya.
+3. **Las 16 incidencias #6 a #21 siguen abiertas.** Sin cambios: misma causa, ya
+   arreglada, cierre en bloque con un comentario cuando lo decidas.
+4. **Los tres patrones frágiles de `SUB-004` siguen frágiles.** Hoy pasan los
+   tres. Sin cambios.
+5. **El latido avisa mal y hoy lo confirma por segunda vez.** Comenta sobre la #5,
+   abierta desde el 27 de agosto, así que no levanta alarma nueva. El problema de
+   fondo no ha cambiado: no distingue "la rutina se murió" de "la rutina corrió y
+   no había trabajo", y ese segundo caso es ya el normal. Si dejas la rutina viva
+   en cualquier forma, esto hay que cambiarlo; si la paras, el latido hay que
+   pararlo con ella o pasará a ladrar todos los días.
+
 ## 2026-10-12 · Sin módulo · Los doce en regla, y la rutina sin nada que escribir
 
 **Hoy no hubo módulo, y es el resultado correcto.** Ayer el diario lo dejó
