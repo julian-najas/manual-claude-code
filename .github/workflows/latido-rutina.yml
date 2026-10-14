@@ -13,12 +13,11 @@ name: Latido de la rutina
 # esté bien, para eso está `verificar.yml`. Comprueba que la rutina dejó algo
 # escrito, que es justo lo que no ocurre cuando se muere.
 
+# Programado desactivado el 14-oct-2026: la rutina del manuscrito se dio de
+# baja y un latido diario sin rutina solo avisaría todas las noches. Para
+# volver a encenderlo, restaurar el bloque `schedule` (21:00 UTC). A mano sigue
+# funcionando.
 on:
-  schedule:
-    # 21:00 UTC, 23:00 de Madrid. Quince horas después de que dispare la
-    # rutina, así que a esta hora el día ya está decidido: o hay entrada o no
-    # la va a haber. Comprobarlo antes daría falsos rojos con una sesión larga.
-    - cron: "0 21 * * *"
   workflow_dispatch:
 
 # Este flujo NO instala nada remoto y no necesita escribir en el repositorio.
