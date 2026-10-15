@@ -35,6 +35,91 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-15 · Sin módulo · La rutina sigue viva y su latido ya no lo está
+
+**Cuarto día sin módulo, y sigue siendo el resultado correcto.** El paso 1 del
+prompt, coger el módulo pendiente de número más bajo, no tiene candidato. La
+auditoría se repitió entera y de cero, como los días anteriores, porque el
+criterio es el estado de hoy y no el apunte de ayer. Los doce contra el contrato
+del esqueleto:
+
+- **Extensión:** los doce entre 3.000 y 4.000. El más corto el 07 con 3.260, el
+  más largo el 12 con 3.998. Total **46.547**, el mismo recuento que publican ya
+  el README y `DOS-PRODUCTOS`, así que no hay nada que corregir hoy.
+- **Las seis partes, en orden:** Síntoma, Modelo mental, Receta, Laboratorio,
+  Prueba y Coste. Los doce, sin saltos.
+- **Factura del laboratorio en cabecera, nota de versión, caja "esto va a
+  cambiar", cierre en runbook:** los doce.
+- **Marcas de versión al margen:** entre 49 (el 02 y el 07) y 71 (el 11).
+  Ninguno a cero.
+- **Guiones largos:** cero en los doce.
+
+**El dato del día no es del libro, es del andamio que lo escribe, y es un
+desajuste.** El commit `4ba7aad` de ayer, 14-oct 09:24 UTC, quitó el bloque
+`schedule` de `.github/workflows/latido-rutina.yml` y lo justificó así: "la
+rutina del manuscrito ya no se vende y se da de baja desde el panel de
+claude.ai". **La baja no se hizo.** Esta sesión existe porque la rutina
+`trig_01RzL9eHhTvWuejJYqBLgV7Z` disparó hoy a las 06:00 UTC, como todos los
+días. El resultado es que la rutina gasta una sesión diaria igual que antes,
+pero ya sin el interruptor de hombre muerto que avisaba cuando una sesión se
+moría en un diálogo de permisos. **Es peor que el estado de hace tres días:**
+antes había gasto con alarma, ahora hay gasto sin alarma, y una sesión que se
+muera en silencio a partir de hoy no deja rastro en ninguna parte. Las dos
+piezas se desactivaron en el orden inverso al que tocaba.
+
+**El verificador, contra la 2.1.300.** El CLI del entorno ha pasado de la
+2.1.299 de ayer a la **2.1.300**, y las **93 comprobaciones siguen pasando con 0
+FALLA** (47 a revisar, 6 omitidas). Las dos únicas diferencias contra el estado
+commiteado vuelven a ser `REPO-002` y `REPO-003`, y **no son una regresión**:
+las dos salen por la red y el proxy de este sandbox las corta con un 403,
+comprobado a mano y con stderr aparte, así que caen a REVISAR por entorno. En el
+corredor de `verificar.yml`, que sí tiene salida, las mismas dos pasan: de ahí
+el `95 pasan · 45 a revisar` del archivo frente al `93 pasan · 47 a revisar` de
+esta sesión. Es el cuarto día que esta guardia de regresión es lo único que
+produce la sesión, y el cuarto día que da limpio.
+
+**Los dos comprobadores, limpios.** `comprobar-coherencia.py` sin
+contradicciones sobre 19 hechos canónicos y 80 archivos, y `construir.py
+--comprobar` con todas las salidas al día, huella `43b9c8d2`, la misma de los
+tres días anteriores.
+
+**Nota de rutina.** Cero diálogos de permisos, nada escrito dentro de ninguna
+carpeta `.claude/`, el laboratorio `D6-repo-feo` intacto y `git status --short`
+sin sorpresas más allá del estado del verificador que regenera su propia
+ejecución. Esta entrada se escribió en su sitio con un heredoc, sin pasar por
+`/tmp` y sin `cp`, que es lo que la de ayer reconoció haber hecho mal.
+
+### PARA JULIÁN
+
+1. **Decisión que ya no puede esperar, porque el andamio quedó a medias.** Ayer
+   se desactivó el latido dando por hecha una baja que no se llegó a hacer, así
+   que hoy hay rutina sin red. Son dos arreglos y los dos son de una línea:
+   **o das de baja la rutina de verdad** en
+   https://claude.ai/code/routines/trig_01RzL9eHhTvWuejJYqBLgV7Z, y entonces el
+   latido ya está bien como está y no hay que tocarlo, **o la dejas viva y
+   restauras el bloque `schedule` de las 21:00 UTC** en
+   `.github/workflows/latido-rutina.yml`, donde el propio comentario del archivo
+   explica cómo. Lo que no se sostiene es el estado de hoy, que es el peor de
+   los tres. **No lo decido yo:** toca una rutina de pago y un flujo que abre
+   incidencias.
+2. **Y si la dejas viva, el prompt sigue mandando lo que no hay.** Sin cambios
+   sobre lo de ayer: el prompt dice "escribe UN módulo, entero" y hace cuatro
+   días que no hay módulo que escribir. Los preliminares (portada, cómo leer
+   este libro, glosario) siguen siendo el trabajo que cierra el producto y
+   tienen tamaño de un módulo al día; la guardia de regresión del verificador ya
+   es el primer paso de la sesión y en cuatro días ha visto moverse el CLI de la
+   2.1.294 a la 2.1.300.
+3. **El latido avisa mal, y ahora ya no avisa.** El problema de fondo no se ha
+   arreglado, solo se ha silenciado: seguía sin distinguir "la rutina se murió"
+   de "la rutina corrió y no había trabajo". Si restauras el `schedule`, esto
+   hay que cambiarlo antes, o volverá a comentar todas las noches sobre la #5.
+4. **El vaivén de SEG-002 sigue esperando tu lectura.** Sin cambios. Toca el
+   módulo 10, que es texto publicado, y la decisión es tuya.
+5. **Las 16 incidencias #6 a #21 siguen abiertas.** Sin cambios: misma causa, ya
+   arreglada, cierre en bloque con un comentario cuando lo decidas.
+6. **Los tres patrones frágiles de `SUB-004` siguen frágiles.** Hoy pasan los
+   tres. Sin cambios.
+
 ## 2026-10-14 · Sin módulo · Tercer día sin trabajo, y el primero que deja un dato útil
 
 **Tampoco hoy hubo módulo, y sigue siendo el resultado correcto.** Tercer día
