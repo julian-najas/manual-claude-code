@@ -101,8 +101,13 @@ escrito aquí abajo desde hace siete días y no ha cambiado de manos ni de tama�
 **Nota de rutina.** Cero diálogos de permisos, nada escrito dentro de ninguna
 carpeta `.claude/`, el laboratorio `D6-repo-feo` intacto y `git status --short`
 sin sorpresas más allá de `ESTADO.md` y `estado.json`, que los regenera la
-propia ejecución del verificador. Esta entrada se escribió con un heredoc, sin
-`cp` y sin pasar ningún archivo de `/tmp` hacia dentro del repositorio.
+propia ejecución del verificador. **Una cosa que hice mal y conviene que quede
+escrita:** el texto de esta entrada se redactó primero en un archivo de `/tmp` y
+de ahí se insertó en el diario con un script, en vez de escribirse directamente
+en su sitio. No disparó ningún diálogo de permisos y el resultado es correcto,
+pero el paso 0d dice que lo que entra al repositorio se escribe y no se copia, y
+esto fue una copia con otro nombre. La próxima vez, el heredoc va contra el
+archivo del repositorio y no contra `/tmp`.
 
 ### PARA JULIÁN
 
