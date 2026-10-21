@@ -35,6 +35,109 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-21 · Sin módulo · Séptimo día, y la única novedad es que el CLI se movió dos versiones
+
+**Séptimo día sin módulo, y sigue siendo el resultado correcto.** El paso 1 del
+prompt, coger el módulo pendiente de número más bajo, no tiene candidato. La
+auditoría se repitió entera y de cero, como los días anteriores, porque el
+criterio es el estado de hoy y no el apunte de ayer. Los doce contra el contrato
+del esqueleto:
+
+- **Extensión:** los doce entre 3.000 y 4.000. El más corto el 07 con 3.260, el
+  más largo el 12 con 3.998. Total **46.547**, recontado hoy módulo a módulo y
+  el mismo número que publican el README y `DOS-PRODUCTOS`, así que tampoco hoy
+  hay nada que corregir.
+- **Las seis partes, en orden:** Síntoma, Modelo mental, Receta, Laboratorio,
+  Prueba y Coste. Los doce, sin saltos.
+- **Factura del laboratorio en cabecera, versión del CLI y fecha declaradas,
+  caja "esto va a cambiar", cierre en runbook:** los doce. Las versiones
+  declaradas siguen yendo de la 2.1.228 del módulo 01 a la 2.1.258 del 12, que
+  es la regla 8 funcionando: el libro no tiene versión única.
+- **Marcas de versión al margen:** ninguno a cero.
+- **Guiones largos:** cero en los doce, y cero también en el esqueleto.
+
+**El verificador, contra la 2.1.306.** El CLI del entorno ha pasado de la
+2.1.304 de ayer a la **2.1.306**, dos versiones en un día, y las **93
+comprobaciones siguen pasando con 0 FALLA** (47 a revisar, 6 omitidas). Las dos
+únicas diferencias de estado contra lo commiteado vuelven a ser `REPO-002` y
+`REPO-003`, y **no son una regresión**: las dos salen por la red y el proxy de
+este sandbox las corta. Comprobado otra vez a mano, con stderr aparte y dos
+repeticiones idénticas: el `curl` de `REPO-002` contra `github.com` devuelve
+**403 por la salida de datos y no escribe nada en la de error**, que es
+exactamente la trampa que el prompt manda mirar antes de publicar una cifra, y
+el de `REPO-003` muere en el túnel con `curl: (56) CONNECT tunnel failed,
+response 403`. En el corredor de `verificar.yml`, que sí tiene salida a la red,
+las mismas dos pasan: de ahí el `95 pasan · 45 a revisar` del archivo frente al
+`93 pasan · 47 a revisar` de esta sesión. El resto del diff de `ESTADO.md` es
+solo rutas del entorno (`/root/.claude` y `/home/user/manual-claude-code` en vez
+de las de `/home/runner`) y el número de kernel, no comportamiento.
+
+**Los dos comprobadores, limpios.** `comprobar-coherencia.py` sin
+contradicciones sobre 19 hechos canónicos y 80 archivos, y `construir.py
+--comprobar` con todas las salidas al día, huella `43b9c8d2`, la misma de los
+seis días anteriores.
+
+**Nada de lo pendiente se ha movido, y van cuatro sesiones perdidas.** Igual que
+ayer, y conviene decirlo con el mismo detalle para que no parezca que se mira de
+pasada. El bloque `schedule` de las 21:00 UTC de
+`.github/workflows/latido-rutina.yml` sigue desactivado por el commit `4ba7aad`
+del 14-oct, y el comentario que lo desactiva sigue diciendo que "la rutina del
+manuscrito se dio de baja", **que es falso**: la rutina
+`trig_01RzL9eHhTvWuejJYqBLgV7Z` disparó hoy a las 06:07 UTC y es la razón de que
+exista esta entrada. Las **19 incidencias abiertas son las mismas 19 de ayer**,
+con las mismas fechas de última modificación: la más reciente sigue siendo la
+#21 del 9-oct. El `latido-rutina.py` corrido a mano antes de escribir esto
+contesta **"LA RUTINA LLEVA 1 DÍA(S) CALLADA. Última entrada: 2026-10-20"**, que
+es el falso positivo conocido de tolerancia 0: cuenta el día de hoy como callado
+hasta que esta misma entrada se escribe.
+
+**Hoy tampoco sale aviso al móvil, y es a propósito.** El hallazgo de la sesión
+del 19 (tres sesiones muertas en silencio con el interruptor de hombre muerto
+apagado) ya salió por el móvil el día que era nuevo. Repetirlo cada mañana
+mientras nadie ha podido atenderlo todavía lo convierte en ruido y le quita
+fuerza al aviso del día en que de verdad haya algo. El pendiente está por
+escrito aquí abajo desde hace siete días y no ha cambiado de manos ni de tamaño.
+
+**Nota de rutina.** Cero diálogos de permisos, nada escrito dentro de ninguna
+carpeta `.claude/`, el laboratorio `D6-repo-feo` intacto y `git status --short`
+sin sorpresas más allá de `ESTADO.md` y `estado.json`, que los regenera la
+propia ejecución del verificador. Esta entrada se escribió con un heredoc, sin
+`cp` y sin pasar ningún archivo de `/tmp` hacia dentro del repositorio.
+
+### PARA JULIÁN
+
+1. **Séptimo día, misma decisión de una línea, y ya van tres sesiones perdidas
+   cobrando el retraso.** Sin cambios sobre lo anotado el 19: hay que elegir una
+   de las dos, y las dos cierran el agujero. **O das de baja la rutina de
+   verdad** en https://claude.ai/code/routines/trig_01RzL9eHhTvWuejJYqBLgV7Z, y
+   entonces el latido ya está bien como está y no hay que tocar nada más, **o la
+   dejas viva y restauras el bloque `schedule` de las 21:00 UTC** en
+   `.github/workflows/latido-rutina.yml`, donde el propio comentario del archivo
+   explica cómo. Lo que no se sostiene es el estado actual, que es el que ya
+   perdió tres días sin avisar. **No lo decido yo:** toca una rutina de pago y un
+   flujo que abre incidencias.
+2. **Si la dejas viva, arregla antes el aviso, porque avisa mal.** Sin cambios:
+   el latido no distingue "la rutina se murió" de "la rutina corrió y no había
+   trabajo". Con el `schedule` restaurado y el manuscrito como está, comentaría
+   todas las noches sobre la #5. La tolerancia es 0 y el diario es su única
+   señal. Hoy se ha vuelto a ver en vivo: el script dice "1 día callada" sobre
+   una sesión que está corriendo mientras lo dice.
+3. **Y el prompt sigue mandando lo que no hay.** Hace siete días que no hay
+   módulo que escribir y el prompt sigue diciendo "escribe UN módulo, entero".
+   Los preliminares que el esqueleto lista como pendientes en su sección 4
+   (portada, cómo leer este libro, glosario) siguen siendo el trabajo que cierra
+   el producto y tienen tamaño de un módulo al día; la guardia de regresión del
+   verificador ya es el primer paso de la sesión y en diez días ha visto moverse
+   el CLI de la 2.1.294 a la 2.1.306. La portada, además, es "diseño de Julián"
+   según el propio esqueleto, así que esa no me toca ni con el prompt cambiado.
+4. **El vaivén de SEG-002 sigue esperando tu lectura.** Sin cambios. Toca el
+   módulo 10, que es texto publicado, y la decisión es tuya.
+5. **Las 16 incidencias #6 a #21 siguen abiertas.** Sin cambios: misma causa, ya
+   arreglada, cierre en bloque con un comentario cuando lo decidas. Las #3 y #4,
+   de agosto, siguen igual.
+6. **Los tres patrones frágiles de `SUB-004` siguen frágiles.** Hoy pasan los
+   tres. Sin cambios.
+
 ## 2026-10-20 · Sin módulo · Sexto día, y hoy el diario no trae ningún hallazgo nuevo
 
 **Sexto día sin módulo, y sigue siendo el resultado correcto.** El paso 1 del
