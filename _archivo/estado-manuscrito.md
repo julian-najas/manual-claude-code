@@ -35,6 +35,134 @@ clonado desde GitHub.
    archivo desde `/tmp` hacia dentro del repositorio; escribirlo con un heredoc
    no lo dispara. Está en el paso 0d de la rutina desde el 19-ago-2026.
 
+## 2026-10-31 · Sin módulo · Decimosexto día, y hoy no se movió ni el CLI
+
+**El paso 1 sigue sin candidato, y la auditoría se ha repetido entera y de cero**
+porque el criterio es el estado de hoy y no el apunte de ayer. Los doce módulos
+contra el contrato del esqueleto, leídos hoy archivo a archivo:
+
+- **Las seis partes, en orden:** Síntoma, Modelo mental, Receta, Laboratorio,
+  Prueba y Coste. Los doce, sin saltos y comprobando la posición de cada
+  encabezado de nivel dos, no su simple presencia.
+- **Factura del laboratorio en cabecera, con tokens y euros, y `Verificado
+  contra` con versión del CLI y fecha:** los doce. Las versiones declaradas van
+  de la 2.1.228 del módulo 01 a la 2.1.258 del 12, que es la regla 8 trabajando:
+  el libro no tiene versión única.
+- **Caja "esto va a cambiar" y cierre en runbook:** los doce.
+- **Marcas de versión al margen:** ninguno a cero, contando las marcas
+  `‹v2.1.xxx›` de verdad y no la versión mencionada en prosa. El más parco sigue
+  siendo el 02 con 2; los más marcados, el 04, el 08 y el 09 con 14.
+- **Guiones largos:** cero en los doce.
+- **Extensión: los doce dentro del rango, pero con una salvedad de método que
+  hoy toca anotar.** Contando por separación de espacios da de 3.285 el módulo
+  07 a 4.074 el 01, y un total de 46.956. Descontando los símbolos de markdown
+  que no son palabra (`|`, `---`, las vallas de código) da de 3.004 a 3.755 y un
+  total de 43.259. **Ninguno de los dos reproduce el 46.547 que publican el
+  README y `DOS-PRODUCTOS`**, y en el repositorio no hay script que cuente
+  palabras: lo he buscado. La cifra publicada no es por tanto reproducible a
+  máquina, así que **no la he tocado**, porque cambiarla por la de un método mío
+  elegido hoy sería cambiar una cifra sin fuente por otra sin fuente. Va abajo
+  como punto para Julián. No es regresión y no afecta al cumplimiento: por
+  cualquiera de los dos métodos los doce caben en el contrato.
+
+**El verificador, limpio, y hoy el CLI tampoco se movió.** Sigue en la
+**2.1.314**, la misma con la que cerró ayer, después del salto de dos versiones
+de anteayer. Las **93 comprobaciones pasan con 0 FALLA** (47 a revisar, 6
+omitidas), los mismos números que ayer. Las dos únicas diferencias de estado
+contra lo commiteado vuelven a ser `REPO-002` y `REPO-003`, sacadas hoy
+comparando el `estado.json` viejo y el nuevo por identificador y no de memoria:
+son las dos únicas que cambian, las dos de `PASA` a `REVISAR`, y **no son una
+regresión**.
+
+Las dos salen por la red y el proxy de este sandbox las corta. Comprobado otra
+vez a mano, con stderr aparte y dos repeticiones idénticas: el `curl` de
+`REPO-002` contra `github.com` devuelve **403 por la salida de datos y deja
+vacía la de error**, que es exactamente la trampa que el prompt manda mirar
+antes de publicar una cifra, y el de `REPO-003` muere en el túnel con `curl:
+(56) CONNECT tunnel failed, response 403`. En el corredor de `verificar.yml`,
+que sí tiene salida a la red, las mismas dos pasan: de ahí el `95 pasan · 45 a
+revisar` del archivo frente al `93 pasan · 47 a revisar` de esta sesión.
+
+**Los dos comprobadores, limpios.** `comprobar-coherencia.py` sin
+contradicciones sobre 19 hechos canónicos y 80 archivos, y `construir.py
+--comprobar` con todas las salidas al día, huella `43b9c8d2`, la misma de los
+quince días anteriores.
+
+**Ayer la rutina tampoco se murió.** La sesión del 30-oct dejó sus tres commits,
+`554f1cf`, `590e803` y `ac163ff`, de las 06:14 UTC, y su entrada en este diario.
+Los días perdidos en silencio siguen siendo cuatro: el 16, el 17 y el 18 de
+octubre, y el 24.
+
+**Y nada más se ha movido, que vuelve a ser el hallazgo del día.** El bloque
+`schedule` de las 21:00 UTC de `.github/workflows/latido-rutina.yml` sigue
+desactivado por el commit `4ba7aad` del 14-oct, con el mismo comentario que
+sigue afirmando que "la rutina del manuscrito se dio de baja", **que es falso**:
+la rutina disparó hoy y es la razón de que exista esta entrada. Las **19
+incidencias abiertas son las mismas 19**, leídas hoy de GitHub con sus fechas:
+la última que se tocó sigue siendo la #5, el 14-oct y por el propio latido a
+mano, y la rotura más reciente sigue siendo la #21 del 9-oct, de hace veintidós
+días.
+
+**Hoy no sale aviso al móvil, y es a propósito.** Sexto día seguido sin aviso.
+Hoy no hay ni el salto de versión de ayer: el CLI está quieto, el verificador no
+ha encontrado una regresión, el manuscrito está como estaba y el pendiente es el
+mismo que está por escrito aquí abajo desde el 19. Lo único nuevo es la salvedad
+de método del recuento de palabras, que no es noticia que requiera a nadie de
+madrugada y que está anotada abajo. El aviso se guarda para el día en que de
+verdad haya algo, que es lo único que le deja fuerza.
+
+**Nota de rutina.** Cero diálogos de permisos, nada escrito dentro de ninguna
+carpeta `.claude/`, el laboratorio `D6-repo-feo` intacto y `git status --short`
+sin sorpresas más allá de `ESTADO.md` y `estado.json`, que los regenera la
+propia ejecución del verificador. Este texto se compuso con un heredoc y se
+insertó en el diario leyéndolo y reescribiendo el archivo, sin ningún `cp` desde
+`/tmp` hacia dentro del repositorio. Los scripts de medición se quedaron en el
+scratchpad de la sesión.
+
+### PARA JULIÁN
+
+1. **La decisión de una línea, decimoséptimo día esperando.** Sin cambios sobre
+   lo anotado el 19 y la factura del 24-oct sigue en pie. Hay que elegir una de
+   las dos, y las dos cierran el agujero. **O das de baja la rutina de verdad**
+   en https://claude.ai/code/routines/trig_01RzL9eHhTvWuejJYqBLgV7Z, y entonces
+   el latido ya está bien como está y no hay que tocar nada más, **o la dejas
+   viva y restauras el bloque `schedule` de las 21:00 UTC** en
+   `.github/workflows/latido-rutina.yml`, donde el propio comentario del archivo
+   explica cómo. **No lo decido yo:** toca una rutina de pago y un flujo que
+   abre incidencias.
+2. **Si la dejas viva, arregla antes el aviso, porque avisa mal.** Sin cambios:
+   el latido no distingue "la rutina se murió" de "la rutina corrió y no había
+   trabajo". Con el `schedule` restaurado y el manuscrito como está, comentaría
+   todas las noches sobre la #5. La tolerancia es 0 y el diario es su única
+   señal. Lo del 24-oct es el caso que sí quieres que avise; el decimosexto día
+   sin módulo es el que no.
+3. **Y el prompt sigue mandando lo que no hay.** Hace dieciséis días que no hay
+   módulo que escribir y el prompt sigue diciendo "escribe UN módulo, entero".
+   Los preliminares que el esqueleto lista como pendientes en su sección 4
+   (cómo leer este libro, glosario) siguen siendo el trabajo que cierra el
+   producto y tienen tamaño de un módulo al día; la guardia de regresión del
+   verificador ya es el primer paso de la sesión. La portada es "diseño de
+   Julián" según el propio esqueleto, así que esa no me toca ni con el prompt
+   cambiado.
+4. **Nuevo hoy, y pequeño: las 46.547 palabras no son reproducibles.** El README
+   y `DOS-PRODUCTOS` publican esa cifra y en el repositorio no hay nada que la
+   calcule, así que cada sesión la recuenta con el método que elige y le sale
+   otra: a mí hoy 46.956 por espacios y 43.259 descontando los símbolos de
+   markdown. La regla de la casa es "cero cifras sin fuente", y esta ahora mismo
+   tiene por fuente "el estado del repositorio", que no es un comando. **No he
+   cambiado la cifra** justamente por eso. Lo barato es decidir un método, meter
+   el contador en `fabrica/` y que la cifra salga de ahí con su identificador en
+   el registro. **Decisión tuya porque toca cifra publicada en el README**, y
+   porque fijar el método es fijar si el módulo 01 cae dentro o fuera del rango
+   por los pelos.
+5. **El vaivén de SEG-002 sigue esperando tu lectura.** Sin cambios. Toca el
+   módulo 10, que es texto publicado, y la decisión es tuya.
+6. **Las 16 incidencias #6 a #21 siguen abiertas.** Sin cambios: misma causa, ya
+   arreglada, cierre en bloque con un comentario cuando lo decidas. Las #3 y #4,
+   de agosto, siguen igual.
+7. **Los tres patrones frágiles de `SUB-004` siguen frágiles.** Hoy pasan los
+   tres. Sin cambios.
+
 ## 2026-10-30 · Sin módulo · Decimoquinto día, y el CLI se movió dos versiones
 
 **El paso 1 sigue sin candidato, y la auditoría se ha repetido entera y de cero**
