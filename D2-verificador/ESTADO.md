@@ -1,9 +1,9 @@
 # Estado de verificación · Claude Code en producción
 
 **Versión del libro:** v2026.08  
-**Verificado contra:** `2.1.317 (Claude Code)`  
-**Sistema:** Linux 7.0.0-1017-azure  
-**Fecha:** 2026-11-03 12:30:22 UTC
+**Verificado contra:** `2.1.318 (Claude Code)`  
+**Sistema:** Linux 7.0.0-1019-azure  
+**Fecha:** 2026-11-04 12:41:06 UTC
 
 🟢 95 pasan · 🔴 0 fallan · 🟡 45 a revisar · ⚪ 6 omitidas
 
