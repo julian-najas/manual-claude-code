@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.319 (Claude Code)",
+  "cli_verificado": "2.1.322 (Claude Code)",
   "sistema": "Linux 7.0.0-1019-azure",
   "python": "3.14.4",
-  "fecha_utc": "2026-11-07 11:24:40 UTC",
+  "fecha_utc": "2026-11-10 13:08:20 UTC",
   "resumen": {
     "PASA": 95,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.319 (Claude Code)\n"
+      "salida": "2.1.322 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.319)\nCommit: fbdd7e02e853\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.319\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.319)\nCommit: fbdd7e02e853\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.319\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "CLI-005",
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.319)\nCommit: fbdd7e02e853\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.319\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.319)\nCommit: fbdd7e02e853\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.319\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "PRM-007",
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.319)\nCommit: fbdd7e02e853\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.319\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "HOK-010",
@@ -710,7 +710,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude plugin --help",
-      "salida": "Usage: claude plugin|plugins [options] [command]\n\nManage Claude Code plugins\n\nOptions:\n  -h, --help                           Display help for command\n\nCommands:\n  configure [options] <plugin>         Show a plugin's options and which are\n                                       unset, or save values from stdin with\n                                       --values-stdin\n  details [options] <name>    "
+      "salida": "Usage: claude plugin|plugins [options] [command]\n\nManage Claude Code plugins\n\nOptions:\n  -h, --help                            Display help for command\n\nCommands:\n  configure [options] <plugin>          Show a plugin's options and which are\n                                        unset, or save values from stdin with\n                                        --values-stdin\n  details [options] <name>"
     },
     {
       "id": "SKL-002",
@@ -1240,7 +1240,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"^### \"",
-      "salida": "294\n"
+      "salida": "298\n"
     },
     {
       "id": "TRB-009",
