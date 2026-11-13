@@ -1,10 +1,10 @@
 {
   "libro": "Claude Code en producción",
   "version_libro": "v2026.08",
-  "cli_verificado": "2.1.322 (Claude Code)",
+  "cli_verificado": "2.1.323 (Claude Code)",
   "sistema": "Linux 7.0.0-1019-azure",
   "python": "3.14.4",
-  "fecha_utc": "2026-11-10 13:08:20 UTC",
+  "fecha_utc": "2026-11-13 12:43:23 UTC",
   "resumen": {
     "PASA": 95,
     "FALLA": 0,
@@ -20,7 +20,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude --version",
-      "salida": "2.1.322 (Claude Code)\n"
+      "salida": "2.1.323 (Claude Code)\n"
     },
     {
       "id": "CLI-002",
@@ -30,7 +30,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.323)\nCommit: 66b1ade1dce6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.323\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "CLI-003",
@@ -50,7 +50,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.323)\nCommit: 66b1ade1dce6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.323\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "CLI-005",
@@ -320,7 +320,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.323)\nCommit: 66b1ade1dce6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.323\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "PRM-006",
@@ -330,7 +330,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.323)\nCommit: 66b1ade1dce6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.323\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "PRM-007",
@@ -520,7 +520,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude doctor",
-      "salida": "Claude Code doctor\n\nRunning: native (2.1.322)\nCommit: 660928a59468\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.322\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
+      "salida": "Claude Code doctor\n\nRunning: native (2.1.323)\nCommit: 66b1ade1dce6\nPlatform: linux-x64\nPath: /home/runner/.local/share/claude/versions/2.1.323\nConfig install method: native\nSearch: OK (bundled)\nAuto-updates: enabled\nAuto-update channel: latest\nLast update attempt: none recorded\nManaged settings (remote): not fetched — no usable credentials for the settings fetch\nOrganization policy: not fetched: n"
     },
     {
       "id": "HOK-010",
@@ -590,7 +590,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "claude mcp --help",
-      "salida": "Usage: claude mcp [options] [command]\n\nConfigure and manage MCP servers\n\nOptions:\n  -h, --help                            Display help for command\n\nCommands:\n  add [options] <name> <commandOrUrl> [args...]  Add an MCP server to Claude Code.\n  \n  Examples:\n    # Add HTTP server:\n    claude mcp add --transport http sentry https://mcp.sentry.dev/mcp\n  \n    # Add HTTP server with headers:\n    claude m"
+      "salida": "Usage: claude mcp [options] [command]\n\nConfigure and manage MCP servers\n\nOptions:\n  -h, --help                            Display help for command\n\nCommands:\n  add [options] <name> <commandOrUrl> [args...]\n      Add an MCP server\n  add-from-claude-desktop [options]     Import MCP servers from Claude Desktop\n                                        (Mac and WSL only)\n  add-json [options] <name> <jso"
     },
     {
       "id": "MCP-002",
@@ -1240,7 +1240,7 @@
       "resultado": "PASA",
       "motivo": "comprobado",
       "comando": "bash -c D=$(curl -fsS --max-time 25 https://code.claude.com/docs/en/errors.md 2>/dev/null) || { echo SIN-RED; exit 0; }; printf \"%s\" \"$D\" | grep -c \"^### \"",
-      "salida": "298\n"
+      "salida": "306\n"
     },
     {
       "id": "TRB-009",
