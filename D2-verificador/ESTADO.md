@@ -1,11 +1,11 @@
 # Estado de verificación · Claude Code en producción
 
 **Versión del libro:** v2026.08  
-**Verificado contra:** `2.1.325 (Claude Code)`  
+**Verificado contra:** `2.1.326 (Claude Code)`  
 **Sistema:** Linux 7.0.0-1019-azure  
-**Fecha:** 2026-11-14 11:52:03 UTC
+**Fecha:** 2026-11-17 13:59:08 UTC
 
-🟢 95 pasan · 🔴 0 fallan · 🟡 45 a revisar · ⚪ 6 omitidas
+🟢 94 pasan · 🔴 1 fallan · 🟡 45 a revisar · ⚪ 6 omitidas
 
 | | ID | Capítulo | Afirmación del libro | Comprobación |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@
 | 🟢 | CLI-002 | 02 · Instalación y autenticación | claude doctor comprueba la salud de la instalación sin abrir sesión. | `claude doctor` |
 | 🟢 | CLI-003 | 02 · Instalación y autenticación | claude setup-token crea un token de larga duración para suscriptores. | `claude --help` |
 | 🟢 | CLI-004 | 02 · Instalación, autenticación y versiones | claude doctor informa del método de instalación, del canal de actualización y del resultado del último intento. | `claude doctor` |
-| 🟢 | CLI-005 | 02 · Instalación, autenticación y versiones | claude install acepta como destino un canal o un número de versión concreto, que es la vía para reproducir un fallo ajeno. | `claude install --help` |
+| 🔴 | CLI-005 | 02 · Instalación, autenticación y versiones | claude install acepta como destino un canal o un número de versión concreto, que es la vía para reproducir un fallo ajeno. | `claude install --help` |
 | 🟢 | CLI-006 | 02 · Instalación, autenticación y versiones | claude auth gestiona el inicio de sesión y expone status, que dice qué credencial está activa sin abrir sesión. | `claude auth --help` |
 | 🟢 | CLI-007 | 02 · Instalación, autenticación y versiones | La instalación nativa deja en el PATH un enlace simbólico a una versión concreta bajo ~/.local/share/claude/versions/, y por eso conviven varias versiones en disco. | `bash -c L="$HOME/.local/bin/claude"; if [ -L "$L" ]; then readlink "$L" | grep -q "/.local/share/claude/versions/" && echo LANZADOR-ES-ENLACE-A-VERSIONS || echo ENLACE-A-OTRO-SITIO; else echo NO-APLICA-SIN-INSTALACION-NATIVA; fi` |
 | 🟢 | CLI-008 | 02 · Instalación, autenticación y versiones | claude doctor termina con código 0 aunque reporte ajustes inválidos: el código de salida no sirve como comprobación de configuración. | `bash -c d=$(mktemp -d); mkdir -p "$d/.claude"; echo "{" > "$d/.claude/settings.json"; cd "$d"; claude doctor > out.txt 2>&1; c=$?; grep -q "Invalid settings" out.txt && [ "$c" = "0" ] && echo AJUSTES-INVALIDOS-Y-SALIDA-CERO; rm -f "$d/out.txt" "$d/.claude/settings.json"; rmdir "$d/.claude" "$d"` |
